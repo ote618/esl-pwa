@@ -23,8 +23,17 @@
     "voicePattern": "two-part",
     "fixture": true,
     "media": {
-      "video": { "provider": "youtube", "id": null, "orientation": "landscape", "aspect": "16:9" },
-      "audio": { "mode": "per-item-file", "dir": "/assets/audio/UF/", "ext": ".mp3" },
+      "video": {
+        "provider": "youtube",
+        "id": null,
+        "orientation": "landscape",
+        "aspect": "16:9"
+      },
+      "audio": {
+        "mode": "per-clip-file",
+        "dir": "/assets/audio/UF/",
+        "ext": ".mp3"
+      },
       "imageBase": "/assets/img/"
     },
     "gatingNote": "fixture units are never gateable"
@@ -33,7 +42,10 @@
     {
       "_covers": "the ordinary case — four beats, two words, image support",
       "id": "UF-BA",
-      "legacyKeys": ["BA", "ba — fixture"],
+      "legacyKeys": [
+        "BA",
+        "ba — fixture"
+      ],
       "label": "BA",
       "variant": null,
       "set": "T",
@@ -43,19 +55,39 @@
       "cognate": null,
       "support": "image",
       "shape": "combination",
-      "anchor": { "type": "silaba", "phraseEs": "Esta es la sílaba ___" },
+      "anchor": {
+        "type": "silaba",
+        "phraseEs": "Esta es la sílaba ___"
+      },
       "words": [
-        { "text": "bat", "imageId": "bat", "es": null },
-        { "text": "bag", "imageId": "bag", "es": null }
+        {
+          "text": "bat",
+          "imageId": "bat",
+          "es": null
+        },
+        {
+          "text": "bag",
+          "imageId": "bag",
+          "es": null
+        }
       ],
-      "media": { "tileImage": "B", "mouthFrom": null },
+      "media": {
+        "tileImage": "B",
+        "mouthFrom": null
+      },
       "audioDuration": 26.4,
-      "cues": { "escucha": 9.2, "word1": 18.7, "word2": 22.1 }
+      "cues": {
+        "escucha": 9.2,
+        "word1": 18.7,
+        "word2": 22.1
+      }
     },
     {
       "_covers": "support:spanish — no image, words carry es; §2.4 says a surface must never assume an image exists",
       "id": "UF-BE",
-      "legacyKeys": ["BE"],
+      "legacyKeys": [
+        "BE"
+      ],
       "label": "BE",
       "variant": null,
       "set": "T",
@@ -65,19 +97,39 @@
       "cognate": null,
       "support": "spanish",
       "shape": "combination",
-      "anchor": { "type": "silaba", "phraseEs": "Esta es la sílaba ___" },
+      "anchor": {
+        "type": "silaba",
+        "phraseEs": "Esta es la sílaba ___"
+      },
       "words": [
-        { "text": "bed", "imageId": null, "es": "cama" },
-        { "text": "bell", "imageId": null, "es": "campana" }
+        {
+          "text": "bed",
+          "imageId": null,
+          "es": "cama"
+        },
+        {
+          "text": "bell",
+          "imageId": null,
+          "es": "campana"
+        }
       ],
-      "media": { "tileImage": "B", "mouthFrom": null },
+      "media": {
+        "tileImage": "B",
+        "mouthFrom": null
+      },
       "audioDuration": 25.1,
-      "cues": { "escucha": 8.8, "word1": 17.9, "word2": 21.4 }
+      "cues": {
+        "escucha": 8.8,
+        "word1": 17.9,
+        "word2": 21.4
+      }
     },
     {
       "_covers": "suppression — §2.5. playable:false must survive the build and still hold its ID",
       "id": "UF-VA",
-      "legacyKeys": ["VA"],
+      "legacyKeys": [
+        "VA"
+      ],
       "label": "VA",
       "variant": null,
       "set": "P",
@@ -87,21 +139,41 @@
       "cognate": null,
       "support": "image",
       "shape": "combination",
-      "anchor": { "type": "silaba", "phraseEs": "Esta es la sílaba ___" },
+      "anchor": {
+        "type": "silaba",
+        "phraseEs": "Esta es la sílaba ___"
+      },
       "words": [
-        { "text": "van", "imageId": "van", "es": null },
-        { "text": "vat", "imageId": "vat", "es": null }
+        {
+          "text": "van",
+          "imageId": "van",
+          "es": null
+        },
+        {
+          "text": "vat",
+          "imageId": "vat",
+          "es": null
+        }
       ],
-      "media": { "tileImage": "V", "mouthFrom": null },
+      "media": {
+        "tileImage": "V",
+        "mouthFrom": null
+      },
       "audioDuration": 27.8,
-      "cues": { "escucha": 10.1, "word1": 19.6, "word2": 23.3 },
+      "cues": {
+        "escucha": 10.1,
+        "word1": 19.6,
+        "word2": 23.3
+      },
       "playable": false,
       "suppressedReason": "fixture — mirrors the real U2-VA case: narration produces /b/ not /v/"
     },
     {
       "_covers": "support:none with an empty words array — validator 5 must ACCEPT this, not reject it. Four beats of audio, nothing displayed: the narration still says both words, the app shows neither.",
       "id": "UF-GEST",
-      "legacyKeys": ["GEST"],
+      "legacyKeys": [
+        "GEST"
+      ],
       "label": "TH",
       "variant": "sonora",
       "set": "P",
@@ -111,16 +183,28 @@
       "cognate": null,
       "support": "none",
       "shape": "sound",
-      "anchor": { "type": "sonido", "phraseEs": "Este es el segundo sonido" },
+      "anchor": {
+        "type": "sonido",
+        "phraseEs": "Este es el segundo sonido"
+      },
       "words": [],
-      "media": { "tileImage": "TH2", "mouthFrom": "T" },
+      "media": {
+        "tileImage": "TH2",
+        "mouthFrom": "T"
+      },
       "audioDuration": 24.2,
-      "cues": { "escucha": 6.4, "word1": 15.3, "word2": 19.8 }
+      "cues": {
+        "escucha": 6.4,
+        "word1": 15.3,
+        "word2": 19.8
+      }
     },
     {
       "_covers": "F-24 — the two-beat name shape. No word1, no word2, no sound. clip() must return null for those.",
       "id": "UF-B-NAME",
-      "legacyKeys": ["B-NAME"],
+      "legacyKeys": [
+        "B-NAME"
+      ],
       "label": "B",
       "variant": null,
       "set": "T",
@@ -130,11 +214,19 @@
       "cognate": null,
       "support": "none",
       "shape": "name",
-      "anchor": { "type": "letra", "phraseEs": "Esta es la letra ___" },
+      "anchor": {
+        "type": "letra",
+        "phraseEs": "Esta es la letra ___"
+      },
       "words": [],
-      "media": { "tileImage": "B", "mouthFrom": null },
+      "media": {
+        "tileImage": "B",
+        "mouthFrom": null
+      },
       "audioDuration": 8.4,
-      "cues": { "ladder": 3.1 }
+      "cues": {
+        "ladder": 3.1
+      }
     }
   ]
 }

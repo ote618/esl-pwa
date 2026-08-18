@@ -4,6 +4,13 @@
  * Contract: claude/ESL_PWA_Data_Contract.md v2 · ID convention: claude/MEMO_to_Master_ID_Convention.md
  * Story: P0-E2-S8 — 8 letter groups + 5 tail units, IDs preserved, group/part as fields.
  *
+ * AUDIO MODEL B — ratified 2026-08-18. One file per clip. Press play.
+ *   Every clip is its own MP3 under /audio/group1/. There are no cue points,
+ *   no offsets, no seeking, and no narration track to seek into. `clip(id, role)`
+ *   returns a file or null. Null is a normal answer, not an error.
+ *   The clip table is src/data/group1_clips.json — the same file the app loads
+ *   and the one verified serving 200 in production (P0-E3-S2).
+ *
  * THREE RULES THIS FILE ENFORCES
  *  1. IDs are opaque. `U2-` and `U3-` are frozen tokens inherited from the stood-down
  *     nine-unit structure. Nothing here parses a prefix to infer a group, part or unit.
@@ -25,7 +32,10 @@ const HERE = path.dirname(fileURLToPath(import.meta.url))
 const ROOT = path.resolve(HERE, '..')
 const P = {
   entries:  path.join(ROOT, 'data', 'group1_entries.json'),
-  cues:     path.join(ROOT, 'data', 'Group1_Cue_Points.csv'),
+  // The shipped clip index. Single source of truth — deliberately NOT copied into
+  // data/, because two copies of the same table drift and only one of them deploys.
+  clips:    path.join(ROOT, 'src', 'data', 'group1_clips.json'),
+  audioDir: path.join(ROOT, 'public', 'audio', 'group1'),
   fixture:  path.join(ROOT, 'data', 'fixtures', 'unit_fixture_per_item.json'),
   manifest: path.join(ROOT, 'data', 'asset_manifest.json'),
   out:      path.join(ROOT, 'out', 'esl_unit_registry.json'),
@@ -73,40 +83,29 @@ const STRUCTURE = [
  * the video. A name entry is ONE beat. A sound or combination entry is
  * THREE — sound, word1, word2.
  *
- * `clip()` returns null for a clip a shape does not have, and null is a
- * normal answer, not an error. Absent cues are OMITTED from the data —
- * not null, not zero.
+ * The one-beat clip role is "sound", not "name"/"word". That is not a
+ * preference: the shipped files are LTR-A-NAME_sound.mp3 and U3-AT_sound.mp3,
+ * the filename IS the ID, and files are never renamed. The role vocabulary
+ * follows the audio, not the other way round.
  * ------------------------------------------------------------------ */
 const SHAPES = {
-  name:        { beats: 1, cues: [],                 clips: ['name'] },
-  word:        { beats: 1, cues: [],                 clips: ['word'] },
-  sound:       { beats: 3, cues: ['word1', 'word2'], clips: ['sound', 'word1', 'word2'] },
-  combination: { beats: 3, cues: ['word1', 'word2'], clips: ['sound', 'word1', 'word2'] }
+  name:        { beats: 1, clips: ['sound'] },
+  word:        { beats: 1, clips: ['sound'] },
+  sound:       { beats: 3, clips: ['sound', 'word1', 'word2'] },
+  combination: { beats: 3, clips: ['sound', 'word1', 'word2'] }
 }
-const ALL_CLIPS = ['name', 'word', 'sound', 'word1', 'word2']
+const ALL_CLIPS = ['sound', 'word1', 'word2']
 
 /**
- * The whole playback contract, in one function. Both audio modes.
- * Returns { [clip]: {src, from, to} | null }.
+ * The whole playback contract, in one function.
+ * Returns { [clip]: {src} | null }. No from, no to — there is nothing to seek.
  */
 function clipsFor (item, container) {
-  const a = container.media.audio
-  const src = a.mode === 'per-item-file' ? a.dir + item.id + a.ext : a.src
-  const base = item.audio.start          // 0 in per-item mode; narration offset otherwise
-  const c = item.audio.cues
-  const at = k => base + c[k]
-  const win = (from, to) => ({ src, from: +from.toFixed(3), to: +to.toFixed(3) })
-  const first = base + c.start
-  const last = base + item.audio.end
-
+  const dir = container.media.audio.dir
   const out = Object.fromEntries(ALL_CLIPS.map(k => [k, null]))
-  switch (item.shape) {
-    case 'name': out.name = win(first, last); break
-    case 'word': out.word = win(first, last); break
-    default:
-      out.sound = win(first, at('word1'))
-      out.word1 = win(at('word1'), at('word2'))
-      out.word2 = win(at('word2'), last)
+  for (const k of ALL_CLIPS) {
+    const file = item.audio.clips[k]
+    if (file) out[k] = { src: dir + file }
   }
   return out
 }
@@ -115,27 +114,27 @@ const imageId = w => w.toLowerCase().replace(/[^a-z0-9]+/g, '-')
 const TAKE_SUFFIX = /_take\d+$/   // "superseded takes are <ID>_takeN; the bare ID is always live"
 
 /* ------------------------------------------------------------------ *
- * CUE POINTS — data/Group1_Cue_Points.csv
+ * CLIP TABLE — src/data/group1_clips.json
  *
- * NOTE ON THE `anchor` COLUMN: it is a start-of-speech offset (0.08–0.20 s),
- * not an anchor phrase — there are no spoken anchors in these files. It is
- * emitted as `cues.start` so no surface mistakes it for a playable anchor.
+ * Shape: { "<entryID>": { "sound": "<file>", "word1": "<file>", "word2": "<file>" } }
+ * Roles a shape does not have are OMITTED — not null, not "".
  * ------------------------------------------------------------------ */
-function readCues () {
-  const lines = fs.readFileSync(P.cues, 'utf8').trim().split(/\r?\n/)
-  const head = lines[0].split(',').map(s => s.trim())
-  const rows = lines.slice(1).map(l => Object.fromEntries(l.split(',').map((v, i) => [head[i], v.trim()])))
-  const live = new Map(), takes = []
-  for (const r of rows) {
-    if (TAKE_SUFFIX.test(r.id)) { takes.push(r); continue }
-    if (live.has(r.id)) fail(`V4  cue table has ${r.id} twice`)
-    live.set(r.id, r)
-  }
-  // V11 — a superseded take must have a live bare ID, or the "bare ID is live" rule is a lie.
-  for (const t of takes) {
-    const bare = t.id.replace(TAKE_SUFFIX, '')
-    if (!live.has(bare)) fail(`V11 superseded take "${t.id}" has no live bare ID "${bare}"`)
-    else notes.push(`superseded take ${t.id} ignored; ${bare} is live`)
+function readClips () {
+  const raw = read(P.clips)
+  const live = new Map()
+  for (const [id, rec] of Object.entries(raw)) {
+    // V11 — a superseded take must never reach the index. The bare ID is what ships.
+    if (TAKE_SUFFIX.test(id)) {
+      const bare = id.replace(TAKE_SUFFIX, '')
+      fail(`V11 superseded take "${id}" is present in the clip index; only the live bare ID "${bare}" may ship`)
+      continue
+    }
+    if (live.has(id)) fail(`V4  clip index has ${id} twice`)
+    for (const [role, file] of Object.entries(rec)) {
+      if (!ALL_CLIPS.includes(role)) fail(`V8  ${id}: unknown clip role "${role}"`)
+      if (typeof file !== 'string' || !file) fail(`V8  ${id}.${role}: empty clip filename — absent roles must be omitted`)
+    }
+    live.set(id, rec)
   }
   return live
 }
@@ -145,31 +144,35 @@ function readCues () {
  * ------------------------------------------------------------------ */
 function buildGroup1 () {
   const src = read(P.entries)
-  const cues = readCues()
+  const clips = readClips()
   const consumed = new Set()
+  const ext = src.group.media.audio.ext
 
   const items = src.entries.map(e => {
-    const row = cues.get(e.id)
-    if (!row) { fail(`V1  entry "${e.id}" has no row in the cue table`); return null }
+    const rec = clips.get(e.id)
+    if (!rec) { fail(`V1  entry "${e.id}" has no record in the clip index`); return null }
     consumed.add(e.id)
-
-    // V12 — filename is the entry ID. There is no mapping table and none should exist.
-    const expected = e.id + src.group.media.audio.ext
-    if (row.file !== expected) fail(`V12 ${e.id}: audio file is "${row.file}", expected "${expected}"`)
 
     const shape = SHAPES[e.shape]
     if (!shape) { fail(`V8  ${e.id}: unknown shape "${e.shape}"`); return null }
 
-    // Absent cues are OMITTED, not null and not zero.
-    const cueOut = { start: Number(row.anchor) }
-    for (const k of shape.cues) {
-      if (row[k] === '' || row[k] == null) { fail(`V8  ${e.id}: shape "${e.shape}" needs cue ${k}, cue table is empty`); continue }
-      cueOut[k] = Number(row[k])
+    // V8 — the clip set must match the shape exactly. Missing is a failure; extra is a failure.
+    for (const k of shape.clips) {
+      if (!rec[k]) fail(`V8  ${e.id}: shape "${e.shape}" needs clip "${k}", clip index omits it`)
     }
-    for (const k of ['word1', 'word2']) {
-      if (!shape.cues.includes(k) && row[k] !== '' && row[k] != null) {
-        fail(`V8  ${e.id}: shape "${e.shape}" has ${shape.beats} beat(s) but the cue table supplies ${k}`)
+    for (const k of ALL_CLIPS) {
+      if (!shape.clips.includes(k) && rec[k]) {
+        fail(`V8  ${e.id}: shape "${e.shape}" has ${shape.beats} beat(s) but the clip index supplies "${k}"`)
       }
+    }
+
+    // V12 — filename is <id>_<clip><ext>. There is no mapping table and none should exist.
+    const clipOut = {}
+    for (const k of ALL_CLIPS) {
+      if (!rec[k]) continue
+      const expected = `${e.id}_${k}${ext}`
+      if (rec[k] !== expected) fail(`V12 ${e.id}.${k}: audio file is "${rec[k]}", expected "${expected}"`)
+      clipOut[k] = rec[k]
     }
 
     const words = (e.words || []).map(w => ({ text: w.text, imageId: imageId(w.text), es: w.es ?? null }))
@@ -193,15 +196,15 @@ function buildGroup1 () {
       // or "none" per entry without a code change.
       support: e.support ?? (words.length ? 'image' : 'none'),
       words,
-      audio: { start: 0, end: Number(row.duration), cues: cueOut },
+      audio: { mode: 'per-clip-file', clips: clipOut },
       playable: e.playable !== false,
       verified: true
     }
   }).filter(Boolean)
 
-  // V2 — every cue row is consumed. An orphan row means a dropped entry.
-  for (const id of cues.keys()) {
-    if (!consumed.has(id)) fail(`V2  orphan cue row "${id}" — no entry consumes it`)
+  // V2 — every clip record is consumed. An orphan record means a dropped entry.
+  for (const id of clips.keys()) {
+    if (!consumed.has(id)) fail(`V2  orphan clip record "${id}" — no entry consumes it`)
   }
 
   return {
@@ -214,22 +217,27 @@ function buildGroup1 () {
 }
 
 /* ------------------------------------------------------------------ *
- * FIXTURE — per-item shape coverage, reserved UF- namespace (P0-E2-S3)
+ * FIXTURE — per-clip shape coverage, reserved UF- namespace (P0-E2-S3)
+ *
+ * The fixture has no real audio on disk, so its clip table is derived from
+ * the shape using the same <id>_<clip><ext> rule the real index obeys. That
+ * keeps the fixture exercising the identical code path without inventing files.
  * ------------------------------------------------------------------ */
 function buildFixtureUnit () {
   const src = read(P.fixture)
   const unit = { ...src.unit, kind: 'fixture' }
+  const ext = unit.media.audio.ext
   unit.items = src.items.map(raw => {
     const shape = SHAPES[raw.shape] || SHAPES.combination
-    const cueOut = { start: 0.2 }
-    for (const k of shape.cues) if (typeof raw.cues[k] === 'number') cueOut[k] = raw.cues[k]
+    const clipOut = {}
+    for (const k of shape.clips) clipOut[k] = `${raw.id}_${k}${ext}`
     return {
       id: raw.id, legacyKeys: raw.legacyKeys, group: 'UF', part: 3,
       shape: SHAPES[raw.shape] ? raw.shape : 'combination',
       beats: shape.beats, label: raw.label, letter: null, variant: raw.variant,
       anchor: raw.anchor, set: raw.set, risk: raw.risk,
       spanishGuide: raw.spanishGuide, cognate: raw.cognate, support: raw.support,
-      words: raw.words, audio: { start: 0, end: raw.audioDuration, cues: cueOut },
+      words: raw.words, audio: { mode: 'per-clip-file', clips: clipOut },
       playable: raw.playable !== false,
       ...(raw.suppressedReason && { suppressedReason: raw.suppressedReason }),
       verified: true
@@ -275,19 +283,15 @@ function validate (containers, { productionBuild }) {
         if (it.support === 'spanish' && !w.es) fail(`V5  ${it.id}: support "spanish" but word "${w.text}" has no es`)
       }
 
-      // V8 — cues monotonic and shape-correct.
+      // V8 — the emitted clip set matches the shape. Absent roles are OMITTED, not null.
       const shape = SHAPES[it.shape]
       if (!shape) { fail(`V8  ${it.id}: unknown shape "${it.shape}"`); continue }
-      const dur = +(it.audio.end - it.audio.start).toFixed(3)
-      const seq = [it.audio.cues.start, ...shape.cues.map(k => it.audio.cues[k])]
-      if (seq.some(v => typeof v !== 'number')) fail(`V8  ${it.id}: missing cue(s) for shape "${it.shape}"`)
-      else if (!(seq.every((v, i) => i === 0 || seq[i - 1] < v) && seq[seq.length - 1] < dur)) {
-        fail(`V8  ${it.id}: cues not monotonic — ${seq.join(' < ')} < dur ${dur}`)
+      for (const k of shape.clips) {
+        if (typeof it.audio.clips[k] !== 'string') fail(`V8  ${it.id}: shape "${it.shape}" missing clip "${k}"`)
       }
-      // Absent cues must be OMITTED, not null or zero.
-      for (const k of ['word1', 'word2']) {
-        if (!shape.cues.includes(k) && k in it.audio.cues) {
-          fail(`V8  ${it.id}: shape "${it.shape}" must omit cue "${k}", found ${it.audio.cues[k]}`)
+      for (const k of ALL_CLIPS) {
+        if (!shape.clips.includes(k) && k in it.audio.clips) {
+          fail(`V8  ${it.id}: shape "${it.shape}" must omit clip "${k}", found ${it.audio.clips[k]}`)
         }
       }
 
@@ -314,28 +318,23 @@ function validate (containers, { productionBuild }) {
   }
 }
 
-/** Mode parity — a surface must never be able to tell the two audio modes apart. */
-function assertModeParity (containers) {
-  const OFFSET = 1234.567
+/**
+ * V13 — every clip the registry promises exists on disk.
+ *
+ * Model B makes this checkable, which the offset model never was: the registry
+ * names whole files, and whole files either deploy or they don't. This is the
+ * check that would have caught the .m4a/.mp3 split had it been possible to run.
+ */
+function assertClipFilesExist (containers) {
   let checked = 0
   for (const c of Object.values(containers)) {
+    if (c.kind === 'fixture') continue          // fixture audio is synthetic; no files to find
     for (const it of c.items) {
-      const asIs = clipsFor(it, c)
-      const other = c.media.audio.mode === 'per-item-file'
-        ? { mode: 'narration-offsets', src: '/assets/audio/PARITY/narration.m4a' }
-        : { mode: 'per-item-file', dir: '/assets/audio/PARITY/', ext: '.m4a' }
-      const shift = other.mode === 'narration-offsets' ? OFFSET : 0
-      const twinC = { ...c, media: { ...c.media, audio: other } }
-      const twin = { ...it, audio: { ...it.audio, start: shift } }
-      const alt = clipsFor(twin, twinC)
-      for (const n of ALL_CLIPS) {
-        const a = asIs[n], b = alt[n]
-        if ((a === null) !== (b === null)) { fail(`PARITY ${it.id}.${n}: present in one mode, null in the other`); continue }
-        if (!a) continue
-        const rel = x => +(x.from - (x === a ? it.audio.start : twin.audio.start)).toFixed(3)
-        if (+(a.from - it.audio.start).toFixed(3) !== +(b.from - twin.audio.start).toFixed(3) ||
-            +(a.to - a.from).toFixed(3) !== +(b.to - b.from).toFixed(3)) {
-          fail(`PARITY ${it.id}.${n}: modes are NOT interchangeable`)
+      for (const k of ALL_CLIPS) {
+        const file = it.audio.clips[k]
+        if (!file) continue
+        if (!fs.existsSync(path.join(P.audioDir, file))) {
+          fail(`V13 ${it.id}.${k}: clip index names "${file}" but public/audio/group1/${file} does not exist`)
         }
         checked++
       }
@@ -350,7 +349,7 @@ function assertModeParity (containers) {
 const g1 = buildGroup1()
 const production = { G1: g1 }
 validate(production, { productionBuild: true })
-const parity = assertModeParity(production)
+const filesChecked = assertClipFilesExist(production)
 
 // SHAPE — a shape must expose exactly the clips it declares, and no others.
 for (const c of Object.values(production)) {
@@ -367,7 +366,6 @@ let fixtureUnit = null
 if (WANT_FIXTURES) {
   fixtureUnit = buildFixtureUnit()
   validate({ UF: fixtureUnit }, { productionBuild: false })
-  assertModeParity({ UF: fixtureUnit })
 }
 
 if (!MANIFEST_PRESENT) {
@@ -376,10 +374,15 @@ if (!MANIFEST_PRESENT) {
 }
 
 const out = {
-  schemaVersion: 3,
+  schemaVersion: 4,
   structureVersion: 'alphabet-waterfall',
   contractVersion: 'ESL_PWA_Data_Contract.md v2 + MEMO_to_Master_ID_Convention.md',
-  generatedFrom: 'Group1_Entry_Table.md + Group1_Cue_Points.csv',
+  generatedFrom: 'data/group1_entries.json + src/data/group1_clips.json',
+  audioModel: {
+    id: 'B',
+    mode: 'per-clip-file',
+    note: 'One file per clip. Playback is "play this file", never "seek to this offset". There are no cue points. clip(id, role) returns null when the role is absent.'
+  },
   idConvention: {
     note: 'IDs are opaque. U2- and U3- are frozen tokens from the stood-down nine-unit structure and do NOT mean Unit 2 or Unit 3. Never parse a prefix. Group and part are fields.',
     patterns: ['LTR-<letter>-NAME', 'LTR-<letter>-S<n>', 'U2-<syllable>', 'U3-<word>']
@@ -402,11 +405,11 @@ fs.writeFileSync(P.out, JSON.stringify(out, null, 2))
 const byPart = g1.items.reduce((a, i) => (a[i.part] = (a[i.part] || 0) + 1, a), {})
 const byShape = g1.items.reduce((a, i) => (a[i.shape] = (a[i.shape] || 0) + 1, a), {})
 console.log(`  OK    G1: ${g1.items.length} entries · parts ${JSON.stringify(byPart)} · shapes ${JSON.stringify(byShape)}`)
-console.log(`  OK    ${parity} clip windows checked for audio-mode parity`)
+console.log(`  OK    audio model B — ${filesChecked} clip files named and present on disk`)
 console.log(`  OK    structure: ${STRUCTURE.length} containers declared, ${STRUCTURE.filter(s => production[s.id]).length} populated`)
 if (fixtureUnit) {
   fs.mkdirSync(path.dirname(P.outFix), { recursive: true })
-  fs.writeFileSync(P.outFix, JSON.stringify({ schemaVersion: 3, fixture: true, groups: { UF: fixtureUnit } }, null, 2))
+  fs.writeFileSync(P.outFix, JSON.stringify({ schemaVersion: 4, fixture: true, groups: { UF: fixtureUnit } }, null, 2))
   console.log(`  OK    UF fixture: ${fixtureUnit.items.length} entries`)
 }
 console.log(`  OK    ${warnings.length} warning(s), 0 error(s)`)

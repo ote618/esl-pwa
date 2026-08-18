@@ -1,6 +1,6 @@
 #!/usr/bin/env node
 /**
- * Negative tests for the registry generator.
+ * Negative tests for the registry generator — audio Model B.
  * Each case breaks one rule on purpose and asserts the build refuses it.
  * A validator nobody has watched fail is a validator nobody knows is wired up.
  */
@@ -18,21 +18,25 @@ function run (mutate, flags = ['--fixtures']) {
   const tmp = fs.mkdtempSync(path.join(os.tmpdir(), 'eslgen-'))
   fs.mkdirSync(path.join(tmp, 'scripts'), { recursive: true })
   fs.mkdirSync(path.join(tmp, 'data', 'fixtures'), { recursive: true })
+  fs.mkdirSync(path.join(tmp, 'src', 'data'), { recursive: true })
   for (const [from, to] of [
     ['scripts/build-registry.mjs', 'scripts/build-registry.mjs'],
     ['data/group1_entries.json', 'data/group1_entries.json'],
-    ['data/Group1_Cue_Points.csv', 'data/Group1_Cue_Points.csv'],
-    ['data/fixtures/unit_fixture_per_item.json', 'data/fixtures/unit_fixture_per_item.json']
+    ['data/fixtures/unit_fixture_per_item.json', 'data/fixtures/unit_fixture_per_item.json'],
+    ['src/data/group1_clips.json', 'src/data/group1_clips.json']
   ]) fs.copyFileSync(path.join(ROOT, from), path.join(tmp, to))
+  // V13 reads real files off disk, so the harness needs them present.
+  fs.cpSync(path.join(ROOT, 'public/audio/group1'), path.join(tmp, 'public/audio/group1'), { recursive: true })
 
   const f = {
     entries: () => JSON.parse(fs.readFileSync(path.join(tmp, 'data/group1_entries.json'), 'utf8')),
-    cues:    () => fs.readFileSync(path.join(tmp, 'data/Group1_Cue_Points.csv'), 'utf8').trim().split('\n'),
+    clips:   () => JSON.parse(fs.readFileSync(path.join(tmp, 'src/data/group1_clips.json'), 'utf8')),
     script:  () => fs.readFileSync(path.join(tmp, 'scripts/build-registry.mjs'), 'utf8'),
     setEntries:  d => fs.writeFileSync(path.join(tmp, 'data/group1_entries.json'), JSON.stringify(d, null, 1)),
-    setCues:     l => fs.writeFileSync(path.join(tmp, 'data/Group1_Cue_Points.csv'), l.join('\n') + '\n'),
+    setClips:    d => fs.writeFileSync(path.join(tmp, 'src/data/group1_clips.json'), JSON.stringify(d, null, 1)),
     setScript:   s => fs.writeFileSync(path.join(tmp, 'scripts/build-registry.mjs'), s),
-    setManifest: d => fs.writeFileSync(path.join(tmp, 'data/asset_manifest.json'), JSON.stringify(d, null, 1))
+    setManifest: d => fs.writeFileSync(path.join(tmp, 'data/asset_manifest.json'), JSON.stringify(d, null, 1)),
+    rmAudio:     n => fs.rmSync(path.join(tmp, 'public/audio/group1', n))
   }
   mutate(f)
 
@@ -45,14 +49,14 @@ function run (mutate, flags = ['--fixtures']) {
 }
 
 const CASES = [
-  ['V1  an entry with no cue row fails (never skips the entry)', 'V1', f => {
-    f.setCues(f.cues().filter(l => !l.startsWith('U2-DU,')))
+  ['V1  an entry with no clip record fails (never skips the entry)', 'V1', f => {
+    const d = f.clips(); delete d['U2-DU']; f.setClips(d)
   }],
   ['V1  a legacyKey resolving to two entries fails', 'V1', f => {
     const d = f.entries(); d.entries[0].legacyKeys = ['dup']; d.entries[1].legacyKeys = ['dup']; f.setEntries(d)
   }],
-  ['V2  an orphan cue row fails (an orphan means a dropped entry)', 'V2', f => {
-    const l = f.cues(); l.push('U2-ZZ,U2-ZZ.m4a,3.0,0.2,1.0,2.0,zz,0,1'); f.setCues(l)
+  ['V2  an orphan clip record fails (an orphan means a dropped entry)', 'V2', f => {
+    const d = f.clips(); d['U2-ZZ'] = { sound: 'U2-ZZ_sound.mp3' }; f.setClips(d)
   }],
   ['V3  itemCount != items.length fails', 'V3', f => {
     f.setScript(f.script().replace('itemCount: src.entries.length,', 'itemCount: src.entries.length + 1,'))
@@ -69,17 +73,17 @@ const CASES = [
   ['V7  an imageId absent from the manifest fails', 'V7', f => {
     f.setManifest({ images: ['apple'] })
   }],
-  ['V8  non-monotonic cues fail (catches a bad cut point)', 'V8', f => {
-    f.setCues(f.cues().map(l => l.startsWith('U2-BA,') ? 'U2-BA,U2-BA.m4a,4.185,0.2,3.13,1.66,ba/bat/bag,33.86,38.05' : l))
+  ['V8  a 1-beat entry given a word clip fails (F-24, at build time)', 'V8', f => {
+    const d = f.clips(); d['LTR-A-NAME'].word1 = 'LTR-A-NAME_word1.mp3'; f.setClips(d)
   }],
-  ['V8  a cue past the end of the file fails', 'V8', f => {
-    f.setCues(f.cues().map(l => l.startsWith('U2-BA,') ? 'U2-BA,U2-BA.m4a,4.185,0.2,1.66,99.0,ba/bat/bag,33.86,38.05' : l))
+  ['V8  a 3-beat entry missing a clip fails', 'V8', f => {
+    const d = f.clips(); delete d['U2-DU'].word2; f.setClips(d)
   }],
-  ['V8  a 1-beat entry given word cues fails (F-24, at build time)', 'V8', f => {
-    f.setCues(f.cues().map(l => l.startsWith('LTR-A-NAME,') ? 'LTR-A-NAME,LTR-A-NAME.m4a,1.106,0.2,0.5,0.8,A,1.22,2.32' : l))
+  ['V8  an unknown clip role fails', 'V8', f => {
+    const d = f.clips(); d['U2-BA'].word3 = 'U2-BA_word3.mp3'; f.setClips(d)
   }],
-  ['V8  a 3-beat entry missing a word cue fails', 'V8', f => {
-    f.setCues(f.cues().map(l => l.startsWith('U2-DU,') ? 'U2-DU,U2-DU.m4a,3.501,0.2,1.47,,du/duck/dust,88.91,92.41' : l))
+  ['V8  an empty clip filename fails (absent roles are omitted, not blank)', 'V8', f => {
+    const d = f.clips(); d['U2-BA'].word2 = ''; f.setClips(d)
   }],
   ['V9  a fixture ID reaching a production build fails', 'V9', f => {
     f.setScript(f.script().replace('const production = { G1: g1 }', 'const production = { G1: g1, UF: buildFixtureUnit() }'))
@@ -87,19 +91,21 @@ const CASES = [
   ['V10 an entry with no declared part fails (no inferring part from the ID)', 'V10', f => {
     const d = f.entries(); d.entries[0].part = 'three'; f.setEntries(d)
   }],
-  ['V11 a superseded take with no live bare ID fails', 'V11', f => {
-    f.setCues(f.cues().filter(l => !l.startsWith('U2-CE,')))
+  ['V11 a superseded take reaching the clip index fails', 'V11', f => {
+    const d = f.clips(); d['U2-CE_take1'] = { sound: 'U2-CE_take1_sound.mp3' }; f.setClips(d)
   }],
-  ['V12 an audio filename that is not <id>.m4a fails (no mapping table)', 'V12', f => {
-    f.setCues(f.cues().map(l => l.startsWith('U2-CO,') ? l.replace('U2-CO.m4a', 'track_22.m4a') : l))
+  ['V12 an audio filename that is not <id>_<clip>.mp3 fails (no mapping table)', 'V12', f => {
+    const d = f.clips(); d['U2-CO'].sound = 'track_22.mp3'; f.setClips(d)
   }],
-  ['PARITY  a mode-dependent clip window fails', 'PARITY', f => {
-    f.setScript(f.script().replace("out.sound = win(first, at('word1'))",
-      "out.sound = win(first, at('word1') + (a.mode === 'per-item-file' ? 0.5 : 0))"))
+  ['V12 an .m4a filename fails (the regression that split data from audio)', 'V12', f => {
+    const d = f.clips(); d['U2-CO'].sound = 'U2-CO_sound.m4a'; f.setClips(d)
+  }],
+  ['V13 a clip named by the index but missing on disk fails', 'V13', f => {
+    f.rmAudio('U2-BA_word1.mp3')
   }],
   ['SHAPE  a name entry exposing word1 fails', 'SHAPE', f => {
-    f.setScript(f.script().replace("name:        { beats: 1, cues: [],                 clips: ['name'] },",
-      "name:        { beats: 1, cues: [],                 clips: ['name', 'word1'] },"))
+    f.setScript(f.script().replace("name:        { beats: 1, clips: ['sound'] },",
+      "name:        { beats: 1, clips: ['sound', 'word1'] },"))
   }]
 ]
 
