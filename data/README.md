@@ -31,3 +31,29 @@ information the per-clip files do not carry.
 
 Do not wire it back into the build. If a future story needs source offsets, read
 them from here as provenance; do not reintroduce runtime seeking.
+
+## images/ — image manifests
+
+Uploaded 2026-08-26. **Nothing reads these yet.** They are the raw inventory behind
+`asset_manifest.json`, which does not exist, so V7 is still not enforced (F-04).
+
+| File | Rows | Covers |
+|---|---|---|
+| `images/IMAGE_MANIFEST_extras.csv` | 60 | **Group 1 A-D.** `word,folder,file,path,width,height,bytes` |
+| `images/IMAGE_MANIFEST.csv` | 189 | G2–G6. Adds `entry_id,slot` — binds each image to an entry and a word slot |
+| `images/image_lookup.json` | 189 | G2–G6, keyed by word. Same word set as `IMAGE_MANIFEST.csv`, no `entry_id`/`slot` |
+
+`IMAGE_MANIFEST_extras.csv` is the only one that touches G1: it covers all 36 imageIds
+the current registry references, and 24 more that no G1 entry uses yet. The other two
+files are for groups that have no registry data.
+
+Note the manifests list image *metadata*. The `.webp` files themselves are not in this
+repo, so a V13-style "does the file exist on disk" check is not possible for images the
+way it is for audio.
+
+### Known defects in the uploaded data
+
+- `img/Group 5 Q-T/red.webp` is 208 bytes and `img/Group 6 U-Z/yellow.webp` is 438 bytes.
+  Both are marked `OK`. A webp that small is almost certainly a broken or placeholder
+  render, not a picture of anything.
+- `U2-GI` has a `word1` (Ginger) and no `word2`. Every other entry in the manifest has both.
