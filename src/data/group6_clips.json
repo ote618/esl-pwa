@@ -1,0 +1,111 @@
+{
+  "LTR-U-NAME": {
+    "sound": "LTR-U-NAME_sound.mp3"
+  },
+  "LTR-U-S1": {
+    "sound": "LTR-U-S1_sound.mp3",
+    "word1": "LTR-U-S1_word1.mp3",
+    "word2": "LTR-U-S1_word2.mp3"
+  },
+  "LTR-U-S2": {
+    "sound": "LTR-U-S2_sound.mp3",
+    "word1": "LTR-U-S2_word1.mp3",
+    "word2": "LTR-U-S2_word2.mp3"
+  },
+  "LTR-V-NAME": {
+    "sound": "LTR-V-NAME_sound.mp3"
+  },
+  "LTR-V-S1": {
+    "sound": "LTR-V-S1_sound.mp3",
+    "word1": "LTR-V-S1_word1.mp3",
+    "word2": "LTR-V-S1_word2.mp3"
+  },
+  "LTR-W-NAME": {
+    "sound": "LTR-W-NAME_sound.mp3"
+  },
+  "LTR-W-S1": {
+    "sound": "LTR-W-S1_sound.mp3",
+    "word1": "LTR-W-S1_word1.mp3",
+    "word2": "LTR-W-S1_word2.mp3"
+  },
+  "LTR-X-NAME": {
+    "sound": "LTR-X-NAME_sound.mp3"
+  },
+  "LTR-X-S1": {
+    "sound": "LTR-X-S1_sound.mp3",
+    "word1": "LTR-X-S1_word1.mp3",
+    "word2": "LTR-X-S1_word2.mp3"
+  },
+  "LTR-Y-NAME": {
+    "sound": "LTR-Y-NAME_sound.mp3"
+  },
+  "LTR-Y-S1": {
+    "sound": "LTR-Y-S1_sound.mp3",
+    "word1": "LTR-Y-S1_word1.mp3",
+    "word2": "LTR-Y-S1_word2.mp3"
+  },
+  "LTR-Z-NAME": {
+    "sound": "LTR-Z-NAME_sound.mp3"
+  },
+  "LTR-Z-S1": {
+    "sound": "LTR-Z-S1_sound.mp3",
+    "word1": "LTR-Z-S1_word1.mp3",
+    "word2": "LTR-Z-S1_word2.mp3"
+  },
+  "U2-VA": {
+    "sound": "U2-VA_sound.mp3",
+    "word1": "U2-VA_word1.mp3",
+    "word2": "U2-VA_word2.mp3"
+  },
+  "U2-VE": {
+    "sound": "U2-VE_sound.mp3",
+    "word1": "U2-VE_word1.mp3",
+    "word2": "U2-VE_word2.mp3"
+  },
+  "U2-WA": {
+    "sound": "U2-WA_sound.mp3",
+    "word1": "U2-WA_word1.mp3",
+    "word2": "U2-WA_word2.mp3"
+  },
+  "U2-WE": {
+    "sound": "U2-WE_sound.mp3",
+    "word1": "U2-WE_word1.mp3",
+    "word2": "U2-WE_word2.mp3"
+  },
+  "U2-WI": {
+    "sound": "U2-WI_sound.mp3",
+    "word1": "U2-WI_word1.mp3",
+    "word2": "U2-WI_word2.mp3"
+  },
+  "U2-WO": {
+    "sound": "U2-WO_sound.mp3",
+    "word1": "U2-WO_word1.mp3",
+    "word2": "U2-WO_word2.mp3"
+  },
+  "U2-YA": {
+    "sound": "U2-YA_sound.mp3",
+    "word1": "U2-YA_word1.mp3",
+    "word2": "U2-YA_word2.mp3"
+  },
+  "U2-YE": {
+    "sound": "U2-YE_sound.mp3",
+    "word1": "U2-YE_word1.mp3",
+    "word2": "U2-YE_word2.mp3"
+  },
+  "U2-YU": {
+    "sound": "U2-YU_sound.mp3",
+    "word1": "U2-YU_word1.mp3",
+    "word2": "U2-YU_word2.mp3"
+  },
+  "U2-ZI": {
+    "sound": "U2-ZI_sound.mp3",
+    "word1": "U2-ZI_word1.mp3",
+    "word2": "U2-ZI_word2.mp3"
+  },
+  "U3-UP": {
+    "sound": "U3-UP_sound.mp3"
+  },
+  "U3-US": {
+    "sound": "U3-US_sound.mp3"
+  }
+}

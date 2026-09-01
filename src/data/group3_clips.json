@@ -1,0 +1,108 @@
+{
+  "LTR-I-NAME": {
+    "sound": "LTR-I-NAME_sound.mp3"
+  },
+  "LTR-I-S1": {
+    "sound": "LTR-I-S1_sound.mp3",
+    "word1": "LTR-I-S1_word1.mp3",
+    "word2": "LTR-I-S1_word2.mp3"
+  },
+  "LTR-I-S2": {
+    "sound": "LTR-I-S2_sound.mp3",
+    "word1": "LTR-I-S2_word1.mp3",
+    "word2": "LTR-I-S2_word2.mp3"
+  },
+  "LTR-J-NAME": {
+    "sound": "LTR-J-NAME_sound.mp3"
+  },
+  "LTR-J-S1": {
+    "sound": "LTR-J-S1_sound.mp3",
+    "word1": "LTR-J-S1_word1.mp3",
+    "word2": "LTR-J-S1_word2.mp3"
+  },
+  "LTR-K-NAME": {
+    "sound": "LTR-K-NAME_sound.mp3"
+  },
+  "LTR-K-S1": {
+    "sound": "LTR-K-S1_sound.mp3",
+    "word1": "LTR-K-S1_word1.mp3",
+    "word2": "LTR-K-S1_word2.mp3"
+  },
+  "LTR-L-NAME": {
+    "sound": "LTR-L-NAME_sound.mp3"
+  },
+  "LTR-L-S1": {
+    "sound": "LTR-L-S1_sound.mp3",
+    "word1": "LTR-L-S1_word1.mp3",
+    "word2": "LTR-L-S1_word2.mp3"
+  },
+  "U2-JA": {
+    "sound": "U2-JA_sound.mp3",
+    "word1": "U2-JA_word1.mp3",
+    "word2": "U2-JA_word2.mp3"
+  },
+  "U2-JE": {
+    "sound": "U2-JE_sound.mp3",
+    "word1": "U2-JE_word1.mp3",
+    "word2": "U2-JE_word2.mp3"
+  },
+  "U2-JI": {
+    "sound": "U2-JI_sound.mp3",
+    "word1": "U2-JI_word1.mp3",
+    "word2": "U2-JI_word2.mp3"
+  },
+  "U2-JO": {
+    "sound": "U2-JO_sound.mp3",
+    "word1": "U2-JO_word1.mp3",
+    "word2": "U2-JO_word2.mp3"
+  },
+  "U2-JU": {
+    "sound": "U2-JU_sound.mp3",
+    "word1": "U2-JU_word1.mp3",
+    "word2": "U2-JU_word2.mp3"
+  },
+  "U2-KE": {
+    "sound": "U2-KE_sound.mp3",
+    "word1": "U2-KE_word1.mp3",
+    "word2": "U2-KE_word2.mp3"
+  },
+  "U2-KI": {
+    "sound": "U2-KI_sound.mp3",
+    "word1": "U2-KI_word1.mp3",
+    "word2": "U2-KI_word2.mp3"
+  },
+  "U2-LA": {
+    "sound": "U2-LA_sound.mp3",
+    "word1": "U2-LA_word1.mp3",
+    "word2": "U2-LA_word2.mp3"
+  },
+  "U2-LE": {
+    "sound": "U2-LE_sound.mp3",
+    "word1": "U2-LE_word1.mp3",
+    "word2": "U2-LE_word2.mp3"
+  },
+  "U2-LI": {
+    "sound": "U2-LI_sound.mp3",
+    "word1": "U2-LI_word1.mp3",
+    "word2": "U2-LI_word2.mp3"
+  },
+  "U2-LO": {
+    "sound": "U2-LO_sound.mp3",
+    "word1": "U2-LO_word1.mp3",
+    "word2": "U2-LO_word2.mp3"
+  },
+  "U2-LU": {
+    "sound": "U2-LU_sound.mp3",
+    "word1": "U2-LU_word1.mp3",
+    "word2": "U2-LU_word2.mp3"
+  },
+  "U3-IF": {
+    "sound": "U3-IF_sound.mp3"
+  },
+  "U3-IN": {
+    "sound": "U3-IN_sound.mp3"
+  },
+  "U3-IT": {
+    "sound": "U3-IT_sound.mp3"
+  }
+}
