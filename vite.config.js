@@ -26,6 +26,11 @@ export default defineConfig({
       },
       workbox: {
         globPatterns: ['**/*.{js,css,html,svg,png,mp3,mp4,json}'],
+        // Only Group 1 audio is precached. G2-G6 (315 clips, ~3.5 MB) load on
+        // demand — a child on a Guatemalan mobile connection should not pay for
+        // five groups they have not reached yet. Gating releases one group at a
+        // time, so the rest is dead weight at install.
+        globIgnores: ['audio/group[2-6]/**'],
         maximumFileSizeToCacheInBytes: 8 * 1024 * 1024
       }
     })
