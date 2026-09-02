@@ -1,10 +1,283 @@
 {
+"angel": {
+"file": "angel.webp",
+"folder": "Group 1 A-D",
+"h": 660,
+"path": "img/Group 1 A-D/angel.webp",
+"w": 465
+},
+"ant": {
+"file": "ant.webp",
+"folder": "Group 1 A-D",
+"h": 518,
+"path": "img/Group 1 A-D/ant.webp",
+"w": 590
+},
+"ape": {
+"file": "ape.webp",
+"folder": "Group 1 A-D",
+"h": 589,
+"path": "img/Group 1 A-D/ape.webp",
+"w": 736
+},
+"apple": {
+"file": "apple.webp",
+"folder": "Group 1 A-D",
+"h": 553,
+"path": "img/Group 1 A-D/apple.webp",
+"w": 553
+},
+"bag": {
+"file": "bag.webp",
+"folder": "Group 1 A-D",
+"h": 447,
+"path": "img/Group 1 A-D/bag.webp",
+"w": 447
+},
+"ball": {
+"file": "ball.webp",
+"folder": "Group 1 A-D",
+"h": 554,
+"path": "img/Group 1 A-D/ball.webp",
+"w": 554
+},
+"banana": {
+"file": "banana.webp",
+"folder": "Group 1 A-D",
+"h": 421,
+"path": "img/Group 1 A-D/banana.webp",
+"w": 475
+},
+"bat": {
+"file": "bat.webp",
+"folder": "Group 1 A-D",
+"h": 532,
+"path": "img/Group 1 A-D/bat.webp",
+"w": 800
+},
+"bed": {
+"file": "bed.webp",
+"folder": "Group 1 A-D",
+"h": 452,
+"path": "img/Group 1 A-D/bed.webp",
+"w": 678
+},
+"bell": {
+"file": "bell.webp",
+"folder": "Group 1 A-D",
+"h": 447,
+"path": "img/Group 1 A-D/bell.webp",
+"w": 447
+},
+"big": {
+"file": "big.webp",
+"folder": "Group 1 A-D",
+"h": 627,
+"path": "img/Group 1 A-D/big.webp",
+"w": 677
+},
+"bin": {
+"file": "bin.webp",
+"folder": "Group 1 A-D",
+"h": 456,
+"path": "img/Group 1 A-D/bin.webp",
+"w": 503
+},
+"book": {
+"file": "book.webp",
+"folder": "Group 1 A-D",
+"h": 365,
+"path": "img/Group 1 A-D/book.webp",
+"w": 547
+},
+"bot": {
+"file": "bot.webp",
+"folder": "Group 1 A-D",
+"h": 597,
+"path": "img/Group 1 A-D/bot.webp",
+"w": 800
+},
+"bottle": {
+"file": "bottle.webp",
+"folder": "Group 1 A-D",
+"h": 554,
+"path": "img/Group 1 A-D/bottle.webp",
+"w": 554
+},
 "box": {
 "file": "box.webp",
 "folder": "Group 6 U-Z",
 "h": 374,
 "path": "img/Group 6 U-Z/box.webp",
 "w": 534
+},
+"bug": {
+"file": "bug.webp",
+"folder": "Group 1 A-D",
+"h": 480,
+"path": "img/Group 1 A-D/bug.webp",
+"w": 638
+},
+"bus": {
+"file": "bus.webp",
+"folder": "Group 1 A-D",
+"h": 432,
+"path": "img/Group 1 A-D/bus.webp",
+"w": 432
+},
+"camera": {
+"file": "camera.webp",
+"folder": "Group 1 A-D",
+"h": 533,
+"path": "img/Group 1 A-D/camera.webp",
+"w": 800
+},
+"cat": {
+"file": "cat.webp",
+"folder": "Group 1 A-D",
+"h": 455,
+"path": "img/Group 1 A-D/cat.webp",
+"w": 674
+},
+"cell": {
+"file": "cell.webp",
+"folder": "Group 1 A-D",
+"h": 508,
+"path": "img/Group 1 A-D/cell.webp",
+"w": 393
+},
+"center": {
+"file": "center.webp",
+"folder": "Group 1 A-D",
+"h": 506,
+"path": "img/Group 1 A-D/center.webp",
+"w": 781
+},
+"chair": {
+"file": "chair.webp",
+"folder": "Group 1 A-D",
+"h": 447,
+"path": "img/Group 1 A-D/chair.webp",
+"w": 447
+},
+"cheese": {
+"file": "cheese.webp",
+"folder": "Group 1 A-D",
+"h": 528,
+"path": "img/Group 1 A-D/cheese.webp",
+"w": 580
+},
+"circus": {
+"file": "circus.webp",
+"folder": "Group 1 A-D",
+"h": 350,
+"path": "img/Group 1 A-D/circus.webp",
+"w": 547
+},
+"city": {
+"file": "city.webp",
+"folder": "Group 1 A-D",
+"h": 492,
+"path": "img/Group 1 A-D/city.webp",
+"w": 800
+},
+"color": {
+"file": "color.webp",
+"folder": "Group 1 A-D",
+"h": 278,
+"path": "img/Group 1 A-D/color.webp",
+"w": 279
+},
+"comic": {
+"file": "comic.webp",
+"folder": "Group 1 A-D",
+"h": 800,
+"path": "img/Group 1 A-D/comic.webp",
+"w": 527
+},
+"cup": {
+"file": "cup.webp",
+"folder": "Group 1 A-D",
+"h": 554,
+"path": "img/Group 1 A-D/cup.webp",
+"w": 554
+},
+"cut": {
+"file": "cut.webp",
+"folder": "Group 1 A-D",
+"h": 325,
+"path": "img/Group 1 A-D/cut.webp",
+"w": 498
+},
+"dad": {
+"file": "dad.webp",
+"folder": "Group 1 A-D",
+"h": 526,
+"path": "img/Group 1 A-D/dad.webp",
+"w": 380
+},
+"dance": {
+"file": "dance.webp",
+"folder": "Group 1 A-D",
+"h": 471,
+"path": "img/Group 1 A-D/dance.webp",
+"w": 358
+},
+"dentist": {
+"file": "dentist.webp",
+"folder": "Group 1 A-D",
+"h": 417,
+"path": "img/Group 1 A-D/dentist.webp",
+"w": 759
+},
+"desk": {
+"file": "desk.webp",
+"folder": "Group 1 A-D",
+"h": 500,
+"path": "img/Group 1 A-D/desk.webp",
+"w": 500
+},
+"dictionary": {
+"file": "dictionary.webp",
+"folder": "Group 1 A-D",
+"h": 800,
+"path": "img/Group 1 A-D/dictionary.webp",
+"w": 490
+},
+"dig": {
+"file": "dig.webp",
+"folder": "Group 1 A-D",
+"h": 342,
+"path": "img/Group 1 A-D/dig.webp",
+"w": 402
+},
+"doctor": {
+"file": "doctor.webp",
+"folder": "Group 1 A-D",
+"h": 405,
+"path": "img/Group 1 A-D/doctor.webp",
+"w": 592
+},
+"dog": {
+"file": "dog.webp",
+"folder": "Group 1 A-D",
+"h": 600,
+"path": "img/Group 1 A-D/dog.webp",
+"w": 800
+},
+"duck": {
+"file": "duck.webp",
+"folder": "Group 1 A-D",
+"h": 480,
+"path": "img/Group 1 A-D/duck.webp",
+"w": 640
+},
+"dust": {
+"file": "dust.webp",
+"folder": "Group 1 A-D",
+"h": 640,
+"path": "img/Group 1 A-D/dust.webp",
+"w": 479
 },
 "eagle": {
 "file": "eagle.webp",
@@ -19,6 +292,13 @@
 "h": 350,
 "path": "img/Group 2 E-H/eat.webp",
 "w": 418
+},
+"egg": {
+"file": "egg.webp",
+"folder": "Group 1 A-D",
+"h": 462,
+"path": "img/Group 1 A-D/egg.webp",
+"w": 664
 },
 "elbow": {
 "file": "elbow.webp",
@@ -54,6 +334,13 @@
 "h": 800,
 "path": "img/Group 2 E-H/fan.webp",
 "w": 408
+},
+"feather": {
+"file": "feather.webp",
+"folder": "Group 1 A-D",
+"h": 659,
+"path": "img/Group 1 A-D/feather.webp",
+"w": 466
 },
 "fence": {
 "file": "fence.webp",
@@ -110,6 +397,13 @@
 "h": 452,
 "path": "img/Group 6 U-Z/fox.webp",
 "w": 678
+},
+"frog": {
+"file": "frog.webp",
+"folder": "Group 1 A-D",
+"h": 190,
+"path": "img/Group 1 A-D/frog.webp",
+"w": 266
 },
 "fun": {
 "file": "fun.webp",
@@ -173,6 +467,13 @@
 "h": 678,
 "path": "img/Group 2 E-H/giraffe.webp",
 "w": 452
+},
+"girl": {
+"file": "girl.webp",
+"folder": "Group 1 A-D",
+"h": 350,
+"path": "img/Group 1 A-D/girl.webp",
+"w": 292
 },
 "goal": {
 "file": "goal.webp",
@@ -278,6 +579,13 @@
 "h": 365,
 "path": "img/Group 2 E-H/hotel.webp",
 "w": 547
+},
+"house": {
+"file": "house.webp",
+"folder": "Group 1 A-D",
+"h": 800,
+"path": "img/Group 1 A-D/house.webp",
+"w": 800
 },
 "hug": {
 "file": "hug.webp",
@@ -447,6 +755,20 @@
 "path": "img/Group 3 I-L/kilo.webp",
 "w": 447
 },
+"king": {
+"file": "king.webp",
+"folder": "Group 1 A-D",
+"h": 583,
+"path": "img/Group 1 A-D/king.webp",
+"w": 525
+},
+"kite": {
+"file": "kite.webp",
+"folder": "Group 1 A-D",
+"h": 625,
+"path": "img/Group 1 A-D/kite.webp",
+"w": 490
+},
 "kitten": {
 "file": "kitten.webp",
 "folder": "Group 3 I-L",
@@ -594,6 +916,13 @@
 "path": "img/Group 4 M-P/mom.webp",
 "w": 447
 },
+"monkey": {
+"file": "monkey.webp",
+"folder": "Group 1 A-D",
+"h": 451,
+"path": "img/Group 1 A-D/monkey.webp",
+"w": 680
+},
 "moon": {
 "file": "moon.webp",
 "folder": "Group 4 M-P",
@@ -607,6 +936,13 @@
 "h": 554,
 "path": "img/Group 4 M-P/mop.webp",
 "w": 554
+},
+"mother": {
+"file": "mother.webp",
+"folder": "Group 1 A-D",
+"h": 452,
+"path": "img/Group 1 A-D/mother.webp",
+"w": 678
 },
 "mud": {
 "file": "mud.webp",
@@ -649,6 +985,13 @@
 "h": 551,
 "path": "img/Group 4 M-P/nest.webp",
 "w": 556
+},
+"net": {
+"file": "net.webp",
+"folder": "Group 1 A-D",
+"h": 554,
+"path": "img/Group 1 A-D/net.webp",
+"w": 554
 },
 "nibble": {
 "file": "nibble.webp",
@@ -761,6 +1104,13 @@
 "h": 452,
 "path": "img/Group 4 M-P/penguin.webp",
 "w": 678
+},
+"phone": {
+"file": "phone.webp",
+"folder": "Group 1 A-D",
+"h": 225,
+"path": "img/Group 1 A-D/phone.webp",
+"w": 225
 },
 "piano": {
 "file": "piano.webp",
@@ -958,6 +1308,20 @@
 "path": "img/Group 5 Q-T/seven.webp",
 "w": 224
 },
+"sheep": {
+"file": "sheep.webp",
+"folder": "Group 1 A-D",
+"h": 277,
+"path": "img/Group 1 A-D/sheep.webp",
+"w": 182
+},
+"shoe": {
+"file": "shoe.webp",
+"folder": "Group 1 A-D",
+"h": 447,
+"path": "img/Group 1 A-D/shoe.webp",
+"w": 447
+},
 "silver": {
 "file": "silver.webp",
 "folder": "Group 5 Q-T",
@@ -971,6 +1335,13 @@
 "h": 447,
 "path": "img/Group 5 Q-T/sister.webp",
 "w": 447
+},
+"snake": {
+"file": "snake.webp",
+"folder": "Group 1 A-D",
+"h": 600,
+"path": "img/Group 1 A-D/snake.webp",
+"w": 800
 },
 "soccer": {
 "file": "soccer.webp",
@@ -1049,6 +1420,20 @@
 "path": "img/Group 5 Q-T/ten.webp",
 "w": 447
 },
+"three": {
+"file": "three.webp",
+"folder": "Group 1 A-D",
+"h": 447,
+"path": "img/Group 1 A-D/three.webp",
+"w": 447
+},
+"thumb": {
+"file": "thumb.webp",
+"folder": "Group 1 A-D",
+"h": 350,
+"path": "img/Group 1 A-D/thumb.webp",
+"w": 350
+},
 "ticket": {
 "file": "ticket.webp",
 "folder": "Group 5 Q-T",
@@ -1083,6 +1468,13 @@
 "h": 280,
 "path": "img/Group 5 Q-T/toss.webp",
 "w": 325
+},
+"tree": {
+"file": "tree.webp",
+"folder": "Group 1 A-D",
+"h": 554,
+"path": "img/Group 1 A-D/tree.webp",
+"w": 554
 },
 "tub": {
 "file": "tub.webp",
@@ -1125,6 +1517,13 @@
 "h": 554,
 "path": "img/Group 6 U-Z/uniform.webp",
 "w": 554
+},
+"up": {
+"file": "up.webp",
+"folder": "Group 1 A-D",
+"h": 579,
+"path": "img/Group 1 A-D/up.webp",
+"w": 345
 },
 "valley": {
 "file": "valley.webp",
@@ -1202,6 +1601,20 @@
 "h": 189,
 "path": "img/Group 6 U-Z/wet.webp",
 "w": 285
+},
+"whale": {
+"file": "whale.webp",
+"folder": "Group 1 A-D",
+"h": 452,
+"path": "img/Group 1 A-D/whale.webp",
+"w": 678
+},
+"wheel": {
+"file": "wheel.webp",
+"folder": "Group 1 A-D",
+"h": 447,
+"path": "img/Group 1 A-D/wheel.webp",
+"w": 447
 },
 "wind": {
 "file": "wind.webp",
@@ -1286,6 +1699,13 @@
 "h": 284,
 "path": "img/Group 6 U-Z/young.webp",
 "w": 399
+},
+"yoyo": {
+"file": "yoyo.webp",
+"folder": "Group 1 A-D",
+"h": 447,
+"path": "img/Group 1 A-D/yoyo.webp",
+"w": 447
 },
 "yummy": {
 "file": "yummy.webp",

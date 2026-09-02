@@ -36,8 +36,10 @@ const P = {
   // data/, because two copies of the same table drift and only one of them deploys.
   clips:    path.join(ROOT, 'src', 'data', 'group1_clips.json'),
   audioDir: path.join(ROOT, 'public', 'audio', 'group1'),
+  publicDir: path.join(ROOT, 'public'),
   fixture:  path.join(ROOT, 'data', 'fixtures', 'unit_fixture_per_item.json'),
   manifest: path.join(ROOT, 'data', 'asset_manifest.json'),
+  imageLookup: path.join(ROOT, 'data', 'images', 'image_lookup.json'),
   out:      path.join(ROOT, 'out', 'esl_unit_registry.json'),
   outFix:   path.join(ROOT, 'out', 'fixtures', 'esl_unit_registry.fixture.json')
 }
@@ -343,6 +345,48 @@ function assertClipFilesExist (containers) {
   return checked
 }
 
+/**
+ * V14 — every word image resolves to a file that exists on disk.
+ *
+ * The join happens HERE, at build time, because of rule 2: no runtime string
+ * matching. The app is handed a finished `imageSrc` and never builds a path.
+ *
+ * Two traps this closes:
+ *  - group.media.imageBase says "/assets/img/". Nothing has ever been served
+ *    from there. The shipped images live at /img/<folder>/<file>, and the
+ *    folder is the join's answer, not a string the app can guess. imageBase
+ *    is left untouched and unused.
+ *  - The folders contain SPACES ("Group 1 A-D"). A raw space in a src is the
+ *    classic works-on-mac-404s-in-production bug, so the path is percent-
+ *    encoded once, here, and the app emits it verbatim.
+ */
+function resolveImages (containers) {
+  const look = read(P.imageLookup)
+  let resolved = 0
+  for (const c of Object.values(containers)) {
+    if (c.kind === 'fixture') continue        // fixture images are synthetic
+    for (const it of c.items) {
+      for (const w of it.words) {
+        if (!w.imageId) continue
+        const rec = look[w.imageId]
+        if (!rec) {
+          fail(`V14 ${it.id}: imageId "${w.imageId}" has no record in data/images/image_lookup.json`)
+          continue
+        }
+        if (!fs.existsSync(path.join(P.publicDir, rec.path))) {
+          fail(`V14 ${it.id}: image_lookup names "${rec.path}" but public/${rec.path} does not exist`)
+          continue
+        }
+        w.imageSrc = encodeURI('/' + rec.path)
+        w.imageW = rec.w
+        w.imageH = rec.h
+        resolved++
+      }
+    }
+  }
+  return resolved
+}
+
 /* ------------------------------------------------------------------ *
  * BUILD
  * ------------------------------------------------------------------ */
@@ -350,6 +394,7 @@ const g1 = buildGroup1()
 const production = { G1: g1 }
 validate(production, { productionBuild: true })
 const filesChecked = assertClipFilesExist(production)
+const imagesResolved = resolveImages(production)
 
 // SHAPE — a shape must expose exactly the clips it declares, and no others.
 for (const c of Object.values(production)) {
@@ -406,6 +451,7 @@ const byPart = g1.items.reduce((a, i) => (a[i.part] = (a[i.part] || 0) + 1, a), 
 const byShape = g1.items.reduce((a, i) => (a[i.shape] = (a[i.shape] || 0) + 1, a), {})
 console.log(`  OK    G1: ${g1.items.length} entries · parts ${JSON.stringify(byPart)} · shapes ${JSON.stringify(byShape)}`)
 console.log(`  OK    audio model B — ${filesChecked} clip files named and present on disk`)
+console.log(`  OK    images: ${imagesResolved} word image(s) joined and present on disk`)
 console.log(`  OK    structure: ${STRUCTURE.length} containers declared, ${STRUCTURE.filter(s => production[s.id]).length} populated`)
 if (fixtureUnit) {
   fs.mkdirSync(path.dirname(P.outFix), { recursive: true })

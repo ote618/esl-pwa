@@ -4,8 +4,8 @@
   "version": "0.1.0",
   "type": "module",
   "scripts": {
-    "dev": "vite",
-    "build": "vite build",
+    "dev": "npm run build:data && vite",
+    "build": "npm run build:data && vite build",
     "preview": "vite preview",
     "build:data": "node scripts/build-registry.mjs",
     "build:data:fixtures": "node scripts/build-registry.mjs --fixtures",

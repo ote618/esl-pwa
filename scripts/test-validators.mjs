@@ -27,6 +27,11 @@ function run (mutate, flags = ['--fixtures']) {
   ]) fs.copyFileSync(path.join(ROOT, from), path.join(tmp, to))
   // V13 reads real files off disk, so the harness needs them present.
   fs.cpSync(path.join(ROOT, 'public/audio/group1'), path.join(tmp, 'public/audio/group1'), { recursive: true })
+  // V14 does the same for the image join. Only Group 1's folder is copied —
+  // it is the only one the G1 entries can reach.
+  fs.mkdirSync(path.join(tmp, 'data', 'images'), { recursive: true })
+  fs.copyFileSync(path.join(ROOT, 'data/images/image_lookup.json'), path.join(tmp, 'data/images/image_lookup.json'))
+  fs.cpSync(path.join(ROOT, 'public/img/Group 1 A-D'), path.join(tmp, 'public/img/Group 1 A-D'), { recursive: true })
 
   const f = {
     entries: () => JSON.parse(fs.readFileSync(path.join(tmp, 'data/group1_entries.json'), 'utf8')),
@@ -36,16 +41,21 @@ function run (mutate, flags = ['--fixtures']) {
     setClips:    d => fs.writeFileSync(path.join(tmp, 'src/data/group1_clips.json'), JSON.stringify(d, null, 1)),
     setScript:   s => fs.writeFileSync(path.join(tmp, 'scripts/build-registry.mjs'), s),
     setManifest: d => fs.writeFileSync(path.join(tmp, 'data/asset_manifest.json'), JSON.stringify(d, null, 1)),
-    rmAudio:     n => fs.rmSync(path.join(tmp, 'public/audio/group1', n))
+    rmAudio:     n => fs.rmSync(path.join(tmp, 'public/audio/group1', n)),
+    lookup:      () => JSON.parse(fs.readFileSync(path.join(tmp, 'data/images/image_lookup.json'), 'utf8')),
+    setLookup:   d => fs.writeFileSync(path.join(tmp, 'data/images/image_lookup.json'), JSON.stringify(d, null, 1)),
+    rmImage:     n => fs.rmSync(path.join(tmp, 'public/img/Group 1 A-D', n))
   }
   mutate(f)
 
   let stdout = '', code = 0
   try { stdout = execFileSync('node', [path.join(tmp, 'scripts/build-registry.mjs'), ...flags], { encoding: 'utf8' }) }
   catch (e) { code = e.status; stdout = (e.stdout || '') + (e.stderr || '') }
-  const wrote = fs.existsSync(path.join(tmp, 'out', 'esl_unit_registry.json'))
+  const outPath = path.join(tmp, 'out', 'esl_unit_registry.json')
+  const wrote = fs.existsSync(outPath)
+  const registry = wrote ? JSON.parse(fs.readFileSync(outPath, 'utf8')) : null
   fs.rmSync(tmp, { recursive: true, force: true })
-  return { code, stdout, wrote }
+  return { code, stdout, wrote, registry }
 }
 
 const CASES = [
@@ -103,6 +113,12 @@ const CASES = [
   ['V13 a clip named by the index but missing on disk fails', 'V13', f => {
     f.rmAudio('U2-BA_word1.mp3')
   }],
+  ['V14 a word whose imageId is absent from the lookup fails', 'V14', f => {
+    const d = f.lookup(); delete d.apple; f.setLookup(d)
+  }],
+  ['V14 a lookup path naming a file that is not on disk fails', 'V14', f => {
+    f.rmImage('apple.webp')
+  }],
   ['SHAPE  a name entry exposing word1 fails', 'SHAPE', f => {
     f.setScript(f.script().replace("name:        { beats: 1, clips: ['sound'] },",
       "name:        { beats: 1, clips: ['sound', 'word1'] },"))
@@ -125,5 +141,42 @@ for (const [name, tag, mutate] of CASES) {
     console.log('          ' + r.stdout.split('\n').filter(l => l.includes('ERROR')).slice(0, 2).join('\n          '))
   }
 }
+/* --- POSITIVE: what does a GREEN build actually emit? ---
+ * The negative cases prove a broken build refuses. These prove the good build
+ * emits something the app can use without touching a string. */
+console.log('\n--- POSITIVE TESTS: what does a green build emit? ---\n')
+const ok = (name, cond, detail = '') => {
+  if (cond) { console.log('  ok    ' + name); pass++ }
+  else { console.log('  FAIL  ' + name + (detail ? '\n          ' + detail : '')); failed++ }
+}
+
+if (!control.registry) {
+  ok('the control build wrote a registry', false, 'no output to assert against')
+} else {
+  const items = control.registry.groups.G1.items
+  const words = items.flatMap(i => i.words)
+
+  ok('every word carries a resolved imageSrc',
+    words.length > 0 && words.every(w => typeof w.imageSrc === 'string' && w.imageSrc.startsWith('/img/')),
+    words.filter(w => typeof w.imageSrc !== 'string').map(w => w.text).join(', '))
+
+  // The folders contain spaces. A raw space in a src is the works-on-mac,
+  // 404s-in-production bug, so the encoding is asserted, not assumed.
+  const raw = words.filter(w => /[ ]/.test(w.imageSrc || ''))
+  ok('no imageSrc contains a raw space (Vercel 404 guard)', raw.length === 0,
+    raw.map(w => w.imageSrc).join(', '))
+  ok('the space-bearing folder is encoded as %20',
+    words.some(w => w.imageSrc.includes('/Group%201%20A-D/')))
+
+  // clip(id,'word1') returning null for a one-beat entry is the contract,
+  // not a gap. Assert the shape the app is expected to branch on.
+  const oneBeat = items.filter(i => i.beats === 1)
+  ok('one-beat entries omit word1/word2 entirely (null is normal)',
+    oneBeat.length > 0 && oneBeat.every(i => !('word1' in i.audio.clips) && !('word2' in i.audio.clips)),
+    oneBeat.filter(i => 'word1' in i.audio.clips).map(i => i.id).join(', '))
+  ok('three-beat entries carry all three clips',
+    items.filter(i => i.beats === 3).every(i => i.audio.clips.sound && i.audio.clips.word1 && i.audio.clips.word2))
+}
+
 console.log(`\n${pass} passed, ${failed} failed`)
 process.exit(failed ? 1 : 0)
