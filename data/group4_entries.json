@@ -1,0 +1,493 @@
+{
+  "_source": "Derived 2026-09-02 from src/data/group4_clips.json (entry IDs and shapes), data/images/IMAGE_MANIFEST.csv (words) and Spanish Recordings/CLIP_MANIFEST.csv (spanishGuide, from the 'says' column of each recorded sound clip). Group and part are DECLARED here, never parsed from the ID string — U2- and U3- are opaque frozen tokens per claude/MEMO_to_Master_ID_Convention.md.",
+  "_derived": "NOT hand-authored curriculum. 'spanishGuide' is the recorded 'says' value with surrounding slashes stripped. 'variant' is inferred by the Group 1 precedent: vowels with two sounds get corta/larga, consonants get fuerte/suave. Both fields need curriculum sign-off. No 'es', 'risk', 'cognate' or 'set' values are invented — they are absent, not guessed.",
+  "_joins": "Every entry must find a record in src/data/group4_clips.json and every clip record must be consumed, or the build fails. Every clip named must exist under public/audio/group4/.",
+  "group": {
+    "id": "G4",
+    "number": 4,
+    "name": "M N O P",
+    "nameEs": "Grupo 4 — M N O P",
+    "letters": [
+      "M",
+      "N",
+      "O",
+      "P"
+    ],
+    "status": "confirmed",
+    "media": {
+      "video": {
+        "provider": "youtube",
+        "id": null,
+        "orientation": "landscape",
+        "aspect": "16:9"
+      },
+      "audio": {
+        "mode": "per-clip-file",
+        "dir": "/audio/group4/",
+        "ext": ".mp3"
+      },
+      "imageBase": "/img/Group 4 M-P/"
+    }
+  },
+  "entries": [
+    {
+      "id": "LTR-M-NAME",
+      "part": 1,
+      "shape": "name",
+      "label": "M",
+      "letter": "M",
+      "anchor": {
+        "type": "letra",
+        "phraseEs": "Esta es la letra ___"
+      },
+      "words": []
+    },
+    {
+      "id": "LTR-N-NAME",
+      "part": 1,
+      "shape": "name",
+      "label": "N",
+      "letter": "N",
+      "anchor": {
+        "type": "letra",
+        "phraseEs": "Esta es la letra ___"
+      },
+      "words": []
+    },
+    {
+      "id": "LTR-O-NAME",
+      "part": 1,
+      "shape": "name",
+      "label": "O",
+      "letter": "O",
+      "anchor": {
+        "type": "letra",
+        "phraseEs": "Esta es la letra ___"
+      },
+      "words": []
+    },
+    {
+      "id": "LTR-P-NAME",
+      "part": 1,
+      "shape": "name",
+      "label": "P",
+      "letter": "P",
+      "anchor": {
+        "type": "letra",
+        "phraseEs": "Esta es la letra ___"
+      },
+      "words": []
+    },
+    {
+      "id": "LTR-M-S1",
+      "part": 2,
+      "shape": "sound",
+      "label": "M",
+      "letter": "M",
+      "spanishGuide": "m",
+      "anchor": {
+        "type": "sonido",
+        "phraseEs": "La letra ___ tiene ___ sonido(s)"
+      },
+      "words": [
+        {
+          "text": "mango"
+        },
+        {
+          "text": "moon"
+        }
+      ]
+    },
+    {
+      "id": "LTR-N-S1",
+      "part": 2,
+      "shape": "sound",
+      "label": "N",
+      "letter": "N",
+      "spanishGuide": "n",
+      "anchor": {
+        "type": "sonido",
+        "phraseEs": "La letra ___ tiene ___ sonido(s)"
+      },
+      "words": [
+        {
+          "text": "note"
+        },
+        {
+          "text": "nose"
+        }
+      ]
+    },
+    {
+      "id": "LTR-O-S1",
+      "part": 2,
+      "shape": "sound",
+      "label": "O",
+      "letter": "O",
+      "variant": "corta",
+      "spanishGuide": "o",
+      "anchor": {
+        "type": "sonido",
+        "phraseEs": "La letra ___ tiene ___ sonido(s)"
+      },
+      "words": [
+        {
+          "text": "octopus"
+        },
+        {
+          "text": "office"
+        }
+      ]
+    },
+    {
+      "id": "LTR-O-S2",
+      "part": 2,
+      "shape": "sound",
+      "label": "O",
+      "letter": "O",
+      "variant": "larga",
+      "spanishGuide": "ou",
+      "anchor": {
+        "type": "sonido",
+        "phraseEs": "La letra ___ tiene ___ sonido(s)"
+      },
+      "words": [
+        {
+          "text": "ocean"
+        },
+        {
+          "text": "open"
+        }
+      ]
+    },
+    {
+      "id": "LTR-P-S1",
+      "part": 2,
+      "shape": "sound",
+      "label": "P",
+      "letter": "P",
+      "spanishGuide": "p",
+      "anchor": {
+        "type": "sonido",
+        "phraseEs": "La letra ___ tiene ___ sonido(s)"
+      },
+      "words": [
+        {
+          "text": "piano"
+        },
+        {
+          "text": "pig"
+        }
+      ]
+    },
+    {
+      "id": "U2-MA",
+      "part": 3,
+      "shape": "combination",
+      "label": "ma",
+      "letter": "M",
+      "anchor": {
+        "type": "silaba",
+        "phraseEs": "Esta es la sílaba ___"
+      },
+      "words": [
+        {
+          "text": "map"
+        },
+        {
+          "text": "man"
+        }
+      ]
+    },
+    {
+      "id": "U2-ME",
+      "part": 3,
+      "shape": "combination",
+      "label": "me",
+      "letter": "M",
+      "anchor": {
+        "type": "silaba",
+        "phraseEs": "Esta es la sílaba ___"
+      },
+      "words": [
+        {
+          "text": "melon"
+        },
+        {
+          "text": "medal"
+        }
+      ]
+    },
+    {
+      "id": "U2-MI",
+      "part": 3,
+      "shape": "combination",
+      "label": "mi",
+      "letter": "M",
+      "anchor": {
+        "type": "silaba",
+        "phraseEs": "Esta es la sílaba ___"
+      },
+      "words": [
+        {
+          "text": "milk"
+        },
+        {
+          "text": "minute"
+        }
+      ]
+    },
+    {
+      "id": "U2-MO",
+      "part": 3,
+      "shape": "combination",
+      "label": "mo",
+      "letter": "M",
+      "anchor": {
+        "type": "silaba",
+        "phraseEs": "Esta es la sílaba ___"
+      },
+      "words": [
+        {
+          "text": "mop"
+        },
+        {
+          "text": "mom"
+        }
+      ]
+    },
+    {
+      "id": "U2-MU",
+      "part": 3,
+      "shape": "combination",
+      "label": "mu",
+      "letter": "M",
+      "anchor": {
+        "type": "silaba",
+        "phraseEs": "Esta es la sílaba ___"
+      },
+      "words": [
+        {
+          "text": "mud"
+        },
+        {
+          "text": "mug"
+        }
+      ]
+    },
+    {
+      "id": "U2-NA",
+      "part": 3,
+      "shape": "combination",
+      "label": "na",
+      "letter": "N",
+      "anchor": {
+        "type": "silaba",
+        "phraseEs": "Esta es la sílaba ___"
+      },
+      "words": [
+        {
+          "text": "nap"
+        },
+        {
+          "text": "napkin"
+        }
+      ]
+    },
+    {
+      "id": "U2-NE",
+      "part": 3,
+      "shape": "combination",
+      "label": "ne",
+      "letter": "N",
+      "anchor": {
+        "type": "silaba",
+        "phraseEs": "Esta es la sílaba ___"
+      },
+      "words": [
+        {
+          "text": "nest"
+        },
+        {
+          "text": "nectar"
+        }
+      ]
+    },
+    {
+      "id": "U2-NI",
+      "part": 3,
+      "shape": "combination",
+      "label": "ni",
+      "letter": "N",
+      "anchor": {
+        "type": "silaba",
+        "phraseEs": "Esta es la sílaba ___"
+      },
+      "words": [
+        {
+          "text": "nibble"
+        },
+        {
+          "text": "ninja"
+        }
+      ]
+    },
+    {
+      "id": "U2-NO",
+      "part": 3,
+      "shape": "combination",
+      "label": "no",
+      "letter": "N",
+      "anchor": {
+        "type": "silaba",
+        "phraseEs": "Esta es la sílaba ___"
+      },
+      "words": [
+        {
+          "text": "nod"
+        },
+        {
+          "text": "not"
+        }
+      ]
+    },
+    {
+      "id": "U2-NU",
+      "part": 3,
+      "shape": "combination",
+      "label": "nu",
+      "letter": "N",
+      "anchor": {
+        "type": "silaba",
+        "phraseEs": "Esta es la sílaba ___"
+      },
+      "words": [
+        {
+          "text": "nut"
+        },
+        {
+          "text": "number"
+        }
+      ]
+    },
+    {
+      "id": "U2-PA",
+      "part": 3,
+      "shape": "combination",
+      "label": "pa",
+      "letter": "P",
+      "anchor": {
+        "type": "silaba",
+        "phraseEs": "Esta es la sílaba ___"
+      },
+      "words": [
+        {
+          "text": "pan"
+        },
+        {
+          "text": "palace"
+        }
+      ]
+    },
+    {
+      "id": "U2-PE",
+      "part": 3,
+      "shape": "combination",
+      "label": "pe",
+      "letter": "P",
+      "anchor": {
+        "type": "silaba",
+        "phraseEs": "Esta es la sílaba ___"
+      },
+      "words": [
+        {
+          "text": "pen"
+        },
+        {
+          "text": "penguin"
+        }
+      ]
+    },
+    {
+      "id": "U2-PI",
+      "part": 3,
+      "shape": "combination",
+      "label": "pi",
+      "letter": "P",
+      "anchor": {
+        "type": "silaba",
+        "phraseEs": "Esta es la sílaba ___"
+      },
+      "words": [
+        {
+          "text": "picture"
+        },
+        {
+          "text": "picnic"
+        }
+      ]
+    },
+    {
+      "id": "U2-PO",
+      "part": 3,
+      "shape": "combination",
+      "label": "po",
+      "letter": "P",
+      "anchor": {
+        "type": "silaba",
+        "phraseEs": "Esta es la sílaba ___"
+      },
+      "words": [
+        {
+          "text": "pot"
+        },
+        {
+          "text": "popcorn"
+        }
+      ]
+    },
+    {
+      "id": "U2-PU",
+      "part": 3,
+      "shape": "combination",
+      "label": "pu",
+      "letter": "P",
+      "anchor": {
+        "type": "silaba",
+        "phraseEs": "Esta es la sílaba ___"
+      },
+      "words": [
+        {
+          "text": "puppy"
+        },
+        {
+          "text": "pumpkin"
+        }
+      ]
+    },
+    {
+      "id": "U3-ON",
+      "part": 3,
+      "shape": "word",
+      "label": "on",
+      "letter": "O",
+      "anchor": {
+        "type": "palabra",
+        "phraseEs": "Esta es la palabra ___"
+      },
+      "words": []
+    },
+    {
+      "id": "U3-OX",
+      "part": 3,
+      "shape": "word",
+      "label": "ox",
+      "letter": "O",
+      "anchor": {
+        "type": "palabra",
+        "phraseEs": "Esta es la palabra ___"
+      },
+      "words": []
+    }
+  ]
+}

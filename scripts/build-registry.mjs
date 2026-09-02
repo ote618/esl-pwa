@@ -31,11 +31,9 @@ import { fileURLToPath } from 'node:url'
 const HERE = path.dirname(fileURLToPath(import.meta.url))
 const ROOT = path.resolve(HERE, '..')
 const P = {
-  entries:  path.join(ROOT, 'data', 'group1_entries.json'),
-  // The shipped clip index. Single source of truth — deliberately NOT copied into
-  // data/, because two copies of the same table drift and only one of them deploys.
-  clips:    path.join(ROOT, 'src', 'data', 'group1_clips.json'),
-  audioDir: path.join(ROOT, 'public', 'audio', 'group1'),
+  dataDir:   path.join(ROOT, 'data'),
+  srcData:   path.join(ROOT, 'src', 'data'),
+  publicDir: path.join(ROOT, 'public'),
   fixture:  path.join(ROOT, 'data', 'fixtures', 'unit_fixture_per_item.json'),
   manifest: path.join(ROOT, 'data', 'asset_manifest.json'),
   out:      path.join(ROOT, 'out', 'esl_unit_registry.json'),
@@ -45,6 +43,14 @@ const P = {
 const argv = new Set(process.argv.slice(2))
 const WANT_FIXTURES    = argv.has('--fixtures')
 const REQUIRE_MANIFEST = argv.has('--require-manifest')
+
+/* Every data/groupN_entries.json is built. Adding a group is a data change,
+ * not a code change — drop the entry table and clip index in and it builds.
+ * Its clip index is src/data/<key>_clips.json; both are required. */
+const GROUP_KEYS = fs.readdirSync(path.join(ROOT, 'data'))
+  .filter(f => /^group\d+_entries\.json$/.test(f))
+  .map(f => f.replace('_entries.json', ''))
+  .sort((a, b) => Number(a.slice(5)) - Number(b.slice(5)))
 
 const errors = [], warnings = [], notes = []
 const fail = m => errors.push(m)
@@ -119,8 +125,8 @@ const TAKE_SUFFIX = /_take\d+$/   // "superseded takes are <ID>_takeN; the bare 
  * Shape: { "<entryID>": { "sound": "<file>", "word1": "<file>", "word2": "<file>" } }
  * Roles a shape does not have are OMITTED — not null, not "".
  * ------------------------------------------------------------------ */
-function readClips () {
-  const raw = read(P.clips)
+function readClips (key) {
+  const raw = read(path.join(P.srcData, `${key}_clips.json`))
   const live = new Map()
   for (const [id, rec] of Object.entries(raw)) {
     // V11 — a superseded take must never reach the index. The bare ID is what ships.
@@ -142,9 +148,15 @@ function readClips () {
 /* ------------------------------------------------------------------ *
  * BUILD GROUP 1
  * ------------------------------------------------------------------ */
-function buildGroup1 () {
-  const src = read(P.entries)
-  const clips = readClips()
+function buildGroup (key) {
+  const src = read(path.join(P.dataDir, `${key}_entries.json`))
+  // An entry table with no clip index is an unresolvable join, not a crash.
+  const clipPath = path.join(P.srcData, `${key}_clips.json`)
+  if (!fs.existsSync(clipPath)) {
+    fail(`V1  ${key}: data/${key}_entries.json exists but src/${key.replace(/^/, 'data/')}_clips.json does not`)
+    return null
+  }
+  const clips = readClips(key)
   const consumed = new Set()
   const ext = src.group.media.audio.ext
 
@@ -333,8 +345,9 @@ function assertClipFilesExist (containers) {
       for (const k of ALL_CLIPS) {
         const file = it.audio.clips[k]
         if (!file) continue
-        if (!fs.existsSync(path.join(P.audioDir, file))) {
-          fail(`V13 ${it.id}.${k}: clip index names "${file}" but public/audio/group1/${file} does not exist`)
+        const dir = c.media.audio.dir.replace(/^\/+/, '')
+        if (!fs.existsSync(path.join(P.publicDir, dir, file))) {
+          fail(`V13 ${it.id}.${k}: clip index names "${file}" but public/${dir}${file} does not exist`)
         }
         checked++
       }
@@ -346,8 +359,8 @@ function assertClipFilesExist (containers) {
 /* ------------------------------------------------------------------ *
  * BUILD
  * ------------------------------------------------------------------ */
-const g1 = buildGroup1()
-const production = { G1: g1 }
+const production = {}
+for (const key of GROUP_KEYS) { const g = buildGroup(key); if (g) production[g.id] = g }
 validate(production, { productionBuild: true })
 const filesChecked = assertClipFilesExist(production)
 
@@ -377,7 +390,7 @@ const out = {
   schemaVersion: 4,
   structureVersion: 'alphabet-waterfall',
   contractVersion: 'ESL_PWA_Data_Contract.md v2 + MEMO_to_Master_ID_Convention.md',
-  generatedFrom: 'data/group1_entries.json + src/data/group1_clips.json',
+  generatedFrom: GROUP_KEYS.map(k => `data/${k}_entries.json + src/data/${k}_clips.json`).join(', '),
   audioModel: {
     id: 'B',
     mode: 'per-clip-file',
@@ -402,9 +415,11 @@ if (errors.length) {
 }
 fs.mkdirSync(path.dirname(P.out), { recursive: true })
 fs.writeFileSync(P.out, JSON.stringify(out, null, 2))
-const byPart = g1.items.reduce((a, i) => (a[i.part] = (a[i.part] || 0) + 1, a), {})
-const byShape = g1.items.reduce((a, i) => (a[i.shape] = (a[i.shape] || 0) + 1, a), {})
-console.log(`  OK    G1: ${g1.items.length} entries · parts ${JSON.stringify(byPart)} · shapes ${JSON.stringify(byShape)}`)
+for (const g of Object.values(production)) {
+  const byPart = g.items.reduce((a, i) => (a[i.part] = (a[i.part] || 0) + 1, a), {})
+  const byShape = g.items.reduce((a, i) => (a[i.shape] = (a[i.shape] || 0) + 1, a), {})
+  console.log(`  OK    ${g.id}: ${g.items.length} entries · parts ${JSON.stringify(byPart)} · shapes ${JSON.stringify(byShape)}`)
+}
 console.log(`  OK    audio model B — ${filesChecked} clip files named and present on disk`)
 console.log(`  OK    structure: ${STRUCTURE.length} containers declared, ${STRUCTURE.filter(s => production[s.id]).length} populated`)
 if (fixtureUnit) {
