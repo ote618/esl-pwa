@@ -29,24 +29,50 @@ export default defineConfig({
         ]
       },
       workbox: {
-        // Precache is an explicit allowlist, not a wildcard. A child on a
-        // Guatemalan mobile connection pays for every byte listed here at install.
-        //   - Group 1 audio only. G2-G6 (315 clips, ~3.5 MB) load on demand;
-        //     gating releases one group at a time, so the rest is dead weight.
-        //   - Images (webp) are never precached — 249 files, 6.1 MB.
-        //   - Only the two icons the manifest actually references. The other
-        //     eleven sizes ship for anything that asks for them, but nothing
-        //     currently does, and precaching them cost ~495 KB for nothing.
+        // TWO OPPOSITE POLICIES, deliberately.
+        //
+        //   SHELL — precached, and the worker takes over the moment a new one
+        //   installs (skipWaiting + clientsClaim), so a Friday release lands on
+        //   the next open without anyone bumping a version string. main.jsx
+        //   calls registration.update() on launch and on visibilitychange;
+        //   left alone, browsers re-check sw.js roughly daily.
+        //
+        //   MEDIA — cache-first, effectively forever. Filenames are frozen
+        //   entry IDs, so a file never changes under its own name.
+        //
+        // Precache is the SHELL ONLY. No .mp3 and no .webp: 385 clips and 249
+        // images are several MB before a child sees anything. They arrive on
+        // first use and are then cached for good.
+        //
+        // gating.current rides inside the hashed JS bundle, so it is shell, not
+        // media — the CacheFirst route below matches mp3/webp only and cannot
+        // catch it. If gating were ever moved to its own .json, it must NOT be
+        // given a cache-first route or the class freezes on Group 1 forever
+        // with nothing appearing broken.
         globPatterns: [
-          '**/*.{js,css,html,json}',
+          '**/*.{js,css,html}',
+          'manifest.webmanifest',
           'favicon.svg',
           'favicon.ico',
           'apple-touch-icon.png',
           'icons/icon-192.png',
-          'icons/icon-maskable-512.png',
-          'audio/group1/*.mp3'
+          'icons/icon-maskable-512.png'
         ],
-        maximumFileSizeToCacheInBytes: 8 * 1024 * 1024
+        cleanupOutdatedCaches: true,
+        clientsClaim: true,
+        skipWaiting: true,
+        runtimeCaching: [
+          {
+            urlPattern: ({ url }) => /\.(?:mp3|webp)$/i.test(url.pathname),
+            handler: 'CacheFirst',
+            options: {
+              cacheName: 'ecf-media',
+              expiration: { maxEntries: 800, maxAgeSeconds: 60 * 60 * 24 * 365 },
+              cacheableResponse: { statuses: [0, 200] },
+              rangeRequests: true
+            }
+          }
+        ]
       }
     })
   ]

@@ -57,6 +57,7 @@ export default function LetterScreen ({ letter, group, onBack }) {
                 <SoundCard
                   key={entry.id}
                   entry={entry}
+                  labelled={group.id === 'G1'}
                   playing={playing}
                   setPlaying={setPlaying}
                 />
@@ -71,7 +72,17 @@ export default function LetterScreen ({ letter, group, onBack }) {
 
 const WORD_ROLES = ['word1', 'word2']
 
-function SoundCard ({ entry, playing, setPlaying }) {
+/**
+ * `labelled` is G1-only on purpose.
+ *
+ * `variant` and `spanishGuide` are hand-authored curriculum for Group 1 and
+ * DERIVED for G2-G6 — spanishGuide from the recorded `says` value, variant by
+ * precedent — and both are awaiting curriculum sign-off. Showing a derived
+ * pronunciation guide to a child as if it were taught content is worse than
+ * showing none, so G2-G6 render unlabelled until someone signs them off.
+ * Those groups are gated shut today, so nothing is currently reachable anyway.
+ */
+function SoundCard ({ entry, labelled, playing, setPlaying }) {
   const active = typeof playing === 'string' && playing.startsWith(entry.id + ':')
   const at = active ? Number(playing.split(':')[1]) : null
 
@@ -90,6 +101,12 @@ function SoundCard ({ entry, playing, setPlaying }) {
 
   return (
     <div className={'sound' + (active ? ' is-playing' : '')}>
+      {labelled && (entry.variant || entry.spanishGuide) && (
+        <p className="soundlabel">
+          <span>{entry.variant ? `${entry.label} ${entry.variant}` : entry.label}</span>
+          {entry.spanishGuide && <span className="guide">{entry.spanishGuide}</span>}
+        </p>
+      )}
       <button
         className={'speaker' + (at === 0 ? ' is-playing' : '')}
         aria-label="Escuchar el sonido y sus palabras"

@@ -9,7 +9,7 @@
  */
 :root{
   --pitch:#1B4332; --grass:#2D6A4F; --chalk:#F1FAEE; --navy:#14213D;
-  --yellow:#FFD60A; --line:rgba(241,250,238,.34); --dim:rgba(241,250,238,.50);
+  --yellow:#FFD60A; --line:rgba(241,250,238,.42); --dim:rgba(241,250,238,.50);
   --studio:#0C1C16; --shadow:rgba(0,0,0,.40);
 }
 *{box-sizing:border-box;-webkit-tap-highlight-color:transparent}
@@ -38,12 +38,17 @@ body{margin:0;background:var(--studio);font-family:'Nunito',system-ui,sans-serif
   letter-spacing:.13em;color:var(--dim);margin-top:2px}
 .groupsec.locked .gname{color:var(--dim)}
 .enter{
+  /* min-height 44px is the touch-target floor, not decoration. At 320px the
+     padding alone rendered this at 38px — under the 44px minimum on the
+     narrowest phone the app targets, which is exactly where it matters. */
   background:var(--yellow);color:var(--navy);border:none;border-radius:999px;padding:10px 16px;
+  min-height:44px;display:inline-flex;align-items:center;justify-content:center;
   font-family:'Nunito',sans-serif;font-weight:800;font-size:13px;box-shadow:0 3px 0 #b39100;
   cursor:pointer;white-space:nowrap;transition:transform .07s,box-shadow .07s;
 }
 .enter:active{transform:translateY(2px);box-shadow:0 1px 0 #b39100}
 .enter.off{background:transparent;border:2px dashed var(--line);color:var(--dim);box-shadow:none;cursor:default}
+.enter.off{min-height:44px}
 .enter:focus-visible{outline:3px solid var(--chalk);outline-offset:3px}
 
 .grid{display:grid;grid-template-columns:repeat(4,1fr);gap:11px}
@@ -88,7 +93,7 @@ body{margin:0;background:var(--studio);font-family:'Nunito',system-ui,sans-serif
 .seclabel{font-size:11.5px;font-weight:800;letter-spacing:.12em;text-transform:uppercase;color:var(--dim);margin:24px 0 11px}
 .sounds{display:flex;flex-direction:column;gap:13px}
 .sound{background:var(--grass);border:3px solid rgba(241,250,238,.18);border-radius:20px;padding:12px;
-  display:flex;align-items:center;gap:12px;box-shadow:0 4px 0 var(--shadow)}
+  display:flex;flex-wrap:wrap;align-items:center;gap:12px;box-shadow:0 4px 0 var(--shadow)}
 .sound.is-playing{border-color:var(--yellow)}
 .speaker{width:60px;height:60px;flex:none;border-radius:50%;background:var(--yellow);color:var(--navy);
   display:grid;place-items:center;border:none;cursor:pointer;box-shadow:0 3px 0 rgba(0,0,0,.30);
@@ -125,3 +130,14 @@ body{margin:0;background:var(--studio);font-family:'Nunito',system-ui,sans-serif
 .diag{display:none;background:#E63946;color:#fff;font-size:12.5px;font-weight:800;padding:9px 14px;text-align:center}
 .diag.on{display:block}
 @media (prefers-reduced-motion:reduce){*{animation:none!important;transition:none!important}}
+
+/* Sound-card label — which of a letter's sounds this is.
+   Without it, A shows two identical cards and a child cannot tell them apart.
+
+   flex-basis:100% puts it on its own line. Sharing the row with the speaker
+   and both words left ~40px per word at 320px, which truncated "apple" to
+   "ap…". A child who cannot read the word cannot use the word. */
+.sound .soundlabel{flex-basis:100%;display:flex;align-items:center;gap:8px;margin:0 0 2px;
+  font-family:'Baloo 2',system-ui,sans-serif;font-weight:700;font-size:15px;color:var(--chalk)}
+.sound .soundlabel .guide{background:var(--yellow);color:var(--navy);
+  border-radius:8px;padding:1px 8px;font-size:14px;font-weight:800}
