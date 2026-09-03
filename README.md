@@ -129,3 +129,38 @@ Tracked as `F-06` on story `P0-E1-S4`.
 
 Git-connected 2026-08-12. Pushes to `main` deploy to production automatically; the
 direct-upload path is retired.
+
+## Staging — test before production
+
+Production deploys itself from `main`. Nothing else reaches a child.
+
+Before merging, put a build on the public staging URL and open it on a real phone:
+
+```bash
+npm run deploy:staging
+```
+
+**https://esl-pwa-mockup.vercel.app** — public, no login, whatever was last pushed there.
+
+The flow:
+
+1. work on a branch, commit
+2. `npm run deploy:staging`
+3. open it on a handset — this is the only way to close the iOS first-tap audio
+   unlock, which no chat and no desktop browser can verify
+4. if it holds up, merge to `main`; production deploys itself
+
+Two things about staging worth knowing:
+
+- It is a **separate Vercel project** with no git connection, deployed by CLI.
+  That is deliberate. The `esl-pwa` project's own branch previews sit behind
+  Vercel Authentication and return 302 to anyone not signed in, which makes them
+  useless on a phone or for sending to someone else.
+- The project is still called `esl-pwa-mockup` because it used to serve the static
+  design mockup. Renaming it would change the URL, and a stable URL is the whole
+  point, so the name is stale on purpose.
+
+The script builds the data registry and the app, deploys, then curls six paths
+signed out — root, manifest, a Group 1 clip, a Group 6 clip, a space-bearing image
+path, and an icon. A deploy that reports success and serves 404s is the failure
+mode that actually happens, so it exits non-zero if any of them is not 200.

@@ -12,7 +12,8 @@
     "build:data:strict": "node scripts/build-registry.mjs --fixtures --require-manifest",
     "test:data": "node scripts/test-validators.mjs",
     "build:docs": "node scripts/build-docs.mjs",
-    "build:board": "node scripts/build-tracker.mjs"
+    "build:board": "node scripts/build-tracker.mjs",
+    "deploy:staging": "node scripts/deploy-staging.mjs"
   },
   "dependencies": {
     "react": "^18.3.1",
