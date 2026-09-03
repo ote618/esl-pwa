@@ -44,7 +44,8 @@ function run (mutate, flags = ['--fixtures']) {
     rmAudio:     n => fs.rmSync(path.join(tmp, 'public/audio/group1', n)),
     lookup:      () => JSON.parse(fs.readFileSync(path.join(tmp, 'data/images/image_lookup.json'), 'utf8')),
     setLookup:   d => fs.writeFileSync(path.join(tmp, 'data/images/image_lookup.json'), JSON.stringify(d, null, 1)),
-    rmImage:     n => fs.rmSync(path.join(tmp, 'public/img/Group 1 A-D', n))
+    rmImage:     n => fs.rmSync(path.join(tmp, 'public/img/Group 1 A-D', n)),
+    tmp
   }
   mutate(f)
 
@@ -95,8 +96,16 @@ const CASES = [
   ['V8  an empty clip filename fails (absent roles are omitted, not blank)', 'V8', f => {
     const d = f.clips(); d['U2-BA'].word2 = ''; f.setClips(d)
   }],
+  ['V1  a group entry table with no clip index fails (not a crash)', 'V1', f => {
+    fs.copyFileSync(path.join(f.tmp, 'data/group1_entries.json'), path.join(f.tmp, 'data/group9_entries.json'))
+  }],
   ['V9  a fixture ID reaching a production build fails', 'V9', f => {
-    f.setScript(f.script().replace('const production = { G1: g1 }', 'const production = { G1: g1, UF: buildFixtureUnit() }'))
+    // Anchored on validate(), not on the group loop — the loop changes shape
+    // whenever multi-group handling is touched, and a mutation that silently
+    // stops matching turns this test green for the wrong reason.
+    f.setScript(f.script().replace(
+      'validate(production, { productionBuild: true })',
+      'production.UF = buildFixtureUnit()\nvalidate(production, { productionBuild: true })'))
   }],
   ['V10 an entry with no declared part fails (no inferring part from the ID)', 'V10', f => {
     const d = f.entries(); d.entries[0].part = 'three'; f.setEntries(d)

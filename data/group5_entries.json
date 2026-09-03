@@ -1,0 +1,466 @@
+{
+  "_source": "Derived 2026-09-02 from src/data/group5_clips.json (entry IDs and shapes), data/images/IMAGE_MANIFEST.csv (words) and Spanish Recordings/CLIP_MANIFEST.csv (spanishGuide, from the 'says' column of each recorded sound clip). Group and part are DECLARED here, never parsed from the ID string — U2- and U3- are opaque frozen tokens per claude/MEMO_to_Master_ID_Convention.md.",
+  "_derived": "NOT hand-authored curriculum. 'spanishGuide' is the recorded 'says' value with surrounding slashes stripped. 'variant' is inferred by the Group 1 precedent: vowels with two sounds get corta/larga, consonants get fuerte/suave. Both fields need curriculum sign-off. No 'es', 'risk', 'cognate' or 'set' values are invented — they are absent, not guessed.",
+  "_joins": "Every entry must find a record in src/data/group5_clips.json and every clip record must be consumed, or the build fails. Every clip named must exist under public/audio/group5/.",
+  "group": {
+    "id": "G5",
+    "number": 5,
+    "name": "Q R S T",
+    "nameEs": "Grupo 5 — Q R S T",
+    "letters": [
+      "Q",
+      "R",
+      "S",
+      "T"
+    ],
+    "status": "confirmed",
+    "media": {
+      "video": {
+        "provider": "youtube",
+        "id": null,
+        "orientation": "landscape",
+        "aspect": "16:9"
+      },
+      "audio": {
+        "mode": "per-clip-file",
+        "dir": "/audio/group5/",
+        "ext": ".mp3"
+      },
+      "imageBase": "/img/Group 5 Q-T/"
+    }
+  },
+  "entries": [
+    {
+      "id": "LTR-Q-NAME",
+      "part": 1,
+      "shape": "name",
+      "label": "Q",
+      "letter": "Q",
+      "anchor": {
+        "type": "letra",
+        "phraseEs": "Esta es la letra ___"
+      },
+      "words": []
+    },
+    {
+      "id": "LTR-R-NAME",
+      "part": 1,
+      "shape": "name",
+      "label": "R",
+      "letter": "R",
+      "anchor": {
+        "type": "letra",
+        "phraseEs": "Esta es la letra ___"
+      },
+      "words": []
+    },
+    {
+      "id": "LTR-S-NAME",
+      "part": 1,
+      "shape": "name",
+      "label": "S",
+      "letter": "S",
+      "anchor": {
+        "type": "letra",
+        "phraseEs": "Esta es la letra ___"
+      },
+      "words": []
+    },
+    {
+      "id": "LTR-T-NAME",
+      "part": 1,
+      "shape": "name",
+      "label": "T",
+      "letter": "T",
+      "anchor": {
+        "type": "letra",
+        "phraseEs": "Esta es la letra ___"
+      },
+      "words": []
+    },
+    {
+      "id": "LTR-Q-S1",
+      "part": 2,
+      "shape": "sound",
+      "label": "Q",
+      "letter": "Q",
+      "spanishGuide": "kw",
+      "anchor": {
+        "type": "sonido",
+        "phraseEs": "La letra ___ tiene ___ sonido(s)"
+      },
+      "words": [
+        {
+          "text": "quick"
+        },
+        {
+          "text": "question"
+        }
+      ]
+    },
+    {
+      "id": "LTR-R-S1",
+      "part": 2,
+      "shape": "sound",
+      "label": "R",
+      "letter": "R",
+      "spanishGuide": "r",
+      "anchor": {
+        "type": "sonido",
+        "phraseEs": "La letra ___ tiene ___ sonido(s)"
+      },
+      "words": [
+        {
+          "text": "radio"
+        },
+        {
+          "text": "rain"
+        }
+      ]
+    },
+    {
+      "id": "LTR-S-S1",
+      "part": 2,
+      "shape": "sound",
+      "label": "S",
+      "letter": "S",
+      "spanishGuide": "s",
+      "anchor": {
+        "type": "sonido",
+        "phraseEs": "La letra ___ tiene ___ sonido(s)"
+      },
+      "words": [
+        {
+          "text": "sofa"
+        },
+        {
+          "text": "submarine"
+        }
+      ]
+    },
+    {
+      "id": "LTR-T-S1",
+      "part": 2,
+      "shape": "sound",
+      "label": "T",
+      "letter": "T",
+      "spanishGuide": "t",
+      "anchor": {
+        "type": "sonido",
+        "phraseEs": "La letra ___ tiene ___ sonido(s)"
+      },
+      "words": [
+        {
+          "text": "tomato"
+        },
+        {
+          "text": "table"
+        }
+      ]
+    },
+    {
+      "id": "U2-QU",
+      "part": 3,
+      "shape": "combination",
+      "label": "qu",
+      "letter": "Q",
+      "anchor": {
+        "type": "silaba",
+        "phraseEs": "Esta es la sílaba ___"
+      },
+      "words": [
+        {
+          "text": "queen"
+        },
+        {
+          "text": "quilt"
+        }
+      ]
+    },
+    {
+      "id": "U2-RA",
+      "part": 3,
+      "shape": "combination",
+      "label": "ra",
+      "letter": "R",
+      "anchor": {
+        "type": "silaba",
+        "phraseEs": "Esta es la sílaba ___"
+      },
+      "words": [
+        {
+          "text": "rabbit"
+        },
+        {
+          "text": "ranch"
+        }
+      ]
+    },
+    {
+      "id": "U2-RE",
+      "part": 3,
+      "shape": "combination",
+      "label": "re",
+      "letter": "R",
+      "anchor": {
+        "type": "silaba",
+        "phraseEs": "Esta es la sílaba ___"
+      },
+      "words": [
+        {
+          "text": "red"
+        },
+        {
+          "text": "restaurant"
+        }
+      ]
+    },
+    {
+      "id": "U2-RI",
+      "part": 3,
+      "shape": "combination",
+      "label": "ri",
+      "letter": "R",
+      "anchor": {
+        "type": "silaba",
+        "phraseEs": "Esta es la sílaba ___"
+      },
+      "words": [
+        {
+          "text": "ring"
+        },
+        {
+          "text": "rich"
+        }
+      ]
+    },
+    {
+      "id": "U2-RO",
+      "part": 3,
+      "shape": "combination",
+      "label": "ro",
+      "letter": "R",
+      "anchor": {
+        "type": "silaba",
+        "phraseEs": "Esta es la sílaba ___"
+      },
+      "words": [
+        {
+          "text": "rocket"
+        },
+        {
+          "text": "rock"
+        }
+      ]
+    },
+    {
+      "id": "U2-RU",
+      "part": 3,
+      "shape": "combination",
+      "label": "ru",
+      "letter": "R",
+      "anchor": {
+        "type": "silaba",
+        "phraseEs": "Esta es la sílaba ___"
+      },
+      "words": [
+        {
+          "text": "rug"
+        },
+        {
+          "text": "run"
+        }
+      ]
+    },
+    {
+      "id": "U2-SA",
+      "part": 3,
+      "shape": "combination",
+      "label": "sa",
+      "letter": "S",
+      "anchor": {
+        "type": "silaba",
+        "phraseEs": "Esta es la sílaba ___"
+      },
+      "words": [
+        {
+          "text": "sand"
+        },
+        {
+          "text": "salad"
+        }
+      ]
+    },
+    {
+      "id": "U2-SE",
+      "part": 3,
+      "shape": "combination",
+      "label": "se",
+      "letter": "S",
+      "anchor": {
+        "type": "silaba",
+        "phraseEs": "Esta es la sílaba ___"
+      },
+      "words": [
+        {
+          "text": "seven"
+        },
+        {
+          "text": "second"
+        }
+      ]
+    },
+    {
+      "id": "U2-SI",
+      "part": 3,
+      "shape": "combination",
+      "label": "si",
+      "letter": "S",
+      "anchor": {
+        "type": "silaba",
+        "phraseEs": "Esta es la sílaba ___"
+      },
+      "words": [
+        {
+          "text": "sister"
+        },
+        {
+          "text": "silver"
+        }
+      ]
+    },
+    {
+      "id": "U2-SO",
+      "part": 3,
+      "shape": "combination",
+      "label": "so",
+      "letter": "S",
+      "anchor": {
+        "type": "silaba",
+        "phraseEs": "Esta es la sílaba ___"
+      },
+      "words": [
+        {
+          "text": "sock"
+        },
+        {
+          "text": "soccer"
+        }
+      ]
+    },
+    {
+      "id": "U2-SU",
+      "part": 3,
+      "shape": "combination",
+      "label": "su",
+      "letter": "S",
+      "anchor": {
+        "type": "silaba",
+        "phraseEs": "Esta es la sílaba ___"
+      },
+      "words": [
+        {
+          "text": "sun"
+        },
+        {
+          "text": "summer"
+        }
+      ]
+    },
+    {
+      "id": "U2-TA",
+      "part": 3,
+      "shape": "combination",
+      "label": "ta",
+      "letter": "T",
+      "anchor": {
+        "type": "silaba",
+        "phraseEs": "Esta es la sílaba ___"
+      },
+      "words": [
+        {
+          "text": "tap"
+        },
+        {
+          "text": "taxi"
+        }
+      ]
+    },
+    {
+      "id": "U2-TE",
+      "part": 3,
+      "shape": "combination",
+      "label": "te",
+      "letter": "T",
+      "anchor": {
+        "type": "silaba",
+        "phraseEs": "Esta es la sílaba ___"
+      },
+      "words": [
+        {
+          "text": "ten"
+        },
+        {
+          "text": "telephone"
+        }
+      ]
+    },
+    {
+      "id": "U2-TI",
+      "part": 3,
+      "shape": "combination",
+      "label": "ti",
+      "letter": "T",
+      "anchor": {
+        "type": "silaba",
+        "phraseEs": "Esta es la sílaba ___"
+      },
+      "words": [
+        {
+          "text": "tickle"
+        },
+        {
+          "text": "ticket"
+        }
+      ]
+    },
+    {
+      "id": "U2-TO",
+      "part": 3,
+      "shape": "combination",
+      "label": "to",
+      "letter": "T",
+      "anchor": {
+        "type": "silaba",
+        "phraseEs": "Esta es la sílaba ___"
+      },
+      "words": [
+        {
+          "text": "top"
+        },
+        {
+          "text": "toss"
+        }
+      ]
+    },
+    {
+      "id": "U2-TU",
+      "part": 3,
+      "shape": "combination",
+      "label": "tu",
+      "letter": "T",
+      "anchor": {
+        "type": "silaba",
+        "phraseEs": "Esta es la sílaba ___"
+      },
+      "words": [
+        {
+          "text": "tub"
+        },
+        {
+          "text": "tunnel"
+        }
+      ]
+    }
+  ]
+}

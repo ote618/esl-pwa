@@ -1,0 +1,503 @@
+{
+  "_source": "Derived 2026-09-02 from src/data/group2_clips.json (entry IDs and shapes), data/images/IMAGE_MANIFEST.csv (words) and Spanish Recordings/CLIP_MANIFEST.csv (spanishGuide, from the 'says' column of each recorded sound clip). Group and part are DECLARED here, never parsed from the ID string — U2- and U3- are opaque frozen tokens per claude/MEMO_to_Master_ID_Convention.md.",
+  "_derived": "NOT hand-authored curriculum. 'spanishGuide' is the recorded 'says' value with surrounding slashes stripped. 'variant' is inferred by the Group 1 precedent: vowels with two sounds get corta/larga, consonants get fuerte/suave. Both fields need curriculum sign-off. No 'es', 'risk', 'cognate' or 'set' values are invented — they are absent, not guessed.",
+  "_joins": "Every entry must find a record in src/data/group2_clips.json and every clip record must be consumed, or the build fails. Every clip named must exist under public/audio/group2/.",
+  "group": {
+    "id": "G2",
+    "number": 2,
+    "name": "E F G H",
+    "nameEs": "Grupo 2 — E F G H",
+    "letters": [
+      "E",
+      "F",
+      "G",
+      "H"
+    ],
+    "status": "confirmed",
+    "media": {
+      "video": {
+        "provider": "youtube",
+        "id": null,
+        "orientation": "landscape",
+        "aspect": "16:9"
+      },
+      "audio": {
+        "mode": "per-clip-file",
+        "dir": "/audio/group2/",
+        "ext": ".mp3"
+      },
+      "imageBase": "/img/Group 2 E-H/"
+    }
+  },
+  "entries": [
+    {
+      "id": "LTR-E-NAME",
+      "part": 1,
+      "shape": "name",
+      "label": "E",
+      "letter": "E",
+      "anchor": {
+        "type": "letra",
+        "phraseEs": "Esta es la letra ___"
+      },
+      "words": []
+    },
+    {
+      "id": "LTR-F-NAME",
+      "part": 1,
+      "shape": "name",
+      "label": "F",
+      "letter": "F",
+      "anchor": {
+        "type": "letra",
+        "phraseEs": "Esta es la letra ___"
+      },
+      "words": []
+    },
+    {
+      "id": "LTR-G-NAME",
+      "part": 1,
+      "shape": "name",
+      "label": "G",
+      "letter": "G",
+      "anchor": {
+        "type": "letra",
+        "phraseEs": "Esta es la letra ___"
+      },
+      "words": []
+    },
+    {
+      "id": "LTR-H-NAME",
+      "part": 1,
+      "shape": "name",
+      "label": "H",
+      "letter": "H",
+      "anchor": {
+        "type": "letra",
+        "phraseEs": "Esta es la letra ___"
+      },
+      "words": []
+    },
+    {
+      "id": "LTR-E-S1",
+      "part": 2,
+      "shape": "sound",
+      "label": "E",
+      "letter": "E",
+      "variant": "corta",
+      "spanishGuide": "e",
+      "anchor": {
+        "type": "sonido",
+        "phraseEs": "La letra ___ tiene ___ sonido(s)"
+      },
+      "words": [
+        {
+          "text": "elephant"
+        },
+        {
+          "text": "elbow"
+        }
+      ]
+    },
+    {
+      "id": "LTR-E-S2",
+      "part": 2,
+      "shape": "sound",
+      "label": "E",
+      "letter": "E",
+      "variant": "larga",
+      "spanishGuide": "i",
+      "anchor": {
+        "type": "sonido",
+        "phraseEs": "La letra ___ tiene ___ sonido(s)"
+      },
+      "words": [
+        {
+          "text": "eat"
+        },
+        {
+          "text": "eagle"
+        }
+      ]
+    },
+    {
+      "id": "LTR-F-S1",
+      "part": 2,
+      "shape": "sound",
+      "label": "F",
+      "letter": "F",
+      "spanishGuide": "f",
+      "anchor": {
+        "type": "sonido",
+        "phraseEs": "La letra ___ tiene ___ sonido(s)"
+      },
+      "words": [
+        {
+          "text": "flower"
+        },
+        {
+          "text": "face"
+        }
+      ]
+    },
+    {
+      "id": "LTR-G-S1",
+      "part": 2,
+      "shape": "sound",
+      "label": "G",
+      "letter": "G",
+      "variant": "fuerte",
+      "spanishGuide": "g",
+      "anchor": {
+        "type": "sonido",
+        "phraseEs": "La letra ___ tiene ___ sonido(s)"
+      },
+      "words": [
+        {
+          "text": "gorilla"
+        },
+        {
+          "text": "goat"
+        }
+      ]
+    },
+    {
+      "id": "LTR-G-S2",
+      "part": 2,
+      "shape": "sound",
+      "label": "G",
+      "letter": "G",
+      "variant": "suave",
+      "spanishGuide": "y",
+      "anchor": {
+        "type": "sonido",
+        "phraseEs": "La letra ___ tiene ___ sonido(s)"
+      },
+      "words": [
+        {
+          "text": "giant"
+        },
+        {
+          "text": "giraffe"
+        }
+      ]
+    },
+    {
+      "id": "LTR-H-S1",
+      "part": 2,
+      "shape": "sound",
+      "label": "H",
+      "letter": "H",
+      "spanishGuide": "h",
+      "anchor": {
+        "type": "sonido",
+        "phraseEs": "La letra ___ tiene ___ sonido(s)"
+      },
+      "words": [
+        {
+          "text": "hotel"
+        },
+        {
+          "text": "human"
+        }
+      ]
+    },
+    {
+      "id": "U2-FA",
+      "part": 3,
+      "shape": "combination",
+      "label": "fa",
+      "letter": "F",
+      "anchor": {
+        "type": "silaba",
+        "phraseEs": "Esta es la sílaba ___"
+      },
+      "words": [
+        {
+          "text": "fan"
+        },
+        {
+          "text": "family"
+        }
+      ]
+    },
+    {
+      "id": "U2-FE",
+      "part": 3,
+      "shape": "combination",
+      "label": "fe",
+      "letter": "F",
+      "anchor": {
+        "type": "silaba",
+        "phraseEs": "Esta es la sílaba ___"
+      },
+      "words": [
+        {
+          "text": "fence"
+        },
+        {
+          "text": "festival"
+        }
+      ]
+    },
+    {
+      "id": "U2-FI",
+      "part": 3,
+      "shape": "combination",
+      "label": "fi",
+      "letter": "F",
+      "anchor": {
+        "type": "silaba",
+        "phraseEs": "Esta es la sílaba ___"
+      },
+      "words": [
+        {
+          "text": "fish"
+        },
+        {
+          "text": "finger"
+        }
+      ]
+    },
+    {
+      "id": "U2-FO",
+      "part": 3,
+      "shape": "combination",
+      "label": "fo",
+      "letter": "F",
+      "anchor": {
+        "type": "silaba",
+        "phraseEs": "Esta es la sílaba ___"
+      },
+      "words": [
+        {
+          "text": "fog"
+        },
+        {
+          "text": "fossil"
+        }
+      ]
+    },
+    {
+      "id": "U2-FU",
+      "part": 3,
+      "shape": "combination",
+      "label": "fu",
+      "letter": "F",
+      "anchor": {
+        "type": "silaba",
+        "phraseEs": "Esta es la sílaba ___"
+      },
+      "words": [
+        {
+          "text": "fun"
+        },
+        {
+          "text": "fuzzy"
+        }
+      ]
+    },
+    {
+      "id": "U2-GA",
+      "part": 3,
+      "shape": "combination",
+      "label": "ga",
+      "letter": "G",
+      "anchor": {
+        "type": "silaba",
+        "phraseEs": "Esta es la sílaba ___"
+      },
+      "words": [
+        {
+          "text": "gas"
+        },
+        {
+          "text": "galaxy"
+        }
+      ]
+    },
+    {
+      "id": "U2-GE",
+      "part": 3,
+      "shape": "combination",
+      "label": "ge",
+      "letter": "G",
+      "anchor": {
+        "type": "silaba",
+        "phraseEs": "Esta es la sílaba ___"
+      },
+      "words": [
+        {
+          "text": "gem"
+        },
+        {
+          "text": "gel"
+        }
+      ]
+    },
+    {
+      "id": "U2-GI",
+      "part": 3,
+      "shape": "combination",
+      "label": "gi",
+      "letter": "G",
+      "anchor": {
+        "type": "silaba",
+        "phraseEs": "Esta es la sílaba ___"
+      },
+      "words": [
+        {
+          "text": "ginger"
+        },
+        {
+          "text": "giraffe"
+        }
+      ]
+    },
+    {
+      "id": "U2-GO",
+      "part": 3,
+      "shape": "combination",
+      "label": "go",
+      "letter": "G",
+      "anchor": {
+        "type": "silaba",
+        "phraseEs": "Esta es la sílaba ___"
+      },
+      "words": [
+        {
+          "text": "golf"
+        },
+        {
+          "text": "goal"
+        }
+      ]
+    },
+    {
+      "id": "U2-GU",
+      "part": 3,
+      "shape": "combination",
+      "label": "gu",
+      "letter": "G",
+      "anchor": {
+        "type": "silaba",
+        "phraseEs": "Esta es la sílaba ___"
+      },
+      "words": [
+        {
+          "text": "gum"
+        },
+        {
+          "text": "gull"
+        }
+      ]
+    },
+    {
+      "id": "U2-HA",
+      "part": 3,
+      "shape": "combination",
+      "label": "ha",
+      "letter": "H",
+      "anchor": {
+        "type": "silaba",
+        "phraseEs": "Esta es la sílaba ___"
+      },
+      "words": [
+        {
+          "text": "hat"
+        },
+        {
+          "text": "hammock"
+        }
+      ]
+    },
+    {
+      "id": "U2-HE",
+      "part": 3,
+      "shape": "combination",
+      "label": "he",
+      "letter": "H",
+      "anchor": {
+        "type": "silaba",
+        "phraseEs": "Esta es la sílaba ___"
+      },
+      "words": [
+        {
+          "text": "hen"
+        },
+        {
+          "text": "helicopter"
+        }
+      ]
+    },
+    {
+      "id": "U2-HI",
+      "part": 3,
+      "shape": "combination",
+      "label": "hi",
+      "letter": "H",
+      "anchor": {
+        "type": "silaba",
+        "phraseEs": "Esta es la sílaba ___"
+      },
+      "words": [
+        {
+          "text": "hit"
+        },
+        {
+          "text": "hippopotamus"
+        }
+      ]
+    },
+    {
+      "id": "U2-HO",
+      "part": 3,
+      "shape": "combination",
+      "label": "ho",
+      "letter": "H",
+      "anchor": {
+        "type": "silaba",
+        "phraseEs": "Esta es la sílaba ___"
+      },
+      "words": [
+        {
+          "text": "hot"
+        },
+        {
+          "text": "hospital"
+        }
+      ]
+    },
+    {
+      "id": "U2-HU",
+      "part": 3,
+      "shape": "combination",
+      "label": "hu",
+      "letter": "H",
+      "anchor": {
+        "type": "silaba",
+        "phraseEs": "Esta es la sílaba ___"
+      },
+      "words": [
+        {
+          "text": "hug"
+        },
+        {
+          "text": "hut"
+        }
+      ]
+    },
+    {
+      "id": "U3-EGG",
+      "part": 3,
+      "shape": "word",
+      "label": "egg",
+      "letter": "E",
+      "anchor": {
+        "type": "palabra",
+        "phraseEs": "Esta es la palabra ___"
+      },
+      "words": []
+    }
+  ]
+}

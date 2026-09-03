@@ -1,0 +1,464 @@
+{
+  "_source": "Derived 2026-09-02 from src/data/group6_clips.json (entry IDs and shapes), data/images/IMAGE_MANIFEST.csv (words) and Spanish Recordings/CLIP_MANIFEST.csv (spanishGuide, from the 'says' column of each recorded sound clip). Group and part are DECLARED here, never parsed from the ID string — U2- and U3- are opaque frozen tokens per claude/MEMO_to_Master_ID_Convention.md.",
+  "_derived": "NOT hand-authored curriculum. 'spanishGuide' is the recorded 'says' value with surrounding slashes stripped. 'variant' is inferred by the Group 1 precedent: vowels with two sounds get corta/larga, consonants get fuerte/suave. Both fields need curriculum sign-off. No 'es', 'risk', 'cognate' or 'set' values are invented — they are absent, not guessed.",
+  "_joins": "Every entry must find a record in src/data/group6_clips.json and every clip record must be consumed, or the build fails. Every clip named must exist under public/audio/group6/.",
+  "group": {
+    "id": "G6",
+    "number": 6,
+    "name": "U V W X Y Z",
+    "nameEs": "Grupo 6 — U V W X Y Z",
+    "letters": [
+      "U",
+      "V",
+      "W",
+      "X",
+      "Y",
+      "Z"
+    ],
+    "status": "confirmed",
+    "media": {
+      "video": {
+        "provider": "youtube",
+        "id": null,
+        "orientation": "landscape",
+        "aspect": "16:9"
+      },
+      "audio": {
+        "mode": "per-clip-file",
+        "dir": "/audio/group6/",
+        "ext": ".mp3"
+      },
+      "imageBase": "/img/Group 6 U-Z/"
+    }
+  },
+  "entries": [
+    {
+      "id": "LTR-U-NAME",
+      "part": 1,
+      "shape": "name",
+      "label": "U",
+      "letter": "U",
+      "anchor": {
+        "type": "letra",
+        "phraseEs": "Esta es la letra ___"
+      },
+      "words": []
+    },
+    {
+      "id": "LTR-V-NAME",
+      "part": 1,
+      "shape": "name",
+      "label": "V",
+      "letter": "V",
+      "anchor": {
+        "type": "letra",
+        "phraseEs": "Esta es la letra ___"
+      },
+      "words": []
+    },
+    {
+      "id": "LTR-W-NAME",
+      "part": 1,
+      "shape": "name",
+      "label": "W",
+      "letter": "W",
+      "anchor": {
+        "type": "letra",
+        "phraseEs": "Esta es la letra ___"
+      },
+      "words": []
+    },
+    {
+      "id": "LTR-X-NAME",
+      "part": 1,
+      "shape": "name",
+      "label": "X",
+      "letter": "X",
+      "anchor": {
+        "type": "letra",
+        "phraseEs": "Esta es la letra ___"
+      },
+      "words": []
+    },
+    {
+      "id": "LTR-Y-NAME",
+      "part": 1,
+      "shape": "name",
+      "label": "Y",
+      "letter": "Y",
+      "anchor": {
+        "type": "letra",
+        "phraseEs": "Esta es la letra ___"
+      },
+      "words": []
+    },
+    {
+      "id": "LTR-Z-NAME",
+      "part": 1,
+      "shape": "name",
+      "label": "Z",
+      "letter": "Z",
+      "anchor": {
+        "type": "letra",
+        "phraseEs": "Esta es la letra ___"
+      },
+      "words": []
+    },
+    {
+      "id": "LTR-U-S1",
+      "part": 2,
+      "shape": "sound",
+      "label": "U",
+      "letter": "U",
+      "variant": "corta",
+      "spanishGuide": "a",
+      "anchor": {
+        "type": "sonido",
+        "phraseEs": "La letra ___ tiene ___ sonido(s)"
+      },
+      "words": [
+        {
+          "text": "uncle"
+        },
+        {
+          "text": "umbrella"
+        }
+      ]
+    },
+    {
+      "id": "LTR-U-S2",
+      "part": 2,
+      "shape": "sound",
+      "label": "U",
+      "letter": "U",
+      "variant": "larga",
+      "spanishGuide": "iu",
+      "anchor": {
+        "type": "sonido",
+        "phraseEs": "La letra ___ tiene ___ sonido(s)"
+      },
+      "words": [
+        {
+          "text": "uniform"
+        },
+        {
+          "text": "unicorn"
+        }
+      ]
+    },
+    {
+      "id": "LTR-V-S1",
+      "part": 2,
+      "shape": "sound",
+      "label": "V",
+      "letter": "V",
+      "spanishGuide": "v",
+      "anchor": {
+        "type": "sonido",
+        "phraseEs": "La letra ___ tiene ___ sonido(s)"
+      },
+      "words": [
+        {
+          "text": "violin"
+        },
+        {
+          "text": "volleyball"
+        }
+      ]
+    },
+    {
+      "id": "LTR-W-S1",
+      "part": 2,
+      "shape": "sound",
+      "label": "W",
+      "letter": "W",
+      "spanishGuide": "w",
+      "anchor": {
+        "type": "sonido",
+        "phraseEs": "La letra ___ tiene ___ sonido(s)"
+      },
+      "words": [
+        {
+          "text": "water"
+        },
+        {
+          "text": "window"
+        }
+      ]
+    },
+    {
+      "id": "LTR-X-S1",
+      "part": 2,
+      "shape": "sound",
+      "label": "X",
+      "letter": "X",
+      "spanishGuide": "ks",
+      "anchor": {
+        "type": "sonido",
+        "phraseEs": "La letra ___ tiene ___ sonido(s)"
+      },
+      "words": [
+        {
+          "text": "box"
+        },
+        {
+          "text": "fox"
+        }
+      ]
+    },
+    {
+      "id": "LTR-Y-S1",
+      "part": 2,
+      "shape": "sound",
+      "label": "Y",
+      "letter": "Y",
+      "spanishGuide": "y",
+      "anchor": {
+        "type": "sonido",
+        "phraseEs": "La letra ___ tiene ___ sonido(s)"
+      },
+      "words": [
+        {
+          "text": "yellow"
+        },
+        {
+          "text": "yogurt"
+        }
+      ]
+    },
+    {
+      "id": "LTR-Z-S1",
+      "part": 2,
+      "shape": "sound",
+      "label": "Z",
+      "letter": "Z",
+      "spanishGuide": "z",
+      "anchor": {
+        "type": "sonido",
+        "phraseEs": "La letra ___ tiene ___ sonido(s)"
+      },
+      "words": [
+        {
+          "text": "zebra"
+        },
+        {
+          "text": "zoo"
+        }
+      ]
+    },
+    {
+      "id": "U2-VA",
+      "part": 3,
+      "shape": "combination",
+      "label": "va",
+      "letter": "V",
+      "anchor": {
+        "type": "silaba",
+        "phraseEs": "Esta es la sílaba ___"
+      },
+      "words": [
+        {
+          "text": "van"
+        },
+        {
+          "text": "valley"
+        }
+      ]
+    },
+    {
+      "id": "U2-VE",
+      "part": 3,
+      "shape": "combination",
+      "label": "ve",
+      "letter": "V",
+      "anchor": {
+        "type": "silaba",
+        "phraseEs": "Esta es la sílaba ___"
+      },
+      "words": [
+        {
+          "text": "vest"
+        },
+        {
+          "text": "vegetables"
+        }
+      ]
+    },
+    {
+      "id": "U2-WA",
+      "part": 3,
+      "shape": "combination",
+      "label": "wa",
+      "letter": "W",
+      "anchor": {
+        "type": "silaba",
+        "phraseEs": "Esta es la sílaba ___"
+      },
+      "words": [
+        {
+          "text": "wag"
+        },
+        {
+          "text": "wagon"
+        }
+      ]
+    },
+    {
+      "id": "U2-WE",
+      "part": 3,
+      "shape": "combination",
+      "label": "we",
+      "letter": "W",
+      "anchor": {
+        "type": "silaba",
+        "phraseEs": "Esta es la sílaba ___"
+      },
+      "words": [
+        {
+          "text": "wet"
+        },
+        {
+          "text": "web"
+        }
+      ]
+    },
+    {
+      "id": "U2-WI",
+      "part": 3,
+      "shape": "combination",
+      "label": "wi",
+      "letter": "W",
+      "anchor": {
+        "type": "silaba",
+        "phraseEs": "Esta es la sílaba ___"
+      },
+      "words": [
+        {
+          "text": "wind"
+        },
+        {
+          "text": "winter"
+        }
+      ]
+    },
+    {
+      "id": "U2-WO",
+      "part": 3,
+      "shape": "combination",
+      "label": "wo",
+      "letter": "W",
+      "anchor": {
+        "type": "silaba",
+        "phraseEs": "Esta es la sílaba ___"
+      },
+      "words": [
+        {
+          "text": "won"
+        },
+        {
+          "text": "wonderful"
+        }
+      ]
+    },
+    {
+      "id": "U2-YA",
+      "part": 3,
+      "shape": "combination",
+      "label": "ya",
+      "letter": "Y",
+      "anchor": {
+        "type": "silaba",
+        "phraseEs": "Esta es la sílaba ___"
+      },
+      "words": [
+        {
+          "text": "yak"
+        },
+        {
+          "text": "yam"
+        }
+      ]
+    },
+    {
+      "id": "U2-YE",
+      "part": 3,
+      "shape": "combination",
+      "label": "ye",
+      "letter": "Y",
+      "anchor": {
+        "type": "silaba",
+        "phraseEs": "Esta es la sílaba ___"
+      },
+      "words": [
+        {
+          "text": "yes"
+        },
+        {
+          "text": "yell"
+        }
+      ]
+    },
+    {
+      "id": "U2-YU",
+      "part": 3,
+      "shape": "combination",
+      "label": "yu",
+      "letter": "Y",
+      "anchor": {
+        "type": "silaba",
+        "phraseEs": "Esta es la sílaba ___"
+      },
+      "words": [
+        {
+          "text": "young"
+        },
+        {
+          "text": "yummy"
+        }
+      ]
+    },
+    {
+      "id": "U2-ZI",
+      "part": 3,
+      "shape": "combination",
+      "label": "zi",
+      "letter": "Z",
+      "anchor": {
+        "type": "silaba",
+        "phraseEs": "Esta es la sílaba ___"
+      },
+      "words": [
+        {
+          "text": "zip"
+        },
+        {
+          "text": "zigzag"
+        }
+      ]
+    },
+    {
+      "id": "U3-UP",
+      "part": 3,
+      "shape": "word",
+      "label": "up",
+      "letter": "U",
+      "anchor": {
+        "type": "palabra",
+        "phraseEs": "Esta es la palabra ___"
+      },
+      "words": []
+    },
+    {
+      "id": "U3-US",
+      "part": 3,
+      "shape": "word",
+      "label": "us",
+      "letter": "U",
+      "anchor": {
+        "type": "palabra",
+        "phraseEs": "Esta es la palabra ___"
+      },
+      "words": []
+    }
+  ]
+}
