@@ -1,114 +1,114 @@
 {
   "LTR-Q-NAME": {
-    "sound": "LTR-Q-NAME_sound.mp3"
+    "sound": "LTR-Q-NAME_sound__Q_name.mp3"
   },
   "LTR-Q-S1": {
-    "sound": "LTR-Q-S1_sound.mp3",
-    "word1": "LTR-Q-S1_word1.mp3",
-    "word2": "LTR-Q-S1_word2.mp3"
-  },
-  "LTR-R-NAME": {
-    "sound": "LTR-R-NAME_sound.mp3"
-  },
-  "LTR-R-S1": {
-    "sound": "LTR-R-S1_sound.mp3",
-    "word1": "LTR-R-S1_word1.mp3",
-    "word2": "LTR-R-S1_word2.mp3"
-  },
-  "LTR-S-NAME": {
-    "sound": "LTR-S-NAME_sound.mp3"
-  },
-  "LTR-S-S1": {
-    "sound": "LTR-S-S1_sound.mp3",
-    "word1": "LTR-S-S1_word1.mp3",
-    "word2": "LTR-S-S1_word2.mp3"
-  },
-  "LTR-T-NAME": {
-    "sound": "LTR-T-NAME_sound.mp3"
-  },
-  "LTR-T-S1": {
-    "sound": "LTR-T-S1_sound.mp3",
-    "word1": "LTR-T-S1_word1.mp3",
-    "word2": "LTR-T-S1_word2.mp3"
+    "sound": "LTR-Q-S1_sound__Q_sound_kw.mp3",
+    "word1": "LTR-Q-S1_word1__Q_word_quick.mp3",
+    "word2": "LTR-Q-S1_word2__Q_word_question.mp3"
   },
   "U2-QU": {
-    "sound": "U2-QU_sound.mp3",
-    "word1": "U2-QU_word1.mp3",
-    "word2": "U2-QU_word2.mp3"
+    "sound": "U2-QU_sound__Q_syllable_qu.mp3",
+    "word1": "U2-QU_word1__Q_word_queen.mp3",
+    "word2": "U2-QU_word2__Q_word_quilt.mp3"
+  },
+  "LTR-R-NAME": {
+    "sound": "LTR-R-NAME_sound__R_name.mp3"
+  },
+  "LTR-R-S1": {
+    "sound": "LTR-R-S1_sound__R_sound_r.mp3",
+    "word1": "LTR-R-S1_word1__R_word_radio.mp3",
+    "word2": "LTR-R-S1_word2__R_word_rain.mp3"
   },
   "U2-RA": {
-    "sound": "U2-RA_sound.mp3",
-    "word1": "U2-RA_word1.mp3",
-    "word2": "U2-RA_word2.mp3"
+    "sound": "U2-RA_sound__R_syllable_ra.mp3",
+    "word1": "U2-RA_word1__R_word_rabbit.mp3",
+    "word2": "U2-RA_word2__R_word_ranch.mp3"
   },
   "U2-RE": {
-    "sound": "U2-RE_sound.mp3",
-    "word1": "U2-RE_word1.mp3",
-    "word2": "U2-RE_word2.mp3"
+    "sound": "U2-RE_sound__R_syllable_re.mp3",
+    "word1": "U2-RE_word1__R_word_red.mp3",
+    "word2": "U2-RE_word2__R_word_restaurant.mp3"
   },
   "U2-RI": {
-    "sound": "U2-RI_sound.mp3",
-    "word1": "U2-RI_word1.mp3",
-    "word2": "U2-RI_word2.mp3"
+    "sound": "U2-RI_sound__R_syllable_ri.mp3",
+    "word1": "U2-RI_word1__R_word_ring.mp3",
+    "word2": "U2-RI_word2__R_word_rich.mp3"
   },
   "U2-RO": {
-    "sound": "U2-RO_sound.mp3",
-    "word1": "U2-RO_word1.mp3",
-    "word2": "U2-RO_word2.mp3"
+    "sound": "U2-RO_sound__R_syllable_ro.mp3",
+    "word1": "U2-RO_word1__R_word_rocket.mp3",
+    "word2": "U2-RO_word2__R_word_rock.mp3"
   },
   "U2-RU": {
-    "sound": "U2-RU_sound.mp3",
-    "word1": "U2-RU_word1.mp3",
-    "word2": "U2-RU_word2.mp3"
+    "sound": "U2-RU_sound__R_syllable_ru.mp3",
+    "word1": "U2-RU_word1__R_word_rug.mp3",
+    "word2": "U2-RU_word2__R_word_run.mp3"
+  },
+  "LTR-S-NAME": {
+    "sound": "LTR-S-NAME_sound__S_name.mp3"
+  },
+  "LTR-S-S1": {
+    "sound": "LTR-S-S1_sound__S_sound_s.mp3",
+    "word1": "LTR-S-S1_word1__S_word_sofa.mp3",
+    "word2": "LTR-S-S1_word2__S_word_submarine.mp3"
   },
   "U2-SA": {
-    "sound": "U2-SA_sound.mp3",
-    "word1": "U2-SA_word1.mp3",
-    "word2": "U2-SA_word2.mp3"
+    "sound": "U2-SA_sound__S_syllable_sa.mp3",
+    "word1": "U2-SA_word1__S_word_sand.mp3",
+    "word2": "U2-SA_word2__S_word_salad.mp3"
   },
   "U2-SE": {
-    "sound": "U2-SE_sound.mp3",
-    "word1": "U2-SE_word1.mp3",
-    "word2": "U2-SE_word2.mp3"
+    "sound": "U2-SE_sound__S_syllable_se.mp3",
+    "word1": "U2-SE_word1__S_word_seven.mp3",
+    "word2": "U2-SE_word2__S_word_second.mp3"
   },
   "U2-SI": {
-    "sound": "U2-SI_sound.mp3",
-    "word1": "U2-SI_word1.mp3",
-    "word2": "U2-SI_word2.mp3"
+    "sound": "U2-SI_sound__S_syllable_si.mp3",
+    "word1": "U2-SI_word1__S_word_sister.mp3",
+    "word2": "U2-SI_word2__S_word_silver.mp3"
   },
   "U2-SO": {
-    "sound": "U2-SO_sound.mp3",
-    "word1": "U2-SO_word1.mp3",
-    "word2": "U2-SO_word2.mp3"
+    "sound": "U2-SO_sound__S_syllable_so.mp3",
+    "word1": "U2-SO_word1__S_word_sock.mp3",
+    "word2": "U2-SO_word2__S_word_soccer.mp3"
   },
   "U2-SU": {
-    "sound": "U2-SU_sound.mp3",
-    "word1": "U2-SU_word1.mp3",
-    "word2": "U2-SU_word2.mp3"
+    "sound": "U2-SU_sound__S_syllable_su.mp3",
+    "word1": "U2-SU_word1__S_word_sun.mp3",
+    "word2": "U2-SU_word2__S_word_summer.mp3"
+  },
+  "LTR-T-NAME": {
+    "sound": "LTR-T-NAME_sound__T_name.mp3"
+  },
+  "LTR-T-S1": {
+    "sound": "LTR-T-S1_sound__T_sound_t.mp3",
+    "word1": "LTR-T-S1_word1__T_word_tomato.mp3",
+    "word2": "LTR-T-S1_word2__T_word_table.mp3"
   },
   "U2-TA": {
-    "sound": "U2-TA_sound.mp3",
-    "word1": "U2-TA_word1.mp3",
-    "word2": "U2-TA_word2.mp3"
+    "sound": "U2-TA_sound__T_syllable_ta.mp3",
+    "word1": "U2-TA_word1__T_word_tap.mp3",
+    "word2": "U2-TA_word2__T_word_taxi.mp3"
   },
   "U2-TE": {
-    "sound": "U2-TE_sound.mp3",
-    "word1": "U2-TE_word1.mp3",
-    "word2": "U2-TE_word2.mp3"
+    "sound": "U2-TE_sound__T_syllable_te.mp3",
+    "word1": "U2-TE_word1__T_word_ten.mp3",
+    "word2": "U2-TE_word2__T_word_telephone.mp3"
   },
   "U2-TI": {
-    "sound": "U2-TI_sound.mp3",
-    "word1": "U2-TI_word1.mp3",
-    "word2": "U2-TI_word2.mp3"
+    "sound": "U2-TI_sound__T_syllable_ti.mp3",
+    "word1": "U2-TI_word1__T_word_tickle.mp3",
+    "word2": "U2-TI_word2__T_word_ticket.mp3"
   },
   "U2-TO": {
-    "sound": "U2-TO_sound.mp3",
-    "word1": "U2-TO_word1.mp3",
-    "word2": "U2-TO_word2.mp3"
+    "sound": "U2-TO_sound__T_syllable_to.mp3",
+    "word1": "U2-TO_word1__T_word_top.mp3",
+    "word2": "U2-TO_word2__T_word_toss.mp3"
   },
   "U2-TU": {
-    "sound": "U2-TU_sound.mp3",
-    "word1": "U2-TU_word1.mp3",
-    "word2": "U2-TU_word2.mp3"
+    "sound": "U2-TU_sound__T_syllable_tu.mp3",
+    "word1": "U2-TU_word1__T_word_tub.mp3",
+    "word2": "U2-TU_word2__T_word_tunnel.mp3"
   }
 }

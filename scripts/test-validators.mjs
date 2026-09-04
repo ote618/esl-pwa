@@ -119,8 +119,14 @@ const CASES = [
   ['V12 an .m4a filename fails (the regression that split data from audio)', 'V12', f => {
     const d = f.clips(); d['U2-CO'].sound = 'U2-CO_sound.m4a'; f.setClips(d)
   }],
+  ['V12 a bare <id>_<clip>.mp3 with no descriptor fails (the tail is part of the name)', 'V12', f => {
+    const d = f.clips(); d['U2-CO'].sound = 'U2-CO_sound.mp3'; f.setClips(d)
+  }],
+  ['V15 a word clip whose descriptor names a different word than the image fails', 'V15', f => {
+    const d = f.clips(); d['U2-BA'].word1 = 'U2-BA_word1__B_word_cat.mp3'; f.setClips(d)
+  }],
   ['V13 a clip named by the index but missing on disk fails', 'V13', f => {
-    f.rmAudio('U2-BA_word1.mp3')
+    f.rmAudio('U2-BA_word1__B_word_bat.mp3')
   }],
   ['V14 a word whose imageId is absent from the lookup fails', 'V14', f => {
     const d = f.lookup(); delete d.apple; f.setLookup(d)

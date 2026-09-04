@@ -2,7 +2,12 @@
 
 ## Audio model B — one file per clip
 
-Ratified 2026-08-18. Every clip is its own MP3 under `public/audio/group1/`.
+Ratified 2026-08-18. Every clip is its own MP3 under `public/audio/groupN/`, named
+`<entryId>_<role>__<descriptor>.mp3` (e.g. `U2-BA_word1__B_word_bat.mp3`). The ID and role
+are the join key (V12); a word clip's descriptor ends in the word it says, which is also the
+image's filename — `bat.webp` — and V15 fails the build if they disagree. The 385 clips were
+cut on 2026-09-03 from the single-session recording; `audio/AUDIO_MANIFEST.csv` records
+where each came from.
 Playback is "play this file". There are no cue points, no offsets, and nothing
 to seek. `clip(id, role)` returns a file or `null`; `null` is a normal answer.
 

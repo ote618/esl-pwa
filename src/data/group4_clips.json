@@ -1,120 +1,120 @@
 {
   "LTR-M-NAME": {
-    "sound": "LTR-M-NAME_sound.mp3"
+    "sound": "LTR-M-NAME_sound__M_name.mp3"
   },
   "LTR-M-S1": {
-    "sound": "LTR-M-S1_sound.mp3",
-    "word1": "LTR-M-S1_word1.mp3",
-    "word2": "LTR-M-S1_word2.mp3"
-  },
-  "LTR-N-NAME": {
-    "sound": "LTR-N-NAME_sound.mp3"
-  },
-  "LTR-N-S1": {
-    "sound": "LTR-N-S1_sound.mp3",
-    "word1": "LTR-N-S1_word1.mp3",
-    "word2": "LTR-N-S1_word2.mp3"
-  },
-  "LTR-O-NAME": {
-    "sound": "LTR-O-NAME_sound.mp3"
-  },
-  "LTR-O-S1": {
-    "sound": "LTR-O-S1_sound.mp3",
-    "word1": "LTR-O-S1_word1.mp3",
-    "word2": "LTR-O-S1_word2.mp3"
-  },
-  "LTR-O-S2": {
-    "sound": "LTR-O-S2_sound.mp3",
-    "word1": "LTR-O-S2_word1.mp3",
-    "word2": "LTR-O-S2_word2.mp3"
-  },
-  "LTR-P-NAME": {
-    "sound": "LTR-P-NAME_sound.mp3"
-  },
-  "LTR-P-S1": {
-    "sound": "LTR-P-S1_sound.mp3",
-    "word1": "LTR-P-S1_word1.mp3",
-    "word2": "LTR-P-S1_word2.mp3"
+    "sound": "LTR-M-S1_sound__M_sound_m.mp3",
+    "word1": "LTR-M-S1_word1__M_word_mango.mp3",
+    "word2": "LTR-M-S1_word2__M_word_moon.mp3"
   },
   "U2-MA": {
-    "sound": "U2-MA_sound.mp3",
-    "word1": "U2-MA_word1.mp3",
-    "word2": "U2-MA_word2.mp3"
+    "sound": "U2-MA_sound__M_syllable_ma.mp3",
+    "word1": "U2-MA_word1__M_word_map.mp3",
+    "word2": "U2-MA_word2__M_word_man.mp3"
   },
   "U2-ME": {
-    "sound": "U2-ME_sound.mp3",
-    "word1": "U2-ME_word1.mp3",
-    "word2": "U2-ME_word2.mp3"
+    "sound": "U2-ME_sound__M_syllable_me.mp3",
+    "word1": "U2-ME_word1__M_word_melon.mp3",
+    "word2": "U2-ME_word2__M_word_medal.mp3"
   },
   "U2-MI": {
-    "sound": "U2-MI_sound.mp3",
-    "word1": "U2-MI_word1.mp3",
-    "word2": "U2-MI_word2.mp3"
+    "sound": "U2-MI_sound__M_syllable_mi.mp3",
+    "word1": "U2-MI_word1__M_word_milk.mp3",
+    "word2": "U2-MI_word2__M_word_minute.mp3"
   },
   "U2-MO": {
-    "sound": "U2-MO_sound.mp3",
-    "word1": "U2-MO_word1.mp3",
-    "word2": "U2-MO_word2.mp3"
+    "sound": "U2-MO_sound__M_syllable_mo.mp3",
+    "word1": "U2-MO_word1__M_word_mop.mp3",
+    "word2": "U2-MO_word2__M_word_mom.mp3"
   },
   "U2-MU": {
-    "sound": "U2-MU_sound.mp3",
-    "word1": "U2-MU_word1.mp3",
-    "word2": "U2-MU_word2.mp3"
+    "sound": "U2-MU_sound__M_syllable_mu.mp3",
+    "word1": "U2-MU_word1__M_word_mud.mp3",
+    "word2": "U2-MU_word2__M_word_mug.mp3"
+  },
+  "LTR-N-NAME": {
+    "sound": "LTR-N-NAME_sound__N_name.mp3"
+  },
+  "LTR-N-S1": {
+    "sound": "LTR-N-S1_sound__N_sound_n.mp3",
+    "word1": "LTR-N-S1_word1__N_word_note.mp3",
+    "word2": "LTR-N-S1_word2__N_word_nose.mp3"
   },
   "U2-NA": {
-    "sound": "U2-NA_sound.mp3",
-    "word1": "U2-NA_word1.mp3",
-    "word2": "U2-NA_word2.mp3"
+    "sound": "U2-NA_sound__N_syllable_na.mp3",
+    "word1": "U2-NA_word1__N_word_nap.mp3",
+    "word2": "U2-NA_word2__N_word_napkin.mp3"
   },
   "U2-NE": {
-    "sound": "U2-NE_sound.mp3",
-    "word1": "U2-NE_word1.mp3",
-    "word2": "U2-NE_word2.mp3"
+    "sound": "U2-NE_sound__N_syllable_ne.mp3",
+    "word1": "U2-NE_word1__N_word_nest.mp3",
+    "word2": "U2-NE_word2__N_word_nectar.mp3"
   },
   "U2-NI": {
-    "sound": "U2-NI_sound.mp3",
-    "word1": "U2-NI_word1.mp3",
-    "word2": "U2-NI_word2.mp3"
+    "sound": "U2-NI_sound__N_syllable_ni.mp3",
+    "word1": "U2-NI_word1__N_word_nibble.mp3",
+    "word2": "U2-NI_word2__N_word_ninja.mp3"
   },
   "U2-NO": {
-    "sound": "U2-NO_sound.mp3",
-    "word1": "U2-NO_word1.mp3",
-    "word2": "U2-NO_word2.mp3"
+    "sound": "U2-NO_sound__N_syllable_no.mp3",
+    "word1": "U2-NO_word1__N_word_nod.mp3",
+    "word2": "U2-NO_word2__N_word_not.mp3"
   },
   "U2-NU": {
-    "sound": "U2-NU_sound.mp3",
-    "word1": "U2-NU_word1.mp3",
-    "word2": "U2-NU_word2.mp3"
+    "sound": "U2-NU_sound__N_syllable_nu.mp3",
+    "word1": "U2-NU_word1__N_word_nut.mp3",
+    "word2": "U2-NU_word2__N_word_number.mp3"
   },
-  "U2-PA": {
-    "sound": "U2-PA_sound.mp3",
-    "word1": "U2-PA_word1.mp3",
-    "word2": "U2-PA_word2.mp3"
+  "LTR-O-NAME": {
+    "sound": "LTR-O-NAME_sound__O_name.mp3"
   },
-  "U2-PE": {
-    "sound": "U2-PE_sound.mp3",
-    "word1": "U2-PE_word1.mp3",
-    "word2": "U2-PE_word2.mp3"
+  "LTR-O-S1": {
+    "sound": "LTR-O-S1_sound__O_sound_corta.mp3",
+    "word1": "LTR-O-S1_word1__O_word_octopus.mp3",
+    "word2": "LTR-O-S1_word2__O_word_office.mp3"
   },
-  "U2-PI": {
-    "sound": "U2-PI_sound.mp3",
-    "word1": "U2-PI_word1.mp3",
-    "word2": "U2-PI_word2.mp3"
-  },
-  "U2-PO": {
-    "sound": "U2-PO_sound.mp3",
-    "word1": "U2-PO_word1.mp3",
-    "word2": "U2-PO_word2.mp3"
-  },
-  "U2-PU": {
-    "sound": "U2-PU_sound.mp3",
-    "word1": "U2-PU_word1.mp3",
-    "word2": "U2-PU_word2.mp3"
+  "LTR-O-S2": {
+    "sound": "LTR-O-S2_sound__O_sound_larga.mp3",
+    "word1": "LTR-O-S2_word1__O_word_ocean.mp3",
+    "word2": "LTR-O-S2_word2__O_word_open.mp3"
   },
   "U3-ON": {
-    "sound": "U3-ON_sound.mp3"
+    "sound": "U3-ON_sound__O_word_on.mp3"
   },
   "U3-OX": {
-    "sound": "U3-OX_sound.mp3"
+    "sound": "U3-OX_sound__O_word_ox.mp3"
+  },
+  "LTR-P-NAME": {
+    "sound": "LTR-P-NAME_sound__P_name.mp3"
+  },
+  "LTR-P-S1": {
+    "sound": "LTR-P-S1_sound__P_sound_p.mp3",
+    "word1": "LTR-P-S1_word1__P_word_piano.mp3",
+    "word2": "LTR-P-S1_word2__P_word_pig.mp3"
+  },
+  "U2-PA": {
+    "sound": "U2-PA_sound__P_syllable_pa.mp3",
+    "word1": "U2-PA_word1__P_word_pan.mp3",
+    "word2": "U2-PA_word2__P_word_palace.mp3"
+  },
+  "U2-PE": {
+    "sound": "U2-PE_sound__P_syllable_pe.mp3",
+    "word1": "U2-PE_word1__P_word_pen.mp3",
+    "word2": "U2-PE_word2__P_word_penguin.mp3"
+  },
+  "U2-PI": {
+    "sound": "U2-PI_sound__P_syllable_pi.mp3",
+    "word1": "U2-PI_word1__P_word_picture.mp3",
+    "word2": "U2-PI_word2__P_word_picnic.mp3"
+  },
+  "U2-PO": {
+    "sound": "U2-PO_sound__P_syllable_po.mp3",
+    "word1": "U2-PO_word1__P_word_pot.mp3",
+    "word2": "U2-PO_word2__P_word_popcorn.mp3"
+  },
+  "U2-PU": {
+    "sound": "U2-PU_sound__P_syllable_pu.mp3",
+    "word1": "U2-PU_word1__P_word_puppy.mp3",
+    "word2": "U2-PU_word2__P_word_pumpkin.mp3"
   }
 }

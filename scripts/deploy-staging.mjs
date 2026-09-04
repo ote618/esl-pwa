@@ -67,8 +67,8 @@ fs.rmSync(tmp, { recursive: true, force: true })
 
 /* A deploy that reports success and serves a 404 is the failure mode that
  * matters. Check the things a child actually loads, not just the root. */
-const probes = ['/', '/manifest.webmanifest', '/audio/group1/LTR-A-NAME_sound.mp3',
-  '/audio/group6/LTR-Z-S1_sound.mp3', '/img/Group%201%20A-D/apple.webp', '/icons/icon-192.png']
+const probes = ['/', '/manifest.webmanifest', '/audio/group1/LTR-A-NAME_sound__A_name.mp3',
+  '/audio/group6/LTR-Z-S1_sound__Z_sound_z.mp3', '/img/Group%201%20A-D/apple.webp', '/icons/icon-192.png']
 console.log('\n  verifying (signed out):')
 let bad = 0
 for (const p of probes) {

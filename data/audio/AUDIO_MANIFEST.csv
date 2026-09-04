@@ -1,0 +1,386 @@
+group,entry_id,role,says,file,path,image,source,src_start,src_end,duration
+G1,LTR-A-NAME,sound,A,LTR-A-NAME_sound__A_name.mp3,audio/group1/LTR-A-NAME_sound__A_name.mp3,,master (Ingles con Futbol.mp3),5.70,6.37,0.67
+G1,LTR-A-S1,sound,"sonido de A — corta, suena «a»",LTR-A-S1_sound__A_sound_corta.mp3,audio/group1/LTR-A-S1_sound__A_sound_corta.mp3,,master (Ingles con Futbol.mp3),6.76,10.45,3.69
+G1,LTR-A-S1,word1,apple,LTR-A-S1_word1__A_word_apple.mp3,audio/group1/LTR-A-S1_word1__A_word_apple.mp3,img/Group 1 A-D/apple.webp,master (Ingles con Futbol.mp3),16.76,17.55,0.79
+G1,LTR-A-S1,word2,ant,LTR-A-S1_word2__A_word_ant.mp3,audio/group1/LTR-A-S1_word2__A_word_ant.mp3,img/Group 1 A-D/ant.webp,master (Ingles con Futbol.mp3),18.41,19.30,0.89
+G1,LTR-A-S2,sound,"sonido de A — larga, suena «ei»",LTR-A-S2_sound__A_sound_larga.mp3,audio/group1/LTR-A-S2_sound__A_sound_larga.mp3,,master (Ingles con Futbol.mp3),19.67,23.25,3.58
+G1,LTR-A-S2,word1,angel,LTR-A-S2_word1__A_word_angel.mp3,audio/group1/LTR-A-S2_word1__A_word_angel.mp3,img/Group 1 A-D/angel.webp,master (Ingles con Futbol.mp3),23.82,24.75,0.93
+G1,LTR-A-S2,word2,ape,LTR-A-S2_word2__A_word_ape.mp3,audio/group1/LTR-A-S2_word2__A_word_ape.mp3,img/Group 1 A-D/ape.webp,master (Ingles con Futbol.mp3),25.41,26.14,0.73
+G1,U3-AM,sound,am,U3-AM_sound__A_word_am.mp3,audio/group1/U3-AM_sound__A_word_am.mp3,,master (Ingles con Futbol.mp3),2.64,3.63,0.99
+G1,U3-AN,sound,an,U3-AN_sound__A_word_an.mp3,audio/group1/U3-AN_sound__A_word_an.mp3,,master (Ingles con Futbol.mp3),34.02,34.91,0.89
+G1,U3-AT,sound,at,U3-AT_sound__A_word_at.mp3,audio/group1/U3-AT_sound__A_word_at.mp3,,master (Ingles con Futbol.mp3),35.78,36.65,0.87
+G1,LTR-B-NAME,sound,B,LTR-B-NAME_sound__B_name.mp3,audio/group1/LTR-B-NAME_sound__B_name.mp3,,master (Ingles con Futbol.mp3),37.37,38.21,0.84
+G1,LTR-B-S1,sound,sonido de B — suena «b»,LTR-B-S1_sound__B_sound_b.mp3,audio/group1/LTR-B-S1_sound__B_sound_b.mp3,,master (Ingles con Futbol.mp3),38.58,41.62,3.04
+G1,LTR-B-S1,word1,banana,LTR-B-S1_word1__B_word_banana.mp3,audio/group1/LTR-B-S1_word1__B_word_banana.mp3,img/Group 1 A-D/banana.webp,master (Ingles con Futbol.mp3),42.54,43.55,1.01
+G1,LTR-B-S1,word2,ball,LTR-B-S1_word2__B_word_ball.mp3,audio/group1/LTR-B-S1_word2__B_word_ball.mp3,img/Group 1 A-D/ball.webp,master (Ingles con Futbol.mp3),44.25,45.12,0.87
+G1,U2-BA,sound,ba,U2-BA_sound__B_syllable_ba.mp3,audio/group1/U2-BA_sound__B_syllable_ba.mp3,,master (Ingles con Futbol.mp3),45.94,46.64,0.70
+G1,U2-BA,word1,bat,U2-BA_word1__B_word_bat.mp3,audio/group1/U2-BA_word1__B_word_bat.mp3,img/Group 1 A-D/bat.webp,master (Ingles con Futbol.mp3),47.34,48.26,0.92
+G1,U2-BA,word2,bag,U2-BA_word2__B_word_bag.mp3,audio/group1/U2-BA_word2__B_word_bag.mp3,img/Group 1 A-D/bag.webp,master (Ingles con Futbol.mp3),48.82,49.71,0.89
+G1,U2-BE,sound,be,U2-BE_sound__B_syllable_be.mp3,audio/group1/U2-BE_sound__B_syllable_be.mp3,,master (Ingles con Futbol.mp3),50.17,50.95,0.78
+G1,U2-BE,word1,bed,U2-BE_word1__B_word_bed.mp3,audio/group1/U2-BE_word1__B_word_bed.mp3,img/Group 1 A-D/bed.webp,master (Ingles con Futbol.mp3),51.28,52.08,0.80
+G1,U2-BE,word2,bell,U2-BE_word2__B_word_bell.mp3,audio/group1/U2-BE_word2__B_word_bell.mp3,img/Group 1 A-D/bell.webp,master (Ingles con Futbol.mp3),52.67,53.64,0.97
+G1,U2-BI,sound,bi,U2-BI_sound__B_syllable_bi.mp3,audio/group1/U2-BI_sound__B_syllable_bi.mp3,,master (Ingles con Futbol.mp3),53.97,54.70,0.73
+G1,U2-BI,word1,big,U2-BI_word1__B_word_big.mp3,audio/group1/U2-BI_word1__B_word_big.mp3,img/Group 1 A-D/big.webp,master (Ingles con Futbol.mp3),55.00,55.93,0.93
+G1,U2-BI,word2,bin,U2-BI_word2__B_word_bin.mp3,audio/group1/U2-BI_word2__B_word_bin.mp3,img/Group 1 A-D/bin.webp,master (Ingles con Futbol.mp3),56.35,57.14,0.79
+G1,U2-BO,sound,bo,U2-BO_sound__B_syllable_bo.mp3,audio/group1/U2-BO_sound__B_syllable_bo.mp3,,master (Ingles con Futbol.mp3),57.61,58.45,0.85
+G1,U2-BO,word1,bot,U2-BO_word1__B_word_bot.mp3,audio/group1/U2-BO_word1__B_word_bot.mp3,img/Group 1 A-D/bot.webp,master (Ingles con Futbol.mp3),58.52,59.44,0.92
+G1,U2-BO,word2,bottle,U2-BO_word2__B_word_bottle.mp3,audio/group1/U2-BO_word2__B_word_bottle.mp3,img/Group 1 A-D/bottle.webp,master (Ingles con Futbol.mp3),59.75,60.60,0.85
+G1,U2-BU,sound,bu,U2-BU_sound__B_syllable_bu.mp3,audio/group1/U2-BU_sound__B_syllable_bu.mp3,,master (Ingles con Futbol.mp3),60.99,61.84,0.85
+G1,U2-BU,word1,bus,U2-BU_word1__B_word_bus.mp3,audio/group1/U2-BU_word1__B_word_bus.mp3,img/Group 1 A-D/bus.webp,master (Ingles con Futbol.mp3),62.07,62.90,0.83
+G1,U2-BU,word2,bug,U2-BU_word2__B_word_bug.mp3,audio/group1/U2-BU_word2__B_word_bug.mp3,img/Group 1 A-D/bug.webp,master (Ingles con Futbol.mp3),63.28,63.94,0.66
+G1,LTR-C-NAME,sound,C,LTR-C-NAME_sound__C_name.mp3,audio/group1/LTR-C-NAME_sound__C_name.mp3,,master (Ingles con Futbol.mp3),64.78,65.65,0.87
+G1,LTR-C-S1,sound,"sonido de C — fuerte, suena «k»",LTR-C-S1_sound__C_sound_fuerte.mp3,audio/group1/LTR-C-S1_sound__C_sound_fuerte.mp3,,master (Ingles con Futbol.mp3),4.75,7.76,3.01
+G1,LTR-C-S1,word1,color,LTR-C-S1_word1__C_word_color.mp3,audio/group1/LTR-C-S1_word1__C_word_color.mp3,img/Group 1 A-D/color.webp,master (Ingles con Futbol.mp3),69.80,70.78,0.98
+G1,LTR-C-S1,word2,cat,LTR-C-S1_word2__C_word_cat.mp3,audio/group1/LTR-C-S1_word2__C_word_cat.mp3,img/Group 1 A-D/cat.webp,master (Ingles con Futbol.mp3),71.21,72.11,0.90
+G1,LTR-C-S2,sound,"sonido de C — suave, suena «s»",LTR-C-S2_sound__C_sound_suave.mp3,audio/group1/LTR-C-S2_sound__C_sound_suave.mp3,,master (Ingles con Futbol.mp3),8.43,11.99,3.56
+G1,LTR-C-S2,word1,cell,LTR-C-S2_word1__C_word_cell.mp3,audio/group1/LTR-C-S2_word1__C_word_cell.mp3,img/Group 1 A-D/cell.webp,master (Ingles con Futbol.mp3),77.05,78.20,1.15
+G1,LTR-C-S2,word2,city,LTR-C-S2_word2__C_word_city.mp3,audio/group1/LTR-C-S2_word2__C_word_city.mp3,img/Group 1 A-D/city.webp,master (Ingles con Futbol.mp3),78.57,79.64,1.07
+G1,U2-CA,sound,ca,U2-CA_sound__C_syllable_ca.mp3,audio/group1/U2-CA_sound__C_syllable_ca.mp3,,master (Ingles con Futbol.mp3),80.23,81.03,0.80
+G1,U2-CA,word1,cat,U2-CA_word1__C_word_cat.mp3,audio/group1/U2-CA_word1__C_word_cat.mp3,img/Group 1 A-D/cat.webp,master (Ingles con Futbol.mp3),81.72,82.75,1.03
+G1,U2-CA,word2,camera,U2-CA_word2__C_word_camera.mp3,audio/group1/U2-CA_word2__C_word_camera.mp3,img/Group 1 A-D/camera.webp,master (Ingles con Futbol.mp3),83.26,84.26,1.00
+G1,U2-CE,sound,ce,U2-CE_sound__C_syllable_ce.mp3,audio/group1/U2-CE_sound__C_syllable_ce.mp3,,master (Ingles con Futbol.mp3),84.36,85.27,0.91
+G1,U2-CE,word1,cell,U2-CE_word1__C_word_cell.mp3,audio/group1/U2-CE_word1__C_word_cell.mp3,img/Group 1 A-D/cell.webp,master (Ingles con Futbol.mp3),85.60,86.68,1.08
+G1,U2-CE,word2,center,U2-CE_word2__C_word_center.mp3,audio/group1/U2-CE_word2__C_word_center.mp3,img/Group 1 A-D/center.webp,master (Ingles con Futbol.mp3),87.03,88.03,1.00
+G1,U2-CI,sound,ci,U2-CI_sound__C_syllable_ci.mp3,audio/group1/U2-CI_sound__C_syllable_ci.mp3,,master (Ingles con Futbol.mp3),88.30,89.16,0.86
+G1,U2-CI,word1,city,U2-CI_word1__C_word_city.mp3,audio/group1/U2-CI_word1__C_word_city.mp3,img/Group 1 A-D/city.webp,master (Ingles con Futbol.mp3),89.33,90.39,1.06
+G1,U2-CI,word2,circus,U2-CI_word2__C_word_circus.mp3,audio/group1/U2-CI_word2__C_word_circus.mp3,img/Group 1 A-D/circus.webp,master (Ingles con Futbol.mp3),90.58,91.66,1.08
+G1,U2-CO,sound,co,U2-CO_sound__C_syllable_co.mp3,audio/group1/U2-CO_sound__C_syllable_co.mp3,,master (Ingles con Futbol.mp3),92.07,92.84,0.77
+G1,U2-CO,word1,comic,U2-CO_word1__C_word_comic.mp3,audio/group1/U2-CO_word1__C_word_comic.mp3,img/Group 1 A-D/comic.webp,master (Ingles con Futbol.mp3),93.25,94.04,0.79
+G1,U2-CO,word2,color,U2-CO_word2__C_word_color.mp3,audio/group1/U2-CO_word2__C_word_color.mp3,img/Group 1 A-D/color.webp,master (Ingles con Futbol.mp3),94.48,95.39,0.91
+G1,U2-CU,sound,cu,U2-CU_sound__C_syllable_cu.mp3,audio/group1/U2-CU_sound__C_syllable_cu.mp3,,master (Ingles con Futbol.mp3),675.66,676.45,0.79
+G1,U2-CU,word1,cup,U2-CU_word1__C_word_cup.mp3,audio/group1/U2-CU_word1__C_word_cup.mp3,img/Group 1 A-D/cup.webp,master (Ingles con Futbol.mp3),677.22,677.80,0.58
+G1,U2-CU,word2,cut,U2-CU_word2__C_word_cut.mp3,audio/group1/U2-CU_word2__C_word_cut.mp3,img/Group 1 A-D/cut.webp,master (Ingles con Futbol.mp3),678.88,679.64,0.76
+G1,LTR-D-NAME,sound,D,LTR-D-NAME_sound__D_name.mp3,audio/group1/LTR-D-NAME_sound__D_name.mp3,,master (Ingles con Futbol.mp3),99.25,100.06,0.81
+G1,LTR-D-S1,sound,sonido de D — suena «d»,LTR-D-S1_sound__D_sound_d.mp3,audio/group1/LTR-D-S1_sound__D_sound_d.mp3,,master (Ingles con Futbol.mp3),100.24,102.92,2.68
+G1,LTR-D-S1,word1,doctor,LTR-D-S1_word1__D_word_doctor.mp3,audio/group1/LTR-D-S1_word1__D_word_doctor.mp3,img/Group 1 A-D/doctor.webp,master (Ingles con Futbol.mp3),103.51,104.45,0.94
+G1,LTR-D-S1,word2,dog,LTR-D-S1_word2__D_word_dog.mp3,audio/group1/LTR-D-S1_word2__D_word_dog.mp3,img/Group 1 A-D/dog.webp,master (Ingles con Futbol.mp3),104.77,105.56,0.79
+G1,U2-DA,sound,da,U2-DA_sound__D_syllable_da.mp3,audio/group1/U2-DA_sound__D_syllable_da.mp3,,master (Ingles con Futbol.mp3),106.07,106.86,0.79
+G1,U2-DA,word1,dad,U2-DA_word1__D_word_dad.mp3,audio/group1/U2-DA_word1__D_word_dad.mp3,img/Group 1 A-D/dad.webp,master (Ingles con Futbol.mp3),107.00,107.89,0.89
+G1,U2-DA,word2,dance,U2-DA_word2__D_word_dance.mp3,audio/group1/U2-DA_word2__D_word_dance.mp3,img/Group 1 A-D/dance.webp,master (Ingles con Futbol.mp3),108.26,109.28,1.02
+G1,U2-DE,sound,de,U2-DE_sound__D_syllable_de.mp3,audio/group1/U2-DE_sound__D_syllable_de.mp3,,master (Ingles con Futbol.mp3),109.49,110.22,0.73
+G1,U2-DE,word1,desk,U2-DE_word1__D_word_desk.mp3,audio/group1/U2-DE_word1__D_word_desk.mp3,img/Group 1 A-D/desk.webp,master (Ingles con Futbol.mp3),110.27,111.05,0.78
+G1,U2-DE,word2,dentist,U2-DE_word2__D_word_dentist.mp3,audio/group1/U2-DE_word2__D_word_dentist.mp3,img/Group 1 A-D/dentist.webp,master (Ingles con Futbol.mp3),111.49,112.53,1.04
+G1,U2-DI,sound,di,U2-DI_sound__D_syllable_di.mp3,audio/group1/U2-DI_sound__D_syllable_di.mp3,,master (Ingles con Futbol.mp3),112.79,113.54,0.75
+G1,U2-DI,word1,dig,U2-DI_word1__D_word_dig.mp3,audio/group1/U2-DI_word1__D_word_dig.mp3,img/Group 1 A-D/dig.webp,master (Ingles con Futbol.mp3),113.58,114.45,0.87
+G1,U2-DI,word2,dictionary,U2-DI_word2__D_word_dictionary.mp3,audio/group1/U2-DI_word2__D_word_dictionary.mp3,img/Group 1 A-D/dictionary.webp,master (Ingles con Futbol.mp3),114.63,115.67,1.04
+G1,U2-DO,sound,do,U2-DO_sound__D_syllable_do.mp3,audio/group1/U2-DO_sound__D_syllable_do.mp3,,master (Ingles con Futbol.mp3),115.94,116.72,0.79
+G1,U2-DO,word1,dog,U2-DO_word1__D_word_dog.mp3,audio/group1/U2-DO_word1__D_word_dog.mp3,img/Group 1 A-D/dog.webp,master (Ingles con Futbol.mp3),116.72,117.63,0.91
+G1,U2-DO,word2,doctor,U2-DO_word2__D_word_doctor.mp3,audio/group1/U2-DO_word2__D_word_doctor.mp3,img/Group 1 A-D/doctor.webp,master (Ingles con Futbol.mp3),117.81,118.69,0.88
+G1,U2-DU,sound,du,U2-DU_sound__D_syllable_du.mp3,audio/group1/U2-DU_sound__D_syllable_du.mp3,,master (Ingles con Futbol.mp3),119.09,119.81,0.73
+G1,U2-DU,word1,duck,U2-DU_word1__D_word_duck.mp3,audio/group1/U2-DU_word1__D_word_duck.mp3,img/Group 1 A-D/duck.webp,master (Ingles con Futbol.mp3),119.81,120.61,0.80
+G1,U2-DU,word2,dust,U2-DU_word2__D_word_dust.mp3,audio/group1/U2-DU_word2__D_word_dust.mp3,img/Group 1 A-D/dust.webp,master (Ingles con Futbol.mp3),120.95,121.73,0.78
+G2,LTR-E-NAME,sound,E,LTR-E-NAME_sound__E_name.mp3,audio/group2/LTR-E-NAME_sound__E_name.mp3,,master (Ingles con Futbol.mp3),122.41,123.18,0.77
+G2,LTR-E-S1,sound,"sonido de E — corta, suena «e»",LTR-E-S1_sound__E_sound_corta.mp3,audio/group2/LTR-E-S1_sound__E_sound_corta.mp3,,master (Ingles con Futbol.mp3),123.23,126.79,3.56
+G2,LTR-E-S1,word1,elephant,LTR-E-S1_word1__E_word_elephant.mp3,audio/group2/LTR-E-S1_word1__E_word_elephant.mp3,img/Group 2 E-H/elephant.webp,master (Ingles con Futbol.mp3),127.35,128.23,0.88
+G2,LTR-E-S1,word2,elbow,LTR-E-S1_word2__E_word_elbow.mp3,audio/group2/LTR-E-S1_word2__E_word_elbow.mp3,img/Group 2 E-H/elbow.webp,master (Ingles con Futbol.mp3),128.56,129.41,0.85
+G2,LTR-E-S2,sound,"sonido de E — larga, suena «i»",LTR-E-S2_sound__E_sound_larga.mp3,audio/group2/LTR-E-S2_sound__E_sound_larga.mp3,,master (Ingles con Futbol.mp3),129.77,133.39,3.62
+G2,LTR-E-S2,word1,eat,LTR-E-S2_word1__E_word_eat.mp3,audio/group2/LTR-E-S2_word1__E_word_eat.mp3,img/Group 2 E-H/eat.webp,master (Ingles con Futbol.mp3),133.79,134.59,0.80
+G2,LTR-E-S2,word2,eagle,LTR-E-S2_word2__E_word_eagle.mp3,audio/group2/LTR-E-S2_word2__E_word_eagle.mp3,img/Group 2 E-H/eagle.webp,master (Ingles con Futbol.mp3),135.10,135.99,0.89
+G2,U3-EGG,sound,egg,U3-EGG_sound__E_word_egg.mp3,audio/group2/U3-EGG_sound__E_word_egg.mp3,,master (Ingles con Futbol.mp3),136.87,137.68,0.81
+G2,LTR-F-NAME,sound,F,LTR-F-NAME_sound__F_name.mp3,audio/group2/LTR-F-NAME_sound__F_name.mp3,,master (Ingles con Futbol.mp3),138.72,139.36,0.64
+G2,LTR-F-S1,sound,sonido de F — suena «f»,LTR-F-S1_sound__F_sound_f.mp3,audio/group2/LTR-F-S1_sound__F_sound_f.mp3,,retakes-3 (video 9),1.59,4.70,3.11
+G2,LTR-F-S1,word1,flower,LTR-F-S1_word1__F_word_flower.mp3,audio/group2/LTR-F-S1_word1__F_word_flower.mp3,img/Group 2 E-H/flower.webp,master (Ingles con Futbol.mp3),143.09,144.03,0.94
+G2,LTR-F-S1,word2,face,LTR-F-S1_word2__F_word_face.mp3,audio/group2/LTR-F-S1_word2__F_word_face.mp3,img/Group 2 E-H/face.webp,master (Ingles con Futbol.mp3),144.39,145.38,0.99
+G2,U2-FA,sound,fa,U2-FA_sound__F_syllable_fa.mp3,audio/group2/U2-FA_sound__F_syllable_fa.mp3,,master (Ingles con Futbol.mp3),145.92,146.59,0.67
+G2,U2-FA,word1,fan,U2-FA_word1__F_word_fan.mp3,audio/group2/U2-FA_word1__F_word_fan.mp3,img/Group 2 E-H/fan.webp,master (Ingles con Futbol.mp3),147.20,148.04,0.84
+G2,U2-FA,word2,family,U2-FA_word2__F_word_family.mp3,audio/group2/U2-FA_word2__F_word_family.mp3,img/Group 2 E-H/family.webp,master (Ingles con Futbol.mp3),148.46,149.31,0.85
+G2,U2-FE,sound,fe,U2-FE_sound__F_syllable_fe.mp3,audio/group2/U2-FE_sound__F_syllable_fe.mp3,,master (Ingles con Futbol.mp3),149.74,150.31,0.57
+G2,U2-FE,word1,fence,U2-FE_word1__F_word_fence.mp3,audio/group2/U2-FE_word1__F_word_fence.mp3,img/Group 2 E-H/fence.webp,master (Ingles con Futbol.mp3),150.80,151.64,0.84
+G2,U2-FE,word2,festival,U2-FE_word2__F_word_festival.mp3,audio/group2/U2-FE_word2__F_word_festival.mp3,img/Group 2 E-H/festival.webp,master (Ingles con Futbol.mp3),151.83,152.78,0.95
+G2,U2-FI,sound,fi,U2-FI_sound__F_syllable_fi.mp3,audio/group2/U2-FI_sound__F_syllable_fi.mp3,,master (Ingles con Futbol.mp3),153.20,153.86,0.66
+G2,U2-FI,word1,fish,U2-FI_word1__F_word_fish.mp3,audio/group2/U2-FI_word1__F_word_fish.mp3,img/Group 2 E-H/fish.webp,master (Ingles con Futbol.mp3),154.07,154.76,0.69
+G2,U2-FI,word2,finger,U2-FI_word2__F_word_finger.mp3,audio/group2/U2-FI_word2__F_word_finger.mp3,img/Group 2 E-H/finger.webp,master (Ingles con Futbol.mp3),15.38,16.39,1.01
+G2,U2-FO,sound,fo,U2-FO_sound__F_syllable_fo.mp3,audio/group2/U2-FO_sound__F_syllable_fo.mp3,,master (Ingles con Futbol.mp3),156.40,157.12,0.72
+G2,U2-FO,word1,fog,U2-FO_word1__F_word_fog.mp3,audio/group2/U2-FO_word1__F_word_fog.mp3,img/Group 2 E-H/fog.webp,master (Ingles con Futbol.mp3),157.31,157.84,0.54
+G2,U2-FO,word2,fossil,U2-FO_word2__F_word_fossil.mp3,audio/group2/U2-FO_word2__F_word_fossil.mp3,img/Group 2 E-H/fossil.webp,master (Ingles con Futbol.mp3),158.37,159.15,0.78
+G2,U2-FU,sound,fu,U2-FU_sound__F_syllable_fu.mp3,audio/group2/U2-FU_sound__F_syllable_fu.mp3,,master (Ingles con Futbol.mp3),159.73,160.48,0.75
+G2,U2-FU,word1,fun,U2-FU_word1__F_word_fun.mp3,audio/group2/U2-FU_word1__F_word_fun.mp3,img/Group 2 E-H/fun.webp,master (Ingles con Futbol.mp3),160.65,161.52,0.87
+G2,U2-FU,word2,fuzzy,U2-FU_word2__F_word_fuzzy.mp3,audio/group2/U2-FU_word2__F_word_fuzzy.mp3,img/Group 2 E-H/fuzzy.webp,master (Ingles con Futbol.mp3),161.75,162.54,0.79
+G2,LTR-G-NAME,sound,G,LTR-G-NAME_sound__G_name.mp3,audio/group2/LTR-G-NAME_sound__G_name.mp3,,master (Ingles con Futbol.mp3),163.10,163.97,0.87
+G2,LTR-G-S1,sound,"sonido de G — fuerte, suena «g»",LTR-G-S1_sound__G_sound_fuerte.mp3,audio/group2/LTR-G-S1_sound__G_sound_fuerte.mp3,,master (Ingles con Futbol.mp3),164.04,167.23,3.19
+G2,LTR-G-S1,word1,gorilla,LTR-G-S1_word1__G_word_gorilla.mp3,audio/group2/LTR-G-S1_word1__G_word_gorilla.mp3,img/Group 2 E-H/gorilla.webp,master (Ingles con Futbol.mp3),167.62,168.69,1.07
+G2,LTR-G-S1,word2,goat,LTR-G-S1_word2__G_word_goat.mp3,audio/group2/LTR-G-S1_word2__G_word_goat.mp3,img/Group 2 E-H/goat.webp,master (Ingles con Futbol.mp3),168.78,169.50,0.72
+G2,LTR-G-S2,sound,"sonido de G — suave, suena «y»",LTR-G-S2_sound__G_sound_suave.mp3,audio/group2/LTR-G-S2_sound__G_sound_suave.mp3,,master (Ingles con Futbol.mp3),169.77,172.98,3.21
+G2,LTR-G-S2,word1,giant,LTR-G-S2_word1__G_word_giant.mp3,audio/group2/LTR-G-S2_word1__G_word_giant.mp3,img/Group 2 E-H/giant.webp,master (Ingles con Futbol.mp3),173.13,174.02,0.89
+G2,LTR-G-S2,word2,giraffe,LTR-G-S2_word2__G_word_giraffe.mp3,audio/group2/LTR-G-S2_word2__G_word_giraffe.mp3,img/Group 2 E-H/giraffe.webp,master (Ingles con Futbol.mp3),174.17,175.09,0.92
+G2,U2-GA,sound,ga,U2-GA_sound__G_syllable_ga.mp3,audio/group2/U2-GA_sound__G_syllable_ga.mp3,,master (Ingles con Futbol.mp3),175.65,176.34,0.69
+G2,U2-GA,word1,gas,U2-GA_word1__G_word_gas.mp3,audio/group2/U2-GA_word1__G_word_gas.mp3,img/Group 2 E-H/gas.webp,master (Ingles con Futbol.mp3),176.40,177.38,0.99
+G2,U2-GA,word2,galaxy,U2-GA_word2__G_word_galaxy.mp3,audio/group2/U2-GA_word2__G_word_galaxy.mp3,img/Group 2 E-H/galaxy.webp,master (Ingles con Futbol.mp3),177.38,178.41,1.03
+G2,U2-GE,sound,ge,U2-GE_sound__G_syllable_ge.mp3,audio/group2/U2-GE_sound__G_syllable_ge.mp3,,master (Ingles con Futbol.mp3),21.64,22.41,0.77
+G2,U2-GE,word1,gem,U2-GE_word1__G_word_gem.mp3,audio/group2/U2-GE_word1__G_word_gem.mp3,img/Group 2 E-H/gem.webp,master (Ingles con Futbol.mp3),179.44,180.31,0.87
+G2,U2-GE,word2,gel,U2-GE_word2__G_word_gel.mp3,audio/group2/U2-GE_word2__G_word_gel.mp3,img/Group 2 E-H/gel.webp,master (Ingles con Futbol.mp3),180.37,181.28,0.91
+G2,U2-GI,sound,gi,U2-GI_sound__G_syllable_gi.mp3,audio/group2/U2-GI_sound__G_syllable_gi.mp3,,master (Ingles con Futbol.mp3),181.84,182.44,0.61
+G2,U2-GI,word1,ginger,U2-GI_word1__G_word_ginger.mp3,audio/group2/U2-GI_word1__G_word_ginger.mp3,img/Group 2 E-H/ginger.webp,master (Ingles con Futbol.mp3),182.44,183.36,0.92
+G2,U2-GI,word2,giraffe,U2-GI_word2__G_word_giraffe.mp3,audio/group2/U2-GI_word2__G_word_giraffe.mp3,img/Group 2 E-H/giraffe.webp,master (Ingles con Futbol.mp3),183.36,184.19,0.83
+G2,U2-GO,sound,go,U2-GO_sound__G_syllable_go.mp3,audio/group2/U2-GO_sound__G_syllable_go.mp3,,master (Ingles con Futbol.mp3),184.73,185.31,0.59
+G2,U2-GO,word1,golf,U2-GO_word1__G_word_golf.mp3,audio/group2/U2-GO_word1__G_word_golf.mp3,img/Group 2 E-H/golf.webp,master (Ingles con Futbol.mp3),185.31,186.20,0.89
+G2,U2-GO,word2,goal,U2-GO_word2__G_word_goal.mp3,audio/group2/U2-GO_word2__G_word_goal.mp3,img/Group 2 E-H/goal.webp,master (Ingles con Futbol.mp3),186.20,187.08,0.88
+G2,U2-GU,sound,gu,U2-GU_sound__G_syllable_gu.mp3,audio/group2/U2-GU_sound__G_syllable_gu.mp3,,master (Ingles con Futbol.mp3),187.66,188.25,0.59
+G2,U2-GU,word1,gum,U2-GU_word1__G_word_gum.mp3,audio/group2/U2-GU_word1__G_word_gum.mp3,img/Group 2 E-H/gum.webp,master (Ingles con Futbol.mp3),188.25,189.13,0.89
+G2,U2-GU,word2,gull,U2-GU_word2__G_word_gull.mp3,audio/group2/U2-GU_word2__G_word_gull.mp3,img/Group 2 E-H/gull.webp,master (Ingles con Futbol.mp3),23.83,24.84,1.01
+G2,LTR-H-NAME,sound,H,LTR-H-NAME_sound__H_name.mp3,audio/group2/LTR-H-NAME_sound__H_name.mp3,,master (Ingles con Futbol.mp3),190.63,191.51,0.88
+G2,LTR-H-S1,sound,sonido de H — suena «h»,LTR-H-S1_sound__H_sound_h.mp3,audio/group2/LTR-H-S1_sound__H_sound_h.mp3,,master (Ingles con Futbol.mp3),25.90,28.88,2.98
+G2,LTR-H-S1,word1,hotel,LTR-H-S1_word1__H_word_hotel.mp3,audio/group2/LTR-H-S1_word1__H_word_hotel.mp3,img/Group 2 E-H/hotel.webp,master (Ingles con Futbol.mp3),194.58,195.66,1.08
+G2,LTR-H-S1,word2,human,LTR-H-S1_word2__H_word_human.mp3,audio/group2/LTR-H-S1_word2__H_word_human.mp3,img/Group 2 E-H/human.webp,master (Ingles con Futbol.mp3),195.71,196.66,0.95
+G2,U2-HA,sound,ha,U2-HA_sound__H_syllable_ha.mp3,audio/group2/U2-HA_sound__H_syllable_ha.mp3,,master (Ingles con Futbol.mp3),197.09,197.60,0.51
+G2,U2-HA,word1,hat,U2-HA_word1__H_word_hat.mp3,audio/group2/U2-HA_word1__H_word_hat.mp3,img/Group 2 E-H/hat.webp,master (Ingles con Futbol.mp3),198.01,198.91,0.91
+G2,U2-HA,word2,hammock,U2-HA_word2__H_word_hammock.mp3,audio/group2/U2-HA_word2__H_word_hammock.mp3,img/Group 2 E-H/hammock.webp,master (Ingles con Futbol.mp3),198.95,199.84,0.89
+G2,U2-HE,sound,he,U2-HE_sound__H_syllable_he.mp3,audio/group2/U2-HE_sound__H_syllable_he.mp3,,master (Ingles con Futbol.mp3),205.04,205.70,0.66
+G2,U2-HE,word1,hen,U2-HE_word1__H_word_hen.mp3,audio/group2/U2-HE_word1__H_word_hen.mp3,img/Group 2 E-H/hen.webp,master (Ingles con Futbol.mp3),206.14,207.05,0.91
+G2,U2-HE,word2,helicopter,U2-HE_word2__H_word_helicopter.mp3,audio/group2/U2-HE_word2__H_word_helicopter.mp3,img/Group 2 E-H/helicopter.webp,master (Ingles con Futbol.mp3),207.14,208.18,1.04
+G2,U2-HI,sound,hi,U2-HI_sound__H_syllable_hi.mp3,audio/group2/U2-HI_sound__H_syllable_hi.mp3,,master (Ingles con Futbol.mp3),208.32,208.99,0.67
+G2,U2-HI,word1,hit,U2-HI_word1__H_word_hit.mp3,audio/group2/U2-HI_word1__H_word_hit.mp3,img/Group 2 E-H/hit.webp,master (Ingles con Futbol.mp3),209.20,210.16,0.96
+G2,U2-HI,word2,hippopotamus,U2-HI_word2__H_word_hippopotamus.mp3,audio/group2/U2-HI_word2__H_word_hippopotamus.mp3,img/Group 2 E-H/hippopotamus.webp,master (Ingles con Futbol.mp3),210.22,211.30,1.08
+G2,U2-HO,sound,ho,U2-HO_sound__H_syllable_ho.mp3,audio/group2/U2-HO_sound__H_syllable_ho.mp3,,master (Ingles con Futbol.mp3),604.22,604.97,0.75
+G2,U2-HO,word1,hot,U2-HO_word1__H_word_hot.mp3,audio/group2/U2-HO_word1__H_word_hot.mp3,img/Group 2 E-H/hot.webp,master (Ingles con Futbol.mp3),217.28,218.19,0.91
+G2,U2-HO,word2,hospital,U2-HO_word2__H_word_hospital.mp3,audio/group2/U2-HO_word2__H_word_hospital.mp3,img/Group 2 E-H/hospital.webp,master (Ingles con Futbol.mp3),605.69,606.75,1.06
+G2,U2-HU,sound,hu,U2-HU_sound__H_syllable_hu.mp3,audio/group2/U2-HU_sound__H_syllable_hu.mp3,,master (Ingles con Futbol.mp3),219.39,220.03,0.64
+G2,U2-HU,word1,hug,U2-HU_word1__H_word_hug.mp3,audio/group2/U2-HU_word1__H_word_hug.mp3,img/Group 2 E-H/hug.webp,master (Ingles con Futbol.mp3),220.17,221.01,0.84
+G2,U2-HU,word2,hut,U2-HU_word2__H_word_hut.mp3,audio/group2/U2-HU_word2__H_word_hut.mp3,img/Group 2 E-H/hut.webp,master (Ingles con Futbol.mp3),221.31,222.11,0.80
+G3,LTR-I-NAME,sound,I,LTR-I-NAME_sound__I_name.mp3,audio/group3/LTR-I-NAME_sound__I_name.mp3,,master (Ingles con Futbol.mp3),223.09,223.84,0.75
+G3,LTR-I-S1,sound,"sonido de I — corta, suena «i»",LTR-I-S1_sound__I_sound_corta.mp3,audio/group3/LTR-I-S1_sound__I_sound_corta.mp3,,master (Ingles con Futbol.mp3),224.34,227.70,3.36
+G3,LTR-I-S1,word1,insect,LTR-I-S1_word1__I_word_insect.mp3,audio/group3/LTR-I-S1_word1__I_word_insect.mp3,img/Group 3 I-L/insect.webp,master (Ingles con Futbol.mp3),228.45,229.43,0.98
+G3,LTR-I-S1,word2,igloo,LTR-I-S1_word2__I_word_igloo.mp3,audio/group3/LTR-I-S1_word2__I_word_igloo.mp3,img/Group 3 I-L/igloo.webp,master (Ingles con Futbol.mp3),229.51,230.28,0.77
+G3,LTR-I-S2,sound,"sonido de I — larga, suena «ai»",LTR-I-S2_sound__I_sound_larga.mp3,audio/group3/LTR-I-S2_sound__I_sound_larga.mp3,,master (Ingles con Futbol.mp3),45.19,48.58,3.39
+G3,LTR-I-S2,word1,island,LTR-I-S2_word1__I_word_island.mp3,audio/group3/LTR-I-S2_word1__I_word_island.mp3,img/Group 3 I-L/island.webp,master (Ingles con Futbol.mp3),234.56,235.42,0.86
+G3,LTR-I-S2,word2,ice,LTR-I-S2_word2__I_word_ice.mp3,audio/group3/LTR-I-S2_word2__I_word_ice.mp3,img/Group 3 I-L/ice.webp,master (Ingles con Futbol.mp3),235.78,236.69,0.91
+G3,U3-IF,sound,if,U3-IF_sound__I_word_if.mp3,audio/group3/U3-IF_sound__I_word_if.mp3,,master (Ingles con Futbol.mp3),237.65,238.18,0.53
+G3,U3-IN,sound,in,U3-IN_sound__I_word_in.mp3,audio/group3/U3-IN_sound__I_word_in.mp3,,master (Ingles con Futbol.mp3),239.51,240.14,0.63
+G3,U3-IT,sound,it,U3-IT_sound__I_word_it.mp3,audio/group3/U3-IT_sound__I_word_it.mp3,,master (Ingles con Futbol.mp3),241.25,242.02,0.77
+G3,LTR-J-NAME,sound,J,LTR-J-NAME_sound__J_name.mp3,audio/group3/LTR-J-NAME_sound__J_name.mp3,,master (Ingles con Futbol.mp3),242.92,243.87,0.95
+G3,LTR-J-S1,sound,sonido de J — suena «y»,LTR-J-S1_sound__J_sound_y.mp3,audio/group3/LTR-J-S1_sound__J_sound_y.mp3,,master (Ingles con Futbol.mp3),243.87,246.28,2.41
+G3,LTR-J-S1,word1,juice,LTR-J-S1_word1__J_word_juice.mp3,audio/group3/LTR-J-S1_word1__J_word_juice.mp3,img/Group 3 I-L/juice.webp,master (Ingles con Futbol.mp3),50.61,51.67,1.06
+G3,LTR-J-S1,word2,jump,LTR-J-S1_word2__J_word_jump.mp3,audio/group3/LTR-J-S1_word2__J_word_jump.mp3,img/Group 3 I-L/jump.webp,master (Ingles con Futbol.mp3),248.28,249.19,0.91
+G3,U2-JA,sound,ja,U2-JA_sound__J_syllable_ja.mp3,audio/group3/U2-JA_sound__J_syllable_ja.mp3,,master (Ingles con Futbol.mp3),249.20,250.03,0.83
+G3,U2-JA,word1,jam,U2-JA_word1__J_word_jam.mp3,audio/group3/U2-JA_word1__J_word_jam.mp3,img/Group 3 I-L/jam.webp,master (Ingles con Futbol.mp3),250.03,251.00,0.97
+G3,U2-JA,word2,jaguar,U2-JA_word2__J_word_jaguar.mp3,audio/group3/U2-JA_word2__J_word_jaguar.mp3,img/Group 3 I-L/jaguar.webp,master (Ingles con Futbol.mp3),251.00,252.29,1.29
+G3,U2-JE,sound,je,U2-JE_sound__J_syllable_je.mp3,audio/group3/U2-JE_sound__J_syllable_je.mp3,,master (Ingles con Futbol.mp3),252.39,253.06,0.67
+G3,U2-JE,word1,jelly,U2-JE_word1__J_word_jelly.mp3,audio/group3/U2-JE_word1__J_word_jelly.mp3,img/Group 3 I-L/jelly.webp,master (Ingles con Futbol.mp3),253.06,254.01,0.96
+G3,U2-JE,word2,jet,U2-JE_word2__J_word_jet.mp3,audio/group3/U2-JE_word2__J_word_jet.mp3,img/Group 3 I-L/jet.webp,master (Ingles con Futbol.mp3),52.44,53.36,0.92
+G3,U2-JI,sound,ji,U2-JI_sound__J_syllable_ji.mp3,audio/group3/U2-JI_sound__J_syllable_ji.mp3,,master (Ingles con Futbol.mp3),611.05,611.76,0.71
+G3,U2-JI,word1,jingle,U2-JI_word1__J_word_jingle.mp3,audio/group3/U2-JI_word1__J_word_jingle.mp3,img/Group 3 I-L/jingle.webp,master (Ingles con Futbol.mp3),255.88,256.90,1.02
+G3,U2-JI,word2,jigsaw,U2-JI_word2__J_word_jigsaw.mp3,audio/group3/U2-JI_word2__J_word_jigsaw.mp3,img/Group 3 I-L/jigsaw.webp,master (Ingles con Futbol.mp3),256.91,257.97,1.06
+G3,U2-JO,sound,jo,U2-JO_sound__J_syllable_jo.mp3,audio/group3/U2-JO_sound__J_syllable_jo.mp3,,master (Ingles con Futbol.mp3),607.77,608.54,0.77
+G3,U2-JO,word1,jog,U2-JO_word1__J_word_jog.mp3,audio/group3/U2-JO_word1__J_word_jog.mp3,img/Group 3 I-L/jog.webp,master (Ingles con Futbol.mp3),609.45,610.50,1.05
+G3,U2-JO,word2,job,U2-JO_word2__J_word_job.mp3,audio/group3/U2-JO_word2__J_word_job.mp3,img/Group 3 I-L/job.webp,master (Ingles con Futbol.mp3),261.28,262.20,0.92
+G3,U2-JU,sound,ju,U2-JU_sound__J_syllable_ju.mp3,audio/group3/U2-JU_sound__J_syllable_ju.mp3,,master (Ingles con Futbol.mp3),262.47,263.10,0.63
+G3,U2-JU,word1,jug,U2-JU_word1__J_word_jug.mp3,audio/group3/U2-JU_word1__J_word_jug.mp3,img/Group 3 I-L/jug.webp,master (Ingles con Futbol.mp3),263.11,264.04,0.93
+G3,U2-JU,word2,jungle,U2-JU_word2__J_word_jungle.mp3,audio/group3/U2-JU_word2__J_word_jungle.mp3,img/Group 3 I-L/jungle.webp,master (Ingles con Futbol.mp3),264.24,265.15,0.91
+G3,LTR-K-NAME,sound,K,LTR-K-NAME_sound__K_name.mp3,audio/group3/LTR-K-NAME_sound__K_name.mp3,,master (Ingles con Futbol.mp3),266.12,266.87,0.75
+G3,LTR-K-S1,sound,sonido de K — suena «k»,LTR-K-S1_sound__K_sound_k.mp3,audio/group3/LTR-K-S1_sound__K_sound_k.mp3,,master (Ingles con Futbol.mp3),267.38,269.68,2.30
+G3,LTR-K-S1,word1,kilo,LTR-K-S1_word1__K_word_kilo.mp3,audio/group3/LTR-K-S1_word1__K_word_kilo.mp3,img/Group 3 I-L/kilo.webp,master (Ingles con Futbol.mp3),270.26,271.25,0.99
+G3,LTR-K-S1,word2,key,LTR-K-S1_word2__K_word_key.mp3,audio/group3/LTR-K-S1_word2__K_word_key.mp3,img/Group 3 I-L/key.webp,master (Ingles con Futbol.mp3),271.39,272.25,0.86
+G3,U2-KE,sound,ke,U2-KE_sound__K_syllable_ke.mp3,audio/group3/U2-KE_sound__K_syllable_ke.mp3,,master (Ingles con Futbol.mp3),272.63,273.36,0.73
+G3,U2-KE,word1,kettle,U2-KE_word1__K_word_kettle.mp3,audio/group3/U2-KE_word1__K_word_kettle.mp3,img/Group 3 I-L/kettle.webp,master (Ingles con Futbol.mp3),680.64,681.44,0.80
+G3,U2-KE,word2,ketchup,U2-KE_word2__K_word_ketchup.mp3,audio/group3/U2-KE_word2__K_word_ketchup.mp3,img/Group 3 I-L/ketchup.webp,master (Ingles con Futbol.mp3),54.40,55.20,0.80
+G3,U2-KI,sound,ki,U2-KI_sound__K_syllable_ki.mp3,audio/group3/U2-KI_sound__K_syllable_ki.mp3,,master (Ingles con Futbol.mp3),276.42,277.05,0.63
+G3,U2-KI,word1,kid,U2-KI_word1__K_word_kid.mp3,audio/group3/U2-KI_word1__K_word_kid.mp3,img/Group 3 I-L/kid.webp,master (Ingles con Futbol.mp3),277.10,277.87,0.77
+G3,U2-KI,word2,kitten,U2-KI_word2__K_word_kitten.mp3,audio/group3/U2-KI_word2__K_word_kitten.mp3,img/Group 3 I-L/kitten.webp,master (Ingles con Futbol.mp3),278.16,279.08,0.92
+G3,LTR-L-NAME,sound,L,LTR-L-NAME_sound__L_name.mp3,audio/group3/LTR-L-NAME_sound__L_name.mp3,,master (Ingles con Futbol.mp3),56.16,57.05,0.89
+G3,LTR-L-S1,sound,sonido de L — suena «l»,LTR-L-S1_sound__L_sound_l.mp3,audio/group3/LTR-L-S1_sound__L_sound_l.mp3,,master (Ingles con Futbol.mp3),281.21,283.70,2.49
+G3,LTR-L-S1,word1,lion,LTR-L-S1_word1__L_word_lion.mp3,audio/group3/LTR-L-S1_word1__L_word_lion.mp3,img/Group 3 I-L/lion.webp,master (Ingles con Futbol.mp3),284.05,285.10,1.05
+G3,LTR-L-S1,word2,leaf,LTR-L-S1_word2__L_word_leaf.mp3,audio/group3/LTR-L-S1_word2__L_word_leaf.mp3,img/Group 3 I-L/leaf.webp,master (Ingles con Futbol.mp3),285.16,285.83,0.67
+G3,U2-LA,sound,la,U2-LA_sound__L_syllable_la.mp3,audio/group3/U2-LA_sound__L_syllable_la.mp3,,master (Ingles con Futbol.mp3),614.28,615.03,0.75
+G3,U2-LA,word1,ladder,U2-LA_word1__L_word_ladder.mp3,audio/group3/U2-LA_word1__L_word_ladder.mp3,img/Group 3 I-L/ladder.webp,master (Ingles con Futbol.mp3),287.26,288.20,0.95
+G3,U2-LA,word2,lamp,U2-LA_word2__L_word_lamp.mp3,audio/group3/U2-LA_word2__L_word_lamp.mp3,img/Group 3 I-L/lamp.webp,master (Ingles con Futbol.mp3),288.27,289.04,0.77
+G3,U2-LE,sound,le,U2-LE_sound__L_syllable_le.mp3,audio/group3/U2-LE_sound__L_syllable_le.mp3,,master (Ingles con Futbol.mp3),615.88,616.60,0.72
+G3,U2-LE,word1,leg,U2-LE_word1__L_word_leg.mp3,audio/group3/U2-LE_word1__L_word_leg.mp3,img/Group 3 I-L/leg.webp,master (Ingles con Futbol.mp3),682.43,683.20,0.77
+G3,U2-LE,word2,lemon,U2-LE_word2__L_word_lemon.mp3,audio/group3/U2-LE_word2__L_word_lemon.mp3,img/Group 3 I-L/lemon.webp,master (Ingles con Futbol.mp3),617.45,618.30,0.85
+G3,U2-LI,sound,li,U2-LI_sound__L_syllable_li.mp3,audio/group3/U2-LI_sound__L_syllable_li.mp3,,master (Ingles con Futbol.mp3),293.34,294.03,0.69
+G3,U2-LI,word1,lip,U2-LI_word1__L_word_lip.mp3,audio/group3/U2-LI_word1__L_word_lip.mp3,img/Group 3 I-L/lip.webp,master (Ingles con Futbol.mp3),294.24,295.05,0.81
+G3,U2-LI,word2,list,U2-LI_word2__L_word_list.mp3,audio/group3/U2-LI_word2__L_word_list.mp3,img/Group 3 I-L/list.webp,master (Ingles con Futbol.mp3),619.14,620.00,0.86
+G3,U2-LO,sound,lo,U2-LO_sound__L_syllable_lo.mp3,audio/group3/U2-LO_sound__L_syllable_lo.mp3,,master (Ingles con Futbol.mp3),58.31,59.06,0.75
+G3,U2-LO,word1,lock,U2-LO_word1__L_word_lock.mp3,audio/group3/U2-LO_word1__L_word_lock.mp3,img/Group 3 I-L/lock.webp,master (Ingles con Futbol.mp3),620.57,621.42,0.85
+G3,U2-LO,word2,lollipop,U2-LO_word2__L_word_lollipop.mp3,audio/group3/U2-LO_word2__L_word_lollipop.mp3,img/Group 3 I-L/lollipop.webp,master (Ingles con Futbol.mp3),299.15,299.85,0.70
+G3,U2-LU,sound,lu,U2-LU_sound__L_syllable_lu.mp3,audio/group3/U2-LU_sound__L_syllable_lu.mp3,,master (Ingles con Futbol.mp3),664.35,665.02,0.67
+G3,U2-LU,word1,lunch,U2-LU_word1__L_word_lunch.mp3,audio/group3/U2-LU_word1__L_word_lunch.mp3,img/Group 3 I-L/lunch.webp,master (Ingles con Futbol.mp3),301.32,302.14,0.83
+G3,U2-LU,word2,lung,U2-LU_word2__L_word_lung.mp3,audio/group3/U2-LU_word2__L_word_lung.mp3,img/Group 3 I-L/lung.webp,master (Ingles con Futbol.mp3),302.14,303.13,0.99
+G4,LTR-M-NAME,sound,M,LTR-M-NAME_sound__M_name.mp3,audio/group4/LTR-M-NAME_sound__M_name.mp3,,master (Ingles con Futbol.mp3),303.81,304.47,0.66
+G4,LTR-M-S1,sound,sonido de M — suena «m»,LTR-M-S1_sound__M_sound_m.mp3,audio/group4/LTR-M-S1_sound__M_sound_m.mp3,,master (Ingles con Futbol.mp3),304.47,307.00,2.53
+G4,LTR-M-S1,word1,mango,LTR-M-S1_word1__M_word_mango.mp3,audio/group4/LTR-M-S1_word1__M_word_mango.mp3,img/Group 4 M-P/mango.webp,master (Ingles con Futbol.mp3),307.51,308.43,0.92
+G4,LTR-M-S1,word2,moon,LTR-M-S1_word2__M_word_moon.mp3,audio/group4/LTR-M-S1_word2__M_word_moon.mp3,img/Group 4 M-P/moon.webp,master (Ingles con Futbol.mp3),308.43,309.62,1.20
+G4,U2-MA,sound,ma,U2-MA_sound__M_syllable_ma.mp3,audio/group4/U2-MA_sound__M_syllable_ma.mp3,,master (Ingles con Futbol.mp3),622.99,623.77,0.78
+G4,U2-MA,word1,map,U2-MA_word1__M_word_map.mp3,audio/group4/U2-MA_word1__M_word_map.mp3,img/Group 4 M-P/map.webp,master (Ingles con Futbol.mp3),624.33,624.97,0.64
+G4,U2-MA,word2,man,U2-MA_word2__M_word_man.mp3,audio/group4/U2-MA_word2__M_word_man.mp3,img/Group 4 M-P/man.webp,master (Ingles con Futbol.mp3),313.29,314.19,0.90
+G4,U2-ME,sound,me,U2-ME_sound__M_syllable_me.mp3,audio/group4/U2-ME_sound__M_syllable_me.mp3,,master (Ingles con Futbol.mp3),314.99,315.62,0.63
+G4,U2-ME,word1,melon,U2-ME_word1__M_word_melon.mp3,audio/group4/U2-ME_word1__M_word_melon.mp3,img/Group 4 M-P/melon.webp,master (Ingles con Futbol.mp3),315.62,316.50,0.89
+G4,U2-ME,word2,medal,U2-ME_word2__M_word_medal.mp3,audio/group4/U2-ME_word2__M_word_medal.mp3,img/Group 4 M-P/medal.webp,master (Ingles con Futbol.mp3),666.04,666.96,0.92
+G4,U2-MI,sound,mi,U2-MI_sound__M_syllable_mi.mp3,audio/group4/U2-MI_sound__M_syllable_mi.mp3,,master (Ingles con Futbol.mp3),318.51,319.15,0.64
+G4,U2-MI,word1,milk,U2-MI_word1__M_word_milk.mp3,audio/group4/U2-MI_word1__M_word_milk.mp3,img/Group 4 M-P/milk.webp,master (Ingles con Futbol.mp3),319.15,319.95,0.80
+G4,U2-MI,word2,minute,U2-MI_word2__M_word_minute.mp3,audio/group4/U2-MI_word2__M_word_minute.mp3,img/Group 4 M-P/minute.webp,master (Ingles con Futbol.mp3),320.46,321.24,0.78
+G4,U2-MO,sound,mo,U2-MO_sound__M_syllable_mo.mp3,audio/group4/U2-MO_sound__M_syllable_mo.mp3,,master (Ingles con Futbol.mp3),628.15,628.92,0.77
+G4,U2-MO,word1,mop,U2-MO_word1__M_word_mop.mp3,audio/group4/U2-MO_word1__M_word_mop.mp3,img/Group 4 M-P/mop.webp,master (Ingles con Futbol.mp3),322.21,322.86,0.65
+G4,U2-MO,word2,mom,U2-MO_word2__M_word_mom.mp3,audio/group4/U2-MO_word2__M_word_mom.mp3,img/Group 4 M-P/mom.webp,master (Ingles con Futbol.mp3),629.74,630.68,0.94
+G4,U2-MU,sound,mu,U2-MU_sound__M_syllable_mu.mp3,audio/group4/U2-MU_sound__M_syllable_mu.mp3,,master (Ingles con Futbol.mp3),324.31,324.86,0.55
+G4,U2-MU,word1,mud,U2-MU_word1__M_word_mud.mp3,audio/group4/U2-MU_word1__M_word_mud.mp3,img/Group 4 M-P/mud.webp,master (Ingles con Futbol.mp3),324.86,325.72,0.86
+G4,U2-MU,word2,mug,U2-MU_word2__M_word_mug.mp3,audio/group4/U2-MU_word2__M_word_mug.mp3,img/Group 4 M-P/mug.webp,master (Ingles con Futbol.mp3),325.72,326.62,0.90
+G4,LTR-N-NAME,sound,N,LTR-N-NAME_sound__N_name.mp3,audio/group4/LTR-N-NAME_sound__N_name.mp3,,master (Ingles con Futbol.mp3),327.50,328.29,0.79
+G4,LTR-N-S1,sound,sonido de N — suena «n»,LTR-N-S1_sound__N_sound_n.mp3,audio/group4/LTR-N-S1_sound__N_sound_n.mp3,,master (Ingles con Futbol.mp3),60.58,63.82,3.24
+G4,LTR-N-S1,word1,note,LTR-N-S1_word1__N_word_note.mp3,audio/group4/LTR-N-S1_word1__N_word_note.mp3,img/Group 4 M-P/note.webp,master (Ingles con Futbol.mp3),342.25,343.10,0.85
+G4,LTR-N-S1,word2,nose,LTR-N-S1_word2__N_word_nose.mp3,audio/group4/LTR-N-S1_word2__N_word_nose.mp3,img/Group 4 M-P/nose.webp,master (Ingles con Futbol.mp3),343.15,344.06,0.92
+G4,U2-NA,sound,na,U2-NA_sound__N_syllable_na.mp3,audio/group4/U2-NA_sound__N_syllable_na.mp3,,master (Ingles con Futbol.mp3),631.23,631.95,0.72
+G4,U2-NA,word1,nap,U2-NA_word1__N_word_nap.mp3,audio/group4/U2-NA_word1__N_word_nap.mp3,img/Group 4 M-P/nap.webp,master (Ingles con Futbol.mp3),684.18,684.77,0.59
+G4,U2-NA,word2,napkin,U2-NA_word2__N_word_napkin.mp3,audio/group4/U2-NA_word2__N_word_napkin.mp3,img/Group 4 M-P/napkin.webp,master (Ingles con Futbol.mp3),346.66,347.61,0.95
+G4,U2-NE,sound,ne,U2-NE_sound__N_syllable_ne.mp3,audio/group4/U2-NE_sound__N_syllable_ne.mp3,,master (Ingles con Futbol.mp3),686.34,687.05,0.71
+G4,U2-NE,word1,nest,U2-NE_word1__N_word_nest.mp3,audio/group4/U2-NE_word1__N_word_nest.mp3,img/Group 4 M-P/nest.webp,master (Ingles con Futbol.mp3),348.83,349.58,0.76
+G4,U2-NE,word2,nectar,U2-NE_word2__N_word_nectar.mp3,audio/group4/U2-NE_word2__N_word_nectar.mp3,img/Group 4 M-P/nectar.webp,master (Ingles con Futbol.mp3),349.59,350.49,0.90
+G4,U2-NI,sound,ni,U2-NI_sound__N_syllable_ni.mp3,audio/group4/U2-NI_sound__N_syllable_ni.mp3,,master (Ingles con Futbol.mp3),632.81,633.48,0.67
+G4,U2-NI,word1,nibble,U2-NI_word1__N_word_nibble.mp3,audio/group4/U2-NI_word1__N_word_nibble.mp3,img/Group 4 M-P/nibble.webp,master (Ingles con Futbol.mp3),351.76,352.54,0.78
+G4,U2-NI,word2,ninja,U2-NI_word2__N_word_ninja.mp3,audio/group4/U2-NI_word2__N_word_ninja.mp3,img/Group 4 M-P/ninja.webp,master (Ingles con Futbol.mp3),352.54,353.46,0.92
+G4,U2-NO,sound,no,U2-NO_sound__N_syllable_no.mp3,audio/group4/U2-NO_sound__N_syllable_no.mp3,,master (Ingles con Futbol.mp3),634.39,635.03,0.64
+G4,U2-NO,word1,nod,U2-NO_word1__N_word_nod.mp3,audio/group4/U2-NO_word1__N_word_nod.mp3,img/Group 4 M-P/nod.webp,master (Ingles con Futbol.mp3),354.76,355.68,0.92
+G4,U2-NO,word2,not,U2-NO_word2__N_word_not.mp3,audio/group4/U2-NO_word2__N_word_not.mp3,img/Group 4 M-P/not.webp,master (Ingles con Futbol.mp3),688.40,689.23,0.83
+G4,U2-NU,sound,nu,U2-NU_sound__N_syllable_nu.mp3,audio/group4/U2-NU_sound__N_syllable_nu.mp3,,master (Ingles con Futbol.mp3),635.71,636.48,0.77
+G4,U2-NU,word1,nut,U2-NU_word1__N_word_nut.mp3,audio/group4/U2-NU_word1__N_word_nut.mp3,img/Group 4 M-P/nut.webp,master (Ingles con Futbol.mp3),637.14,638.05,0.91
+G4,U2-NU,word2,number,U2-NU_word2__N_word_number.mp3,audio/group4/U2-NU_word2__N_word_number.mp3,img/Group 4 M-P/number.webp,master (Ingles con Futbol.mp3),359.31,360.12,0.81
+G4,LTR-O-NAME,sound,O,LTR-O-NAME_sound__O_name.mp3,audio/group4/LTR-O-NAME_sound__O_name.mp3,,master (Ingles con Futbol.mp3),360.86,361.63,0.78
+G4,LTR-O-S1,sound,"sonido de O — corta, suena «o»",LTR-O-S1_sound__O_sound_corta.mp3,audio/group4/LTR-O-S1_sound__O_sound_corta.mp3,,retakes-2 (video 8),45.66,48.74,3.08
+G4,LTR-O-S1,word1,octopus,LTR-O-S1_word1__O_word_octopus.mp3,audio/group4/LTR-O-S1_word1__O_word_octopus.mp3,img/Group 4 M-P/octopus.webp,master (Ingles con Futbol.mp3),76.72,77.96,1.24
+G4,LTR-O-S1,word2,office,LTR-O-S1_word2__O_word_office.mp3,audio/group4/LTR-O-S1_word2__O_word_office.mp3,img/Group 4 M-P/office.webp,master (Ingles con Futbol.mp3),78.67,79.71,1.04
+G4,LTR-O-S2,sound,"sonido de O — larga, suena «ou»",LTR-O-S2_sound__O_sound_larga.mp3,audio/group4/LTR-O-S2_sound__O_sound_larga.mp3,,master (Ingles con Futbol.mp3),361.70,365.10,3.40
+G4,LTR-O-S2,word1,ocean,LTR-O-S2_word1__O_word_ocean.mp3,audio/group4/LTR-O-S2_word1__O_word_ocean.mp3,img/Group 4 M-P/ocean.webp,master (Ingles con Futbol.mp3),365.29,366.19,0.90
+G4,LTR-O-S2,word2,open,LTR-O-S2_word2__O_word_open.mp3,audio/group4/LTR-O-S2_word2__O_word_open.mp3,img/Group 4 M-P/open.webp,master (Ingles con Futbol.mp3),366.31,367.15,0.84
+G4,U3-ON,sound,on,U3-ON_sound__O_word_on.mp3,audio/group4/U3-ON_sound__O_word_on.mp3,,master (Ingles con Futbol.mp3),367.63,368.84,1.21
+G4,U3-OX,sound,ox,U3-OX_sound__O_word_ox.mp3,audio/group4/U3-OX_sound__O_word_ox.mp3,,master (Ingles con Futbol.mp3),373.92,374.69,0.78
+G4,LTR-P-NAME,sound,P,LTR-P-NAME_sound__P_name.mp3,audio/group4/LTR-P-NAME_sound__P_name.mp3,,master (Ingles con Futbol.mp3),375.35,376.08,0.73
+G4,LTR-P-S1,sound,sonido de P — suena «p»,LTR-P-S1_sound__P_sound_p.mp3,audio/group4/LTR-P-S1_sound__P_sound_p.mp3,,retakes-3 (video 9),5.38,8.20,2.82
+G4,LTR-P-S1,word1,piano,LTR-P-S1_word1__P_word_piano.mp3,audio/group4/LTR-P-S1_word1__P_word_piano.mp3,img/Group 4 M-P/piano.webp,master (Ingles con Futbol.mp3),379.15,379.99,0.84
+G4,LTR-P-S1,word2,pig,LTR-P-S1_word2__P_word_pig.mp3,audio/group4/LTR-P-S1_word2__P_word_pig.mp3,img/Group 4 M-P/pig.webp,master (Ingles con Futbol.mp3),380.21,381.09,0.88
+G4,U2-PA,sound,pa,U2-PA_sound__P_syllable_pa.mp3,audio/group4/U2-PA_sound__P_syllable_pa.mp3,,master (Ingles con Futbol.mp3),381.40,382.00,0.60
+G4,U2-PA,word1,pan,U2-PA_word1__P_word_pan.mp3,audio/group4/U2-PA_word1__P_word_pan.mp3,img/Group 4 M-P/pan.webp,master (Ingles con Futbol.mp3),382.02,382.82,0.81
+G4,U2-PA,word2,palace,U2-PA_word2__P_word_palace.mp3,audio/group4/U2-PA_word2__P_word_palace.mp3,img/Group 4 M-P/palace.webp,master (Ingles con Futbol.mp3),383.14,384.07,0.93
+G4,U2-PE,sound,pe,U2-PE_sound__P_syllable_pe.mp3,audio/group4/U2-PE_sound__P_syllable_pe.mp3,,master (Ingles con Futbol.mp3),384.38,384.94,0.56
+G4,U2-PE,word1,pen,U2-PE_word1__P_word_pen.mp3,audio/group4/U2-PE_word1__P_word_pen.mp3,img/Group 4 M-P/pen.webp,master (Ingles con Futbol.mp3),384.94,385.79,0.85
+G4,U2-PE,word2,penguin,U2-PE_word2__P_word_penguin.mp3,audio/group4/U2-PE_word2__P_word_penguin.mp3,img/Group 4 M-P/penguin.webp,master (Ingles con Futbol.mp3),386.15,386.99,0.84
+G4,U2-PI,sound,pi,U2-PI_sound__P_syllable_pi.mp3,audio/group4/U2-PI_sound__P_syllable_pi.mp3,,master (Ingles con Futbol.mp3),387.38,387.95,0.58
+G4,U2-PI,word1,picture,U2-PI_word1__P_word_picture.mp3,audio/group4/U2-PI_word1__P_word_picture.mp3,img/Group 4 M-P/picture.webp,master (Ingles con Futbol.mp3),388.00,388.96,0.96
+G4,U2-PI,word2,picnic,U2-PI_word2__P_word_picnic.mp3,audio/group4/U2-PI_word2__P_word_picnic.mp3,img/Group 4 M-P/picnic.webp,master (Ingles con Futbol.mp3),389.03,389.79,0.76
+G4,U2-PO,sound,po,U2-PO_sound__P_syllable_po.mp3,audio/group4/U2-PO_sound__P_syllable_po.mp3,,master (Ingles con Futbol.mp3),390.28,390.86,0.58
+G4,U2-PO,word1,pot,U2-PO_word1__P_word_pot.mp3,audio/group4/U2-PO_word1__P_word_pot.mp3,img/Group 4 M-P/pot.webp,master (Ingles con Futbol.mp3),390.90,391.73,0.83
+G4,U2-PO,word2,popcorn,U2-PO_word2__P_word_popcorn.mp3,audio/group4/U2-PO_word2__P_word_popcorn.mp3,img/Group 4 M-P/popcorn.webp,master (Ingles con Futbol.mp3),392.01,392.97,0.96
+G4,U2-PU,sound,pu,U2-PU_sound__P_syllable_pu.mp3,audio/group4/U2-PU_sound__P_syllable_pu.mp3,,master (Ingles con Futbol.mp3),398.18,398.81,0.63
+G4,U2-PU,word1,puppy,U2-PU_word1__P_word_puppy.mp3,audio/group4/U2-PU_word1__P_word_puppy.mp3,img/Group 4 M-P/puppy.webp,master (Ingles con Futbol.mp3),398.85,399.67,0.82
+G4,U2-PU,word2,pumpkin,U2-PU_word2__P_word_pumpkin.mp3,audio/group4/U2-PU_word2__P_word_pumpkin.mp3,img/Group 4 M-P/pumpkin.webp,master (Ingles con Futbol.mp3),399.85,400.76,0.91
+G5,LTR-Q-NAME,sound,Q,LTR-Q-NAME_sound__Q_name.mp3,audio/group5/LTR-Q-NAME_sound__Q_name.mp3,,master (Ingles con Futbol.mp3),401.42,402.23,0.81
+G5,LTR-Q-S1,sound,sonido de Q — suena «kw»,LTR-Q-S1_sound__Q_sound_kw.mp3,audio/group5/LTR-Q-S1_sound__Q_sound_kw.mp3,,master (Ingles con Futbol.mp3),402.39,404.90,2.51
+G5,LTR-Q-S1,word1,quick,LTR-Q-S1_word1__Q_word_quick.mp3,audio/group5/LTR-Q-S1_word1__Q_word_quick.mp3,img/Group 5 Q-T/quick.webp,master (Ingles con Futbol.mp3),640.28,641.16,0.88
+G5,LTR-Q-S1,word2,question,LTR-Q-S1_word2__Q_word_question.mp3,audio/group5/LTR-Q-S1_word2__Q_word_question.mp3,img/Group 5 Q-T/question.webp,master (Ingles con Futbol.mp3),406.43,407.41,0.98
+G5,U2-QU,sound,qu,U2-QU_sound__Q_syllable_qu.mp3,audio/group5/U2-QU_sound__Q_syllable_qu.mp3,,master (Ingles con Futbol.mp3),638.76,639.51,0.75
+G5,U2-QU,word1,queen,U2-QU_word1__Q_word_queen.mp3,audio/group5/U2-QU_word1__Q_word_queen.mp3,img/Group 5 Q-T/queen.webp,master (Ingles con Futbol.mp3),408.68,409.64,0.97
+G5,U2-QU,word2,quilt,U2-QU_word2__Q_word_quilt.mp3,audio/group5/U2-QU_word2__Q_word_quilt.mp3,img/Group 5 Q-T/quilt.webp,master (Ingles con Futbol.mp3),409.69,410.57,0.88
+G5,LTR-R-NAME,sound,R,LTR-R-NAME_sound__R_name.mp3,audio/group5/LTR-R-NAME_sound__R_name.mp3,,master (Ingles con Futbol.mp3),411.29,412.13,0.84
+G5,LTR-R-S1,sound,sonido de R — suena «r»,LTR-R-S1_sound__R_sound_r.mp3,audio/group5/LTR-R-S1_sound__R_sound_r.mp3,,master (Ingles con Futbol.mp3),412.13,414.83,2.70
+G5,LTR-R-S1,word1,radio,LTR-R-S1_word1__R_word_radio.mp3,audio/group5/LTR-R-S1_word1__R_word_radio.mp3,img/Group 5 Q-T/radio.webp,master (Ingles con Futbol.mp3),415.44,416.25,0.81
+G5,LTR-R-S1,word2,rain,LTR-R-S1_word2__R_word_rain.mp3,audio/group5/LTR-R-S1_word2__R_word_rain.mp3,img/Group 5 Q-T/rain.webp,master (Ingles con Futbol.mp3),416.25,417.30,1.06
+G5,U2-RA,sound,ra,U2-RA_sound__R_syllable_ra.mp3,audio/group5/U2-RA_sound__R_syllable_ra.mp3,,master (Ingles con Futbol.mp3),690.44,691.15,0.71
+G5,U2-RA,word1,rabbit,U2-RA_word1__R_word_rabbit.mp3,audio/group5/U2-RA_word1__R_word_rabbit.mp3,img/Group 5 Q-T/rabbit.webp,master (Ingles con Futbol.mp3),418.38,419.06,0.67
+G5,U2-RA,word2,ranch,U2-RA_word2__R_word_ranch.mp3,audio/group5/U2-RA_word2__R_word_ranch.mp3,img/Group 5 Q-T/ranch.webp,master (Ingles con Futbol.mp3),419.32,420.17,0.85
+G5,U2-RE,sound,re,U2-RE_sound__R_syllable_re.mp3,audio/group5/U2-RE_sound__R_syllable_re.mp3,,master (Ingles con Futbol.mp3),84.93,85.69,0.76
+G5,U2-RE,word1,red,U2-RE_word1__R_word_red.mp3,audio/group5/U2-RE_word1__R_word_red.mp3,img/Group 5 Q-T/red.webp,master (Ingles con Futbol.mp3),643.79,644.73,0.94
+G5,U2-RE,word2,restaurant,U2-RE_word2__R_word_restaurant.mp3,audio/group5/U2-RE_word2__R_word_restaurant.mp3,img/Group 5 Q-T/restaurant.webp,master (Ingles con Futbol.mp3),422.70,423.63,0.93
+G5,U2-RI,sound,ri,U2-RI_sound__R_syllable_ri.mp3,audio/group5/U2-RI_sound__R_syllable_ri.mp3,,master (Ingles con Futbol.mp3),645.84,646.50,0.66
+G5,U2-RI,word1,ring,U2-RI_word1__R_word_ring.mp3,audio/group5/U2-RI_word1__R_word_ring.mp3,img/Group 5 Q-T/ring.webp,master (Ingles con Futbol.mp3),86.80,87.70,0.90
+G5,U2-RI,word2,rich,U2-RI_word2__R_word_rich.mp3,audio/group5/U2-RI_word2__R_word_rich.mp3,img/Group 5 Q-T/rich.webp,master (Ingles con Futbol.mp3),425.73,426.58,0.85
+G5,U2-RO,sound,ro,U2-RO_sound__R_syllable_ro.mp3,audio/group5/U2-RO_sound__R_syllable_ro.mp3,,master (Ingles con Futbol.mp3),647.46,648.22,0.76
+G5,U2-RO,word1,rocket,U2-RO_word1__R_word_rocket.mp3,audio/group5/U2-RO_word1__R_word_rocket.mp3,img/Group 5 Q-T/rocket.webp,master (Ingles con Futbol.mp3),427.81,428.64,0.84
+G5,U2-RO,word2,rock,U2-RO_word2__R_word_rock.mp3,audio/group5/U2-RO_word2__R_word_rock.mp3,img/Group 5 Q-T/rock.webp,master (Ingles con Futbol.mp3),648.92,649.82,0.90
+G5,U2-RU,sound,ru,U2-RU_sound__R_syllable_ru.mp3,audio/group5/U2-RU_sound__R_syllable_ru.mp3,,master (Ingles con Futbol.mp3),650.28,651.03,0.75
+G5,U2-RU,word1,rug,U2-RU_word1__R_word_rug.mp3,audio/group5/U2-RU_word1__R_word_rug.mp3,img/Group 5 Q-T/rug.webp,master (Ingles con Futbol.mp3),651.73,652.67,0.94
+G5,U2-RU,word2,run,U2-RU_word2__R_word_run.mp3,audio/group5/U2-RU_word2__R_word_run.mp3,img/Group 5 Q-T/run.webp,master (Ingles con Futbol.mp3),433.09,433.82,0.73
+G5,LTR-S-NAME,sound,S,LTR-S-NAME_sound__S_name.mp3,audio/group5/LTR-S-NAME_sound__S_name.mp3,,master (Ingles con Futbol.mp3),434.48,435.25,0.77
+G5,LTR-S-S1,sound,sonido de S — suena «s»,LTR-S-S1_sound__S_sound_s.mp3,audio/group5/LTR-S-S1_sound__S_sound_s.mp3,,master (Ingles con Futbol.mp3),435.25,437.53,2.29
+G5,LTR-S-S1,word1,sofa,LTR-S-S1_word1__S_word_sofa.mp3,audio/group5/LTR-S-S1_word1__S_word_sofa.mp3,img/Group 5 Q-T/sofa.webp,master (Ingles con Futbol.mp3),438.05,438.94,0.90
+G5,LTR-S-S1,word2,submarine,LTR-S-S1_word2__S_word_submarine.mp3,audio/group5/LTR-S-S1_word2__S_word_submarine.mp3,img/Group 5 Q-T/submarine.webp,master (Ingles con Futbol.mp3),438.94,440.06,1.12
+G5,U2-SA,sound,sa,U2-SA_sound__S_syllable_sa.mp3,audio/group5/U2-SA_sound__S_syllable_sa.mp3,,master (Ingles con Futbol.mp3),653.11,654.02,0.91
+G5,U2-SA,word1,sand,U2-SA_word1__S_word_sand.mp3,audio/group5/U2-SA_word1__S_word_sand.mp3,img/Group 5 Q-T/sand.webp,master (Ingles con Futbol.mp3),441.07,441.97,0.90
+G5,U2-SA,word2,salad,U2-SA_word2__S_word_salad.mp3,audio/group5/U2-SA_word2__S_word_salad.mp3,img/Group 5 Q-T/salad.webp,master (Ingles con Futbol.mp3),441.98,442.86,0.88
+G5,U2-SE,sound,se,U2-SE_sound__S_syllable_se.mp3,audio/group5/U2-SE_sound__S_syllable_se.mp3,,master (Ingles con Futbol.mp3),693.10,693.96,0.86
+G5,U2-SE,word1,seven,U2-SE_word1__S_word_seven.mp3,audio/group5/U2-SE_word1__S_word_seven.mp3,img/Group 5 Q-T/seven.webp,master (Ingles con Futbol.mp3),444.22,445.09,0.87
+G5,U2-SE,word2,second,U2-SE_word2__S_word_second.mp3,audio/group5/U2-SE_word2__S_word_second.mp3,img/Group 5 Q-T/second.webp,master (Ingles con Futbol.mp3),445.09,446.09,1.00
+G5,U2-SI,sound,si,U2-SI_sound__S_syllable_si.mp3,audio/group5/U2-SI_sound__S_syllable_si.mp3,,master (Ingles con Futbol.mp3),654.60,655.41,0.81
+G5,U2-SI,word1,sister,U2-SI_word1__S_word_sister.mp3,audio/group5/U2-SI_word1__S_word_sister.mp3,img/Group 5 Q-T/sister.webp,master (Ingles con Futbol.mp3),88.27,89.35,1.08
+G5,U2-SI,word2,silver,U2-SI_word2__S_word_silver.mp3,audio/group5/U2-SI_word2__S_word_silver.mp3,img/Group 5 Q-T/silver.webp,master (Ingles con Futbol.mp3),448.20,449.19,0.99
+G5,U2-SO,sound,so,U2-SO_sound__S_syllable_so.mp3,audio/group5/U2-SO_sound__S_syllable_so.mp3,,master (Ingles con Futbol.mp3),656.11,656.98,0.87
+G5,U2-SO,word1,sock,U2-SO_word1__S_word_sock.mp3,audio/group5/U2-SO_word1__S_word_sock.mp3,img/Group 5 Q-T/sock.webp,master (Ingles con Futbol.mp3),450.56,451.43,0.88
+G5,U2-SO,word2,soccer,U2-SO_word2__S_word_soccer.mp3,audio/group5/U2-SO_word2__S_word_soccer.mp3,img/Group 5 Q-T/soccer.webp,master (Ingles con Futbol.mp3),451.44,452.46,1.02
+G5,U2-SU,sound,su,U2-SU_sound__S_syllable_su.mp3,audio/group5/U2-SU_sound__S_syllable_su.mp3,,master (Ingles con Futbol.mp3),89.83,90.65,0.82
+G5,U2-SU,word1,sun,U2-SU_word1__S_word_sun.mp3,audio/group5/U2-SU_word1__S_word_sun.mp3,img/Group 5 Q-T/sun.webp,master (Ingles con Futbol.mp3),659.23,660.17,0.94
+G5,U2-SU,word2,summer,U2-SU_word2__S_word_summer.mp3,audio/group5/U2-SU_word2__S_word_summer.mp3,img/Group 5 Q-T/summer.webp,master (Ingles con Futbol.mp3),454.92,456.09,1.18
+G5,LTR-T-NAME,sound,T,LTR-T-NAME_sound__T_name.mp3,audio/group5/LTR-T-NAME_sound__T_name.mp3,,master (Ingles con Futbol.mp3),456.72,457.37,0.65
+G5,LTR-T-S1,sound,sonido de T — suena «t»,LTR-T-S1_sound__T_sound_t.mp3,audio/group5/LTR-T-S1_sound__T_sound_t.mp3,,master (Ingles con Futbol.mp3),93.33,95.93,2.60
+G5,LTR-T-S1,word1,tomato,LTR-T-S1_word1__T_word_tomato.mp3,audio/group5/LTR-T-S1_word1__T_word_tomato.mp3,img/Group 5 Q-T/tomato.webp,master (Ingles con Futbol.mp3),459.91,461.01,1.10
+G5,LTR-T-S1,word2,table,LTR-T-S1_word2__T_word_table.mp3,audio/group5/LTR-T-S1_word2__T_word_table.mp3,img/Group 5 Q-T/table.webp,master (Ingles con Futbol.mp3),461.01,461.75,0.75
+G5,U2-TA,sound,ta,U2-TA_sound__T_syllable_ta.mp3,audio/group5/U2-TA_sound__T_syllable_ta.mp3,,master (Ingles con Futbol.mp3),462.07,462.68,0.61
+G5,U2-TA,word1,tap,U2-TA_word1__T_word_tap.mp3,audio/group5/U2-TA_word1__T_word_tap.mp3,img/Group 5 Q-T/tap.webp,master (Ingles con Futbol.mp3),462.68,463.34,0.66
+G5,U2-TA,word2,taxi,U2-TA_word2__T_word_taxi.mp3,audio/group5/U2-TA_word2__T_word_taxi.mp3,img/Group 5 Q-T/taxi.webp,master (Ingles con Futbol.mp3),463.66,464.57,0.91
+G5,U2-TE,sound,te,U2-TE_sound__T_syllable_te.mp3,audio/group5/U2-TE_sound__T_syllable_te.mp3,,master (Ingles con Futbol.mp3),464.59,465.29,0.70
+G5,U2-TE,word1,ten,U2-TE_word1__T_word_ten.mp3,audio/group5/U2-TE_word1__T_word_ten.mp3,img/Group 5 Q-T/ten.webp,master (Ingles con Futbol.mp3),465.29,466.06,0.78
+G5,U2-TE,word2,telephone,U2-TE_word2__T_word_telephone.mp3,audio/group5/U2-TE_word2__T_word_telephone.mp3,img/Group 5 Q-T/telephone.webp,master (Ingles con Futbol.mp3),466.30,467.26,0.96
+G5,U2-TI,sound,ti,U2-TI_sound__T_syllable_ti.mp3,audio/group5/U2-TI_sound__T_syllable_ti.mp3,,master (Ingles con Futbol.mp3),586.64,587.36,0.72
+G5,U2-TI,word1,tickle,U2-TI_word1__T_word_tickle.mp3,audio/group5/U2-TI_word1__T_word_tickle.mp3,img/Group 5 Q-T/tickle.webp,master (Ingles con Futbol.mp3),588.05,588.93,0.88
+G5,U2-TI,word2,ticket,U2-TI_word2__T_word_ticket.mp3,audio/group5/U2-TI_word2__T_word_ticket.mp3,img/Group 5 Q-T/ticket.webp,master (Ingles con Futbol.mp3),589.67,590.47,0.80
+G5,U2-TO,sound,to,U2-TO_sound__T_syllable_to.mp3,audio/group5/U2-TO_sound__T_syllable_to.mp3,,master (Ingles con Futbol.mp3),591.65,592.33,0.68
+G5,U2-TO,word1,top,U2-TO_word1__T_word_top.mp3,audio/group5/U2-TO_word1__T_word_top.mp3,img/Group 5 Q-T/top.webp,master (Ingles con Futbol.mp3),593.10,593.72,0.62
+G5,U2-TO,word2,toss,U2-TO_word2__T_word_toss.mp3,audio/group5/U2-TO_word2__T_word_toss.mp3,img/Group 5 Q-T/toss.webp,master (Ingles con Futbol.mp3),594.61,595.62,1.01
+G5,U2-TU,sound,tu,U2-TU_sound__T_syllable_tu.mp3,audio/group5/U2-TU_sound__T_syllable_tu.mp3,,master (Ingles con Futbol.mp3),596.21,596.86,0.65
+G5,U2-TU,word1,tub,U2-TU_word1__T_word_tub.mp3,audio/group5/U2-TU_word1__T_word_tub.mp3,img/Group 5 Q-T/tub.webp,master (Ingles con Futbol.mp3),597.54,598.38,0.84
+G5,U2-TU,word2,tunnel,U2-TU_word2__T_word_tunnel.mp3,audio/group5/U2-TU_word2__T_word_tunnel.mp3,img/Group 5 Q-T/tunnel.webp,master (Ingles con Futbol.mp3),599.11,599.93,0.82
+G6,LTR-U-NAME,sound,U,LTR-U-NAME_sound__U_name.mp3,audio/group6/LTR-U-NAME_sound__U_name.mp3,,master (Ingles con Futbol.mp3),97.10,97.92,0.82
+G6,LTR-U-S1,sound,"sonido de U — corta, suena «a»",LTR-U-S1_sound__U_sound_corta.mp3,audio/group6/LTR-U-S1_sound__U_sound_corta.mp3,,master (Ingles con Futbol.mp3),472.88,476.11,3.23
+G6,LTR-U-S1,word1,uncle,LTR-U-S1_word1__U_word_uncle.mp3,audio/group6/LTR-U-S1_word1__U_word_uncle.mp3,img/Group 6 U-Z/uncle.webp,master (Ingles con Futbol.mp3),476.65,477.45,0.81
+G6,LTR-U-S1,word2,umbrella,LTR-U-S1_word2__U_word_umbrella.mp3,audio/group6/LTR-U-S1_word2__U_word_umbrella.mp3,img/Group 6 U-Z/umbrella.webp,master (Ingles con Futbol.mp3),477.45,478.41,0.96
+G6,LTR-U-S2,sound,"sonido de U — larga, suena «iu»",LTR-U-S2_sound__U_sound_larga.mp3,audio/group6/LTR-U-S2_sound__U_sound_larga.mp3,,master (Ingles con Futbol.mp3),478.65,482.07,3.42
+G6,LTR-U-S2,word1,uniform,LTR-U-S2_word1__U_word_uniform.mp3,audio/group6/LTR-U-S2_word1__U_word_uniform.mp3,img/Group 6 U-Z/uniform.webp,master (Ingles con Futbol.mp3),482.26,483.29,1.03
+G6,LTR-U-S2,word2,unicorn,LTR-U-S2_word2__U_word_unicorn.mp3,audio/group6/LTR-U-S2_word2__U_word_unicorn.mp3,img/Group 6 U-Z/unicorn.webp,master (Ingles con Futbol.mp3),483.29,484.31,1.03
+G6,U3-UP,sound,up,U3-UP_sound__U_word_up.mp3,audio/group6/U3-UP_sound__U_word_up.mp3,,master (Ingles con Futbol.mp3),489.71,490.26,0.55
+G6,U3-US,sound,us,U3-US_sound__U_word_us.mp3,audio/group6/U3-US_sound__U_word_us.mp3,,master (Ingles con Futbol.mp3),490.67,491.54,0.87
+G6,LTR-V-NAME,sound,V,LTR-V-NAME_sound__V_name.mp3,audio/group6/LTR-V-NAME_sound__V_name.mp3,,master (Ingles con Futbol.mp3),492.05,492.81,0.76
+G6,LTR-V-S1,sound,sonido de V — suena «v»,LTR-V-S1_sound__V_sound_v.mp3,audio/group6/LTR-V-S1_sound__V_sound_v.mp3,,master (Ingles con Futbol.mp3),492.81,495.42,2.61
+G6,LTR-V-S1,word1,violin,LTR-V-S1_word1__V_word_violin.mp3,audio/group6/LTR-V-S1_word1__V_word_violin.mp3,img/Group 6 U-Z/violin.webp,master (Ingles con Futbol.mp3),495.42,496.45,1.04
+G6,LTR-V-S1,word2,volleyball,LTR-V-S1_word2__V_word_volleyball.mp3,audio/group6/LTR-V-S1_word2__V_word_volleyball.mp3,img/Group 6 U-Z/volleyball.webp,master (Ingles con Futbol.mp3),496.53,497.44,0.91
+G6,U2-VA,sound,va,U2-VA_sound__V_syllable_va.mp3,audio/group6/U2-VA_sound__V_syllable_va.mp3,,master (Ingles con Futbol.mp3),98.86,99.55,0.69
+G6,U2-VA,word1,van,U2-VA_word1__V_word_van.mp3,audio/group6/U2-VA_word1__V_word_van.mp3,img/Group 6 U-Z/van.webp,master (Ingles con Futbol.mp3),503.25,504.20,0.95
+G6,U2-VA,word2,valley,U2-VA_word2__V_word_valley.mp3,audio/group6/U2-VA_word2__V_word_valley.mp3,img/Group 6 U-Z/valley.webp,master (Ingles con Futbol.mp3),504.26,505.15,0.89
+G6,U2-VE,sound,ve,U2-VE_sound__V_syllable_ve.mp3,audio/group6/U2-VE_sound__V_syllable_ve.mp3,,master (Ingles con Futbol.mp3),505.28,505.90,0.63
+G6,U2-VE,word1,vest,U2-VE_word1__V_word_vest.mp3,audio/group6/U2-VE_word1__V_word_vest.mp3,img/Group 6 U-Z/vest.webp,master (Ingles con Futbol.mp3),505.90,506.75,0.85
+G6,U2-VE,word2,vegetables,U2-VE_word2__V_word_vegetables.mp3,audio/group6/U2-VE_word2__V_word_vegetables.mp3,img/Group 6 U-Z/vegetables.webp,master (Ingles con Futbol.mp3),506.82,507.64,0.82
+G6,LTR-W-NAME,sound,W,LTR-W-NAME_sound__W_name.mp3,audio/group6/LTR-W-NAME_sound__W_name.mp3,,master (Ingles con Futbol.mp3),508.24,509.10,0.86
+G6,LTR-W-S1,sound,sonido de W — suena «w»,LTR-W-S1_sound__W_sound_w.mp3,audio/group6/LTR-W-S1_sound__W_sound_w.mp3,,retakes-2 (video 8),8.91,11.58,2.67
+G6,LTR-W-S1,word1,water,LTR-W-S1_word1__W_word_water.mp3,audio/group6/LTR-W-S1_word1__W_word_water.mp3,img/Group 6 U-Z/water.webp,master (Ingles con Futbol.mp3),512.16,512.99,0.83
+G6,LTR-W-S1,word2,window,LTR-W-S1_word2__W_word_window.mp3,audio/group6/LTR-W-S1_word2__W_word_window.mp3,img/Group 6 U-Z/window.webp,master (Ingles con Futbol.mp3),512.99,513.89,0.91
+G6,U2-WA,sound,wa,U2-WA_sound__W_syllable_wa.mp3,audio/group6/U2-WA_sound__W_syllable_wa.mp3,,master (Ingles con Futbol.mp3),514.16,514.79,0.63
+G6,U2-WA,word1,wag,U2-WA_word1__W_word_wag.mp3,audio/group6/U2-WA_word1__W_word_wag.mp3,img/Group 6 U-Z/wag.webp,master (Ingles con Futbol.mp3),514.89,515.77,0.88
+G6,U2-WA,word2,wagon,U2-WA_word2__W_word_wagon.mp3,audio/group6/U2-WA_word2__W_word_wagon.mp3,img/Group 6 U-Z/wagon.webp,master (Ingles con Futbol.mp3),515.86,516.72,0.86
+G6,U2-WE,sound,we,U2-WE_sound__W_syllable_we.mp3,audio/group6/U2-WE_sound__W_syllable_we.mp3,,master (Ingles con Futbol.mp3),695.41,696.14,0.73
+G6,U2-WE,word1,wet,U2-WE_word1__W_word_wet.mp3,audio/group6/U2-WE_word1__W_word_wet.mp3,img/Group 6 U-Z/wet.webp,master (Ingles con Futbol.mp3),697.07,697.89,0.82
+G6,U2-WE,word2,web,U2-WE_word2__W_word_web.mp3,audio/group6/U2-WE_word2__W_word_web.mp3,img/Group 6 U-Z/web.webp,master (Ingles con Futbol.mp3),581.58,582.46,0.88
+G6,U2-WI,sound,wi,U2-WI_sound__W_syllable_wi.mp3,audio/group6/U2-WI_sound__W_syllable_wi.mp3,,master (Ingles con Futbol.mp3),582.96,583.65,0.69
+G6,U2-WI,word1,wind,U2-WI_word1__W_word_wind.mp3,audio/group6/U2-WI_word1__W_word_wind.mp3,img/Group 6 U-Z/wind.webp,master (Ingles con Futbol.mp3),601.26,602.16,0.90
+G6,U2-WI,word2,winter,U2-WI_word2__W_word_winter.mp3,audio/group6/U2-WI_word2__W_word_winter.mp3,img/Group 6 U-Z/winter.webp,master (Ingles con Futbol.mp3),602.90,603.80,0.90
+G6,U2-WO,sound,wo,U2-WO_sound__W_syllable_wo.mp3,audio/group6/U2-WO_sound__W_syllable_wo.mp3,,master (Ingles con Futbol.mp3),516.83,517.38,0.56
+G6,U2-WO,word1,won,U2-WO_word1__W_word_won.mp3,audio/group6/U2-WO_word1__W_word_won.mp3,img/Group 6 U-Z/won.webp,master (Ingles con Futbol.mp3),517.41,518.28,0.88
+G6,U2-WO,word2,wonderful,U2-WO_word2__W_word_wonderful.mp3,audio/group6/U2-WO_word2__W_word_wonderful.mp3,img/Group 6 U-Z/wonderful.webp,master (Ingles con Futbol.mp3),518.35,519.20,0.85
+G6,LTR-X-NAME,sound,X,LTR-X-NAME_sound__X_name.mp3,audio/group6/LTR-X-NAME_sound__X_name.mp3,,master (Ingles con Futbol.mp3),520.28,521.02,0.74
+G6,LTR-X-S1,sound,sonido de X — suena «ks»,LTR-X-S1_sound__X_sound_ks.mp3,audio/group6/LTR-X-S1_sound__X_sound_ks.mp3,,master (Ingles con Futbol.mp3),521.02,523.11,2.09
+G6,LTR-X-S1,word1,box,LTR-X-S1_word1__X_word_box.mp3,audio/group6/LTR-X-S1_word1__X_word_box.mp3,img/Group 6 U-Z/box.webp,master (Ingles con Futbol.mp3),523.98,525.01,1.03
+G6,LTR-X-S1,word2,fox,LTR-X-S1_word2__X_word_fox.mp3,audio/group6/LTR-X-S1_word2__X_word_fox.mp3,img/Group 6 U-Z/fox.webp,master (Ingles con Futbol.mp3),525.36,526.36,1.00
+G6,LTR-Y-NAME,sound,Y,LTR-Y-NAME_sound__Y_name.mp3,audio/group6/LTR-Y-NAME_sound__Y_name.mp3,,master (Ingles con Futbol.mp3),527.24,527.99,0.75
+G6,LTR-Y-S1,sound,sonido de Y — suena «y»,LTR-Y-S1_sound__Y_sound_y.mp3,audio/group6/LTR-Y-S1_sound__Y_sound_y.mp3,,master (Ingles con Futbol.mp3),112.75,115.60,2.85
+G6,LTR-Y-S1,word1,yellow,LTR-Y-S1_word1__Y_word_yellow.mp3,audio/group6/LTR-Y-S1_word1__Y_word_yellow.mp3,img/Group 6 U-Z/yellow.webp,master (Ingles con Futbol.mp3),536.32,537.32,1.00
+G6,LTR-Y-S1,word2,yogurt,LTR-Y-S1_word2__Y_word_yogurt.mp3,audio/group6/LTR-Y-S1_word2__Y_word_yogurt.mp3,img/Group 6 U-Z/yogurt.webp,master (Ingles con Futbol.mp3),537.41,538.16,0.75
+G6,U2-YA,sound,ya,U2-YA_sound__Y_syllable_ya.mp3,audio/group6/U2-YA_sound__Y_syllable_ya.mp3,,master (Ingles con Futbol.mp3),538.39,539.02,0.64
+G6,U2-YA,word1,yak,U2-YA_word1__Y_word_yak.mp3,audio/group6/U2-YA_word1__Y_word_yak.mp3,img/Group 6 U-Z/yak.webp,master (Ingles con Futbol.mp3),539.02,539.91,0.89
+G6,U2-YA,word2,yam,U2-YA_word2__Y_word_yam.mp3,audio/group6/U2-YA_word2__Y_word_yam.mp3,img/Group 6 U-Z/yam.webp,master (Ingles con Futbol.mp3),540.05,540.88,0.83
+G6,U2-YE,sound,ye,U2-YE_sound__Y_syllable_ye.mp3,audio/group6/U2-YE_sound__Y_syllable_ye.mp3,,master (Ingles con Futbol.mp3),542.15,542.74,0.59
+G6,U2-YE,word1,yes,U2-YE_word1__Y_word_yes.mp3,audio/group6/U2-YE_word1__Y_word_yes.mp3,img/Group 6 U-Z/yes.webp,master (Ingles con Futbol.mp3),542.74,543.63,0.89
+G6,U2-YE,word2,yell,U2-YE_word2__Y_word_yell.mp3,audio/group6/U2-YE_word2__Y_word_yell.mp3,img/Group 6 U-Z/yell.webp,master (Ingles con Futbol.mp3),117.42,118.39,0.97
+G6,U2-YU,sound,yu,U2-YU_sound__Y_syllable_yu.mp3,audio/group6/U2-YU_sound__Y_syllable_yu.mp3,,master (Ingles con Futbol.mp3),668.59,669.33,0.74
+G6,U2-YU,word1,young,U2-YU_word1__Y_word_young.mp3,audio/group6/U2-YU_word1__Y_word_young.mp3,img/Group 6 U-Z/young.webp,master (Ingles con Futbol.mp3),550.83,551.64,0.81
+G6,U2-YU,word2,yummy,U2-YU_word2__Y_word_yummy.mp3,audio/group6/U2-YU_word2__Y_word_yummy.mp3,img/Group 6 U-Z/yummy.webp,master (Ingles con Futbol.mp3),551.71,552.54,0.83
+G6,LTR-Z-NAME,sound,Z,LTR-Z-NAME_sound__Z_name.mp3,audio/group6/LTR-Z-NAME_sound__Z_name.mp3,,master (Ingles con Futbol.mp3),119.02,119.91,0.89
+G6,LTR-Z-S1,sound,sonido de Z — suena «z»,LTR-Z-S1_sound__Z_sound_z.mp3,audio/group6/LTR-Z-S1_sound__Z_sound_z.mp3,,master (Ingles con Futbol.mp3),558.89,561.14,2.25
+G6,LTR-Z-S1,word1,zebra,LTR-Z-S1_word1__Z_word_zebra.mp3,audio/group6/LTR-Z-S1_word1__Z_word_zebra.mp3,img/Group 6 U-Z/zebra.webp,master (Ingles con Futbol.mp3),561.58,562.51,0.94
+G6,LTR-Z-S1,word2,zoo,LTR-Z-S1_word2__Z_word_zoo.mp3,audio/group6/LTR-Z-S1_word2__Z_word_zoo.mp3,img/Group 6 U-Z/zoo.webp,master (Ingles con Futbol.mp3),562.51,563.27,0.76
+G6,U2-ZI,sound,zi,U2-ZI_sound__Z_syllable_zi.mp3,audio/group6/U2-ZI_sound__Z_syllable_zi.mp3,,master (Ingles con Futbol.mp3),563.62,564.35,0.73
+G6,U2-ZI,word1,zip,U2-ZI_word1__Z_word_zip.mp3,audio/group6/U2-ZI_word1__Z_word_zip.mp3,img/Group 6 U-Z/zip.webp,master (Ingles con Futbol.mp3),564.44,564.92,0.49
+G6,U2-ZI,word2,zigzag,U2-ZI_word2__Z_word_zigzag.mp3,audio/group6/U2-ZI_word2__Z_word_zigzag.mp3,img/Group 6 U-Z/zigzag.webp,master (Ingles con Futbol.mp3),565.34,566.43,1.09

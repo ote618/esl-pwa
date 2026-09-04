@@ -121,6 +121,8 @@ function clipsFor (item, container) {
 }
 
 const imageId = w => w.toLowerCase().replace(/[^a-z0-9]+/g, '-')
+// <id>_<role>__<descriptor><ext>, e.g. LTR-A-S1_word1__A_word_apple.mp3
+const CLIP_FILE = /^(.+?)_(sound|word1|word2)__([A-Za-z0-9_]+)(\.[a-z0-9]+)$/
 const TAKE_SUFFIX = /_take\d+$/   // "superseded takes are <ID>_takeN; the bare ID is always live"
 
 /* ------------------------------------------------------------------ *
@@ -182,16 +184,29 @@ function buildGroup (key) {
       }
     }
 
-    // V12 — filename is <id>_<clip><ext>. There is no mapping table and none should exist.
+    // V12 — filename is <id>_<clip>__<descriptor><ext>. The ID and role are the
+    // join key; the descriptor after "__" is the human-readable tail the recording
+    // session named the take with (A_word_apple, B_syllable_ba). There is no
+    // mapping table and none should exist — the filename IS the ID.
+    const words = (e.words || []).map(w => ({ text: w.text, imageId: imageId(w.text), es: w.es ?? null }))
     const clipOut = {}
     for (const k of ALL_CLIPS) {
       if (!rec[k]) continue
-      const expected = `${e.id}_${k}${ext}`
-      if (rec[k] !== expected) fail(`V12 ${e.id}.${k}: audio file is "${rec[k]}", expected "${expected}"`)
+      const m = CLIP_FILE.exec(rec[k])
+      if (!m || m[1] !== e.id || m[2] !== k || m[4] !== ext) {
+        fail(`V12 ${e.id}.${k}: audio file is "${rec[k]}", expected "${e.id}_${k}__<descriptor>${ext}"`)
+      } else if (k !== 'sound') {
+        // V15 — a word clip's descriptor ends in the word it says, which is the
+        // same word the image file is named after. Audio and image are companions
+        // by that word: U2-BA_word1__B_word_bat.mp3 <-> bat.webp. A clip that says
+        // one word under an entry that shows another must not ship.
+        const w = words[k === 'word1' ? 0 : 1]
+        const said = m[3].split('_').pop().toLowerCase()
+        if (!w) fail(`V15 ${e.id}.${k}: clip "${rec[k]}" but the entry has no ${k}`)
+        else if (said !== w.imageId) fail(`V15 ${e.id}.${k}: clip says "${said}" but the word/image is "${w.imageId}" (${rec[k]})`)
+      }
       clipOut[k] = rec[k]
     }
-
-    const words = (e.words || []).map(w => ({ text: w.text, imageId: imageId(w.text), es: w.es ?? null }))
     return {
       id: e.id,
       legacyKeys: e.legacyKeys || [],
