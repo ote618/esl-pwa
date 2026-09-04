@@ -1,8 +1,16 @@
 import { defineConfig } from 'vite'
 import react from '@vitejs/plugin-react'
 import { VitePWA } from 'vite-plugin-pwa'
+import { execSync } from 'node:child_process'
+
+/* A stamp a phone can read at the bottom of the grid, so "which build is
+ * this?" is answered by looking, not by guessing from behaviour. */
+const sha = (() => { try { return execSync('git rev-parse --short HEAD').toString().trim() } catch { return 'nogit' } })()
+const stamp = new Date().toISOString().replace(/[-:]/g, '').slice(0, 13).replace('T', '-')
+const BUILD = `slice1-${stamp}-${sha}`
 
 export default defineConfig({
+  define: { __BUILD__: JSON.stringify(BUILD) },
   plugins: [
     react(),
     VitePWA({

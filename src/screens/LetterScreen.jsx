@@ -17,6 +17,10 @@ export default function LetterScreen ({ letter, group, onBack }) {
 
   const name = group.items.find(it => it.part === 1 && it.shape === 'name' && it.letter === letter)
   const sounds = group.items.filter(it => it.part === 2 && it.shape === 'sound' && it.letter === letter)
+  // Part 3 is the combinations (ba, be, bi…) and the one-beat words (am, an,
+  // at). Selected by declared shape, exactly like the sounds above.
+  const syllables = group.items.filter(it => it.part === 3 && it.shape === 'combination' && it.letter === letter)
+  const words = group.items.filter(it => it.part === 3 && it.shape === 'word' && it.letter === letter)
 
   const playName = () => {
     if (!name) return
@@ -65,6 +69,28 @@ export default function LetterScreen ({ letter, group, onBack }) {
             </div>
           </>
         )}
+
+        {syllables.length > 0 && (
+          <>
+            <p className="seclabel">Sílabas</p>
+            <div className="sounds">
+              {syllables.map(entry => (
+                <SoundCard key={entry.id} entry={entry} compact playing={playing} setPlaying={setPlaying} />
+              ))}
+            </div>
+          </>
+        )}
+
+        {words.length > 0 && (
+          <>
+            <p className="seclabel">Palabras</p>
+            <div className="sounds">
+              {words.map(entry => (
+                <SoundCard key={entry.id} entry={entry} compact playing={playing} setPlaying={setPlaying} />
+              ))}
+            </div>
+          </>
+        )}
       </div>
     </section>
   )
@@ -82,7 +108,12 @@ const WORD_ROLES = ['word1', 'word2']
  * showing none, so G2-G6 render unlabelled until someone signs them off.
  * Those groups are gated shut today, so nothing is currently reachable anyway.
  */
-function SoundCard ({ entry, labelled, playing, setPlaying }) {
+/**
+ * `compact` is the part-3 card: the syllable or word itself sits beside the
+ * speaker as a big chip, the way the mockup shows it, and a one-beat word
+ * entry is just the chip and the speaker.
+ */
+function SoundCard ({ entry, labelled, compact, playing, setPlaying }) {
   const active = typeof playing === 'string' && playing.startsWith(entry.id + ':')
   const at = active ? Number(playing.split(':')[1]) : null
 
@@ -100,8 +131,8 @@ function SoundCard ({ entry, labelled, playing, setPlaying }) {
   }
 
   return (
-    <div className={'sound' + (active ? ' is-playing' : '')}>
-      {labelled && (entry.variant || entry.spanishGuide) && (
+    <div className={'sound' + (compact ? ' compact' : '') + (active ? ' is-playing' : '')}>
+      {labelled && !compact && (entry.variant || entry.spanishGuide) && (
         <p className="soundlabel">
           <span>{entry.variant ? `${entry.label} ${entry.variant}` : entry.label}</span>
           {entry.spanishGuide && <span className="guide">{entry.spanishGuide}</span>}
@@ -109,12 +140,15 @@ function SoundCard ({ entry, labelled, playing, setPlaying }) {
       )}
       <button
         className={'speaker' + (at === 0 ? ' is-playing' : '')}
-        aria-label="Escuchar el sonido y sus palabras"
+        aria-label={entry.words.length ? 'Escuchar el sonido y sus palabras' : `Escuchar ${entry.label}`}
         onClick={walk}
       >
         <Speaker />
       </button>
 
+      {compact && <span className="chipbig">{entry.label}</span>}
+
+      {entry.words.length > 0 && (
       <div className="words">
         {entry.words.map((w, i) => (
           <button
@@ -134,6 +168,7 @@ function SoundCard ({ entry, labelled, playing, setPlaying }) {
           </button>
         ))}
       </div>
+      )}
     </div>
   )
 }

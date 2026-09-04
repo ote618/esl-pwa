@@ -62,7 +62,16 @@ fs.writeFileSync(path.join(tmp, '.vercel', 'project.json'), JSON.stringify(STAGI
 
 const files = execFileSync('find', [path.join(tmp, 'public'), '-type', 'f'], { encoding: 'utf8' }).trim().split('\n').length
 console.log(`  deploying ${files} files to ${STAGING.projectName}...`)
-run('vercel', ['deploy', '--prod', '--yes'], { cwd: tmp, stdio: 'pipe' })
+/* The CLI's exit code is not the verdict — the probes below are. A non-zero
+ * exit here (a hint the CLI prints, a flaky upload) used to abort the script
+ * with an undecoded Buffer dump. Show what it said and let the probes decide. */
+try {
+  execFileSync('vercel', ['deploy', '--prod', '--yes'], { cwd: tmp, stdio: 'pipe', encoding: 'utf8' })
+} catch (e) {
+  const said = ((e.stdout || '') + (e.stderr || '')).trim()
+  console.log(`  vercel deploy exited ${e.status ?? '?'}${said ? ':\n' + said.split('\n').map(l => '    ' + l).join('\n') : ''}`)
+  console.log('  continuing to verification — the probes decide, not the exit code')
+}
 fs.rmSync(tmp, { recursive: true, force: true })
 
 /* A deploy that reports success and serves a 404 is the failure mode that

@@ -141,3 +141,32 @@ body{margin:0;background:var(--studio);font-family:'Nunito',system-ui,sans-serif
   font-family:'Baloo 2',system-ui,sans-serif;font-weight:700;font-size:15px;color:var(--chalk)}
 .sound .soundlabel .guide{background:var(--yellow);color:var(--navy);
   border-radius:8px;padding:1px 8px;font-size:14px;font-weight:800}
+
+/* ---- part-3 cards: the syllable / word as a big chip beside the speaker ---- */
+.chipbig{font-family:'Baloo 2',cursive,sans-serif;font-weight:800;font-size:26px;color:var(--chalk);
+  min-width:52px;letter-spacing:.01em}
+.sound.compact{padding:11px 13px}
+
+/* ---- lesson video: facade first, iframe only after a tap ---- */
+.videobox{background:#000;border:5px solid var(--navy);border-radius:var(--r-xl, 22px);
+  box-shadow:0 6px 0 var(--shadow);overflow:hidden;position:relative;aspect-ratio:16/9;margin-bottom:2px}
+.videobox iframe{position:absolute;inset:0;width:100%;height:100%;border:0}
+.facade{position:absolute;inset:0;display:flex;flex-direction:column;align-items:center;
+  justify-content:center;gap:12px;cursor:pointer;border:0;width:100%;font-family:inherit;
+  background:var(--grass);
+  background-image:repeating-linear-gradient(90deg,rgba(255,255,255,.05) 0 2px,transparent 2px 40px)}
+.playbtn{width:78px;height:78px;border-radius:50%;background:var(--yellow);color:var(--navy);
+  display:grid;place-items:center;box-shadow:0 4px 0 rgba(0,0,0,.35);transition:transform .08s}
+.facade:active .playbtn{transform:translateY(3px)}
+.playbtn svg{width:34px;height:34px;margin-left:4px}
+.facade .cap{color:var(--chalk);font-weight:800;font-size:15px}
+.voff{position:absolute;inset:0;display:flex;flex-direction:column;align-items:center;
+  justify-content:center;gap:9px;background:var(--grass);color:var(--chalk);padding:20px;text-align:center}
+.voff b{font-family:'Baloo 2',cursive,sans-serif;font-size:19px}
+.voff span{font-size:13px;font-weight:700;color:rgba(241,250,238,.72);max-width:30ch;line-height:1.45}
+.voff a{margin-top:4px;background:var(--yellow);color:var(--navy);text-decoration:none;
+  font-weight:800;font-size:13px;padding:9px 16px;border-radius:var(--r-pill, 999px);box-shadow:0 3px 0 #b39100}
+
+/* ---- build stamp, so a phone can say which deploy it is looking at ---- */
+.build{margin:26px 0 0;text-align:center;font-size:10.5px;font-weight:800;letter-spacing:.14em;
+  text-transform:uppercase;color:rgba(241,250,238,.34)}

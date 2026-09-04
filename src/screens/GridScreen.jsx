@@ -55,6 +55,7 @@ export default function GridScreen ({ onOpenLetter, onOpenLesson }) {
           )
         })}
       </div>
+      <p className="build">build {__BUILD__}</p>
     </section>
   )
 }

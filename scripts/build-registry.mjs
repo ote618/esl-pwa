@@ -462,7 +462,11 @@ const out = {
     note: 'IDs are opaque. U2- and U3- are frozen tokens from the stood-down nine-unit structure and do NOT mean Unit 2 or Unit 3. Never parse a prefix. Group and part are fields.',
     patterns: ['LTR-<letter>-NAME', 'LTR-<letter>-S<n>', 'U2-<syllable>', 'U3-<word>']
   },
-  gating: { current: 'G1', releaseDay: 'friday', allowPrior: true },
+  // 2026-09-03: all six letter groups are recorded, cut and joined, so the
+  // gate opens through G6. G7/G8 and the tail units stay "Todavía no" until
+  // they carry entries. Move `current` back to release week by week if the
+  // classroom needs a slower drip.
+  gating: { current: 'G6', releaseDay: 'friday', allowPrior: true },
   structure: STRUCTURE.map(s => ({ ...s, populated: !!production[s.id] })),
   groups: production
 }
