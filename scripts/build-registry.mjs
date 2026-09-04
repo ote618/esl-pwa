@@ -94,7 +94,7 @@ const STRUCTURE = [
  * THREE — sound, word1, word2.
  *
  * The one-beat clip role is "sound", not "name"/"word". That is not a
- * preference: the shipped files are LTR-A-NAME_sound.mp3 and U3-AT_sound.mp3,
+ * preference: the shipped files are LTR-A-NAME_sound__A_name.mp3 and U3-AT_sound__A_word_at.mp3,
  * the filename IS the ID, and files are never renamed. The role vocabulary
  * follows the audio, not the other way round.
  * ------------------------------------------------------------------ */
