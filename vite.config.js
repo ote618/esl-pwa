@@ -45,8 +45,7 @@ export default defineConfig({
         //   calls registration.update() on launch and on visibilitychange;
         //   left alone, browsers re-check sw.js roughly daily.
         //
-        //   MEDIA — cache-first, effectively forever. Filenames are frozen
-        //   entry IDs, so a file never changes under its own name.
+        //   MEDIA — NOT handled by the worker at all. See runtimeCaching below.
         //
         // Precache is the SHELL ONLY. No .mp3 and no .webp: 385 clips and 249
         // images are several MB before a child sees anything. They arrive on
@@ -69,18 +68,32 @@ export default defineConfig({
         cleanupOutdatedCaches: true,
         clientsClaim: true,
         skipWaiting: true,
-        runtimeCaching: [
-          {
-            urlPattern: ({ url }) => /\.(?:mp3|webp)$/i.test(url.pathname),
-            handler: 'CacheFirst',
-            options: {
-              cacheName: 'ecf-media',
-              expiration: { maxEntries: 800, maxAgeSeconds: 60 * 60 * 24 * 365 },
-              cacheableResponse: { statuses: [0, 200] },
-              rangeRequests: true
-            }
-          }
-        ]
+        // MEDIA IS DELIBERATELY NOT CACHED BY THE SERVICE WORKER.
+        //
+        // This used to be a CacheFirst route matching /\.(?:mp3|webp)$/. It was
+        // removed because it does not do what its comment claimed, and on the
+        // one device class this app targets it makes audio worse:
+        //
+        //   1. A media element fetches with a Range header. The server answers
+        //      206. cacheableResponse here listed [0, 200], which excludes 206,
+        //      so the first request for any clip was never cached. The
+        //      "cached forever" claim was not true in practice.
+        //   2. Status 0 is an opaque response. Admitting it means an error can
+        //      be cached as if it were the clip, and served for a year.
+        //   3. Safari on iOS is unreliable when a media element's response is
+        //      served through a service worker at all — audio that plays in
+        //      every desktop browser can fail silently on an iPhone, with
+        //      play() resolving and the element erroring afterwards, so there
+        //      is no rejection to catch.
+        //
+        // Caching media is the HTTP cache's job. Give the clips a long
+        // Cache-Control at the edge (vercel.json) instead — filenames carry a
+        // frozen entry ID and never change under their own name, so they are
+        // safe to treat as immutable.
+        //
+        // If a runtime route is ever added back here, it must exclude audio:
+        // check request.destination and skip 'audio' and 'video'.
+        runtimeCaching: []
       }
     })
   ]

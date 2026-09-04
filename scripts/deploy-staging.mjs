@@ -56,7 +56,12 @@ if (!fs.existsSync(path.join(dist, 'index.html'))) {
 
 const tmp = fs.mkdtempSync(path.join(os.tmpdir(), 'esl-staging-'))
 fs.cpSync(dist, path.join(tmp, 'public'), { recursive: true })
-fs.writeFileSync(path.join(tmp, 'vercel.json'), JSON.stringify({ outputDirectory: 'public', framework: null }, null, 2))
+/* Staging is a static upload, so the repo's vercel.json is not read by Vercel
+ * here. Carry its headers over — the long Cache-Control on /audio and /img is
+ * what stands in for the service-worker media cache, and a staging test that
+ * does not exercise it is not a test of what production does. */
+const repoCfg = fs.existsSync(path.join(ROOT, 'vercel.json')) ? JSON.parse(fs.readFileSync(path.join(ROOT, 'vercel.json'), 'utf8')) : {}
+fs.writeFileSync(path.join(tmp, 'vercel.json'), JSON.stringify({ outputDirectory: 'public', framework: null, ...(repoCfg.headers && { headers: repoCfg.headers }) }, null, 2))
 fs.mkdirSync(path.join(tmp, '.vercel'))
 fs.writeFileSync(path.join(tmp, '.vercel', 'project.json'), JSON.stringify(STAGING, null, 2))
 

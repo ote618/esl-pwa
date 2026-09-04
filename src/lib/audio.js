@@ -85,18 +85,25 @@ function clearTimers () {
  * tap a child makes is on a letter, not on a play button. Prime the element
  * silently on the first gesture so that tap is not the one that gets eaten.
  * Safe to call repeatedly; it does its work once.
+ *
+ * The primer is an inline silent WAV, NOT a real clip. Priming with a real
+ * clip made the unlock depend on the network: on a slow connection the fetch
+ * had not finished by the time the child tapped a letter, `unlocked` was still
+ * false, and the first tap was eaten anyway — the exact failure this function
+ * exists to prevent. A data: URI has nothing to wait for. It also cannot
+ * contend with a real playback for the single shared element.
  */
+const SILENT_WAV =
+  'data:audio/wav;base64,UklGRiQAAABXQVZFZm10IBAAAAABAAEARKwAAIhYAQACABAAZGF0YQAAAAA='
+
 let unlocked = false
 export function unlock () {
   if (unlocked) return
   const a = element()
   if (!a) return
-  const first = URLS.values().next().value
-  const src = first && (first.sound || Object.values(first)[0])
-  if (!src) return
   const restore = a.volume
   a.volume = 0
-  a.src = src
+  a.src = SILENT_WAV
   const started = a.play()
   const finish = () => {
     a.pause()
