@@ -1,0 +1,20 @@
+{
+  "_note": "The seven nights. Ratified curriculum figures — changing a night is a data edit, never a code change. Read by src/lib/homework.js.",
+  "_fields": {
+    "mode": "\"lesson\" runs the two passes in Tarea. \"game\" routes to the Juegos handoff — Thursday is built elsewhere and its row is here only so the week is complete.",
+    "new": "Which slice of THIS week's group (gating.current) the night teaches: third-1 | thirds-1-2 | all | weakest-third. Thirds are cut at n/3 on the declared order, in thirdBounds() — one function, so the cut point can change.",
+    "cumulative": "Which earlier group tops the night up: none | lastWeek | twoWeeksBack. Resolved by the structure row's declared `number` (number-1, number-2), NEVER by parsing an id. A group that is unpopulated, or ahead of current, contributes nothing and the night simply runs short.",
+    "items": "The target size. On a taught-order night it sizes the cumulative top-up and the new pool is never cut below itself; on a shuffled night it is the draw size. A thin pool shortens the night — silently, always.",
+    "order": "\"taught\" is declared order. \"shuffled\" is seeded on the group, the ISO week and the weekday, so a night looks the same each time it is opened and two consecutive nights never shuffle alike."
+  },
+  "nights": {
+    "friday":    { "mode": "lesson", "new": "third-1",       "cumulative": "none",         "items": 8,  "order": "taught" },
+    "saturday":  { "mode": "lesson", "new": "thirds-1-2",    "cumulative": "lastWeek",     "items": 26, "order": "taught" },
+    "sunday":    { "mode": "lesson", "new": "all",           "cumulative": "lastWeek",     "items": 28, "order": "taught" },
+    "monday":    { "mode": "lesson", "new": "all",           "cumulative": "lastWeek",     "items": 14, "order": "shuffled" },
+    "tuesday":   { "mode": "lesson", "new": "all",           "cumulative": "lastWeek",     "items": 14, "order": "shuffled" },
+    "wednesday": { "mode": "lesson", "new": "weakest-third", "cumulative": "twoWeeksBack", "items": 12, "order": "shuffled" },
+    "thursday":  { "mode": "game",   "items": 20,
+                   "decay": { "thisWeek": 0.6, "lastWeek": 0.2, "twoWeeksBack": 0.1, "older": 0.1 } }
+  }
+}

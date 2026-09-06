@@ -1,0 +1,7 @@
+{
+  "_note": "The one edit per Friday. `current` names the furthest released container by its DECLARED id from the structure in scripts/build-registry.mjs. It is validated at build time: an id that is not a declared row fails the build. `allowPrior` keeps everything before it open. Confirmed with T 2026-09-05: the class is on Group 2. All six groups are recorded; recorded is not taught.",
+  "_cache": "This file is read at BUILD time and baked into out/esl_unit_registry.json, which rides inside the hashed JS bundle. It is never served as its own asset, so no cache rule can freeze it. If it is ever moved to a runtime fetch it must NOT be given an immutable or cache-first route (see the note in vite.config.js) — the class would freeze on one group forever with nothing looking broken.",
+  "current": "G2",
+  "releaseDay": "friday",
+  "allowPrior": true
+}

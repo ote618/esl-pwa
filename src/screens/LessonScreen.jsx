@@ -20,7 +20,12 @@ const CARDS = [
   ['juegos', 'Juegos', 'Juega con las letras']
 ]
 
-export default function LessonScreen ({ group, onBack }) {
+/**
+ * Slice 2 wired `onOpenTarea` onto the card that was already here. It is the
+ * only change this file has taken: the card, its copy and its icon are Slice
+ * 1's, and with the prop absent the screen behaves exactly as it did before.
+ */
+export default function LessonScreen ({ group, onBack, onOpenTarea }) {
   const vid = group.media?.video?.provider === 'youtube' ? group.media.video.id : null
   return (
     <section className="screen active" id="screen-lesson">
@@ -36,7 +41,11 @@ export default function LessonScreen ({ group, onBack }) {
       <div className="lessons">
         <VideoBox vid={vid} />
         {CARDS.map(([key, title, sub]) => (
-          <button className="lesson" key={key}>
+          <button
+            className="lesson"
+            key={key}
+            onClick={key === 'tarea' ? onOpenTarea : undefined}
+          >
             <LessonIcon name={key} />
             <span>
               <span className="lt">{title}</span>

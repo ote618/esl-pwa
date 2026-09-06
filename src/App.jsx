@@ -2,15 +2,20 @@ import { useEffect, useState } from 'react'
 import GridScreen from './screens/GridScreen.jsx'
 import LetterScreen from './screens/LetterScreen.jsx'
 import LessonScreen from './screens/LessonScreen.jsx'
+import TareaScreen from './screens/TareaScreen.jsx'
 import { stop, unlock } from './lib/audio.js'
 import './styles/alphabet.css'
 
 /**
- * Slice 1 — the alphabet.
+ * Slice 1 — the alphabet. Slice 2 — the homework.
  *
- * Three screens, one at a time, back through history so the Android back
+ * Four screens now, one at a time, back through history so the Android back
  * button lands where a child expects. Every screen change stops the audio;
  * a clip still talking over the next screen is the worst bug here.
+ *
+ * Tarea carries no group. Tonight's set is built from `gating.current` inside
+ * the screen, not from whichever lesson the tap came through — see the note at
+ * the top of TareaScreen.jsx.
  */
 export default function App () {
   const [view, setView] = useState({ name: 'grid' })
@@ -55,8 +60,13 @@ export default function App () {
         <LetterScreen letter={view.letter} group={view.group} onBack={back} />
       )}
       {view.name === 'lesson' && (
-        <LessonScreen group={view.group} onBack={back} />
+        <LessonScreen
+          group={view.group}
+          onBack={back}
+          onOpenTarea={() => go({ name: 'tarea' })}
+        />
       )}
+      {view.name === 'tarea' && <TareaScreen onBack={back} />}
     </div>
   )
 }
