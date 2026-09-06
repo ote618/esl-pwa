@@ -4,6 +4,7 @@ import LetterScreen from './screens/LetterScreen.jsx'
 import LessonScreen from './screens/LessonScreen.jsx'
 import GamesScreen from './screens/GamesScreen.jsx'
 import { stop, unlock } from './lib/audio.js'
+import { setSafe } from './lib/refresh.js'
 import './styles/alphabet.css'
 
 /**
@@ -33,6 +34,10 @@ export default function App () {
       removeEventListener('click', go)
     }
   }, [])
+
+  // A release that arrived mid-lesson waits for the grid. Anywhere else is
+  // somewhere a child is in the middle of. See lib/refresh.js.
+  useEffect(() => { setSafe(view.name === 'grid') }, [view.name])
 
   useEffect(() => {
     const pop = () => { stop(); setView({ name: 'grid' }) }
