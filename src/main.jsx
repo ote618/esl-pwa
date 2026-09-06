@@ -1,6 +1,7 @@
 import React from 'react'
 import ReactDOM from 'react-dom/client'
 import App from './App.jsx'
+import './lib/refresh.js'
 import './index.css'
 
 /**
@@ -14,6 +15,10 @@ import './index.css'
  * So: check on launch, and again whenever the tab comes back to the front.
  * update() is cheap — a conditional request for one file — and a no-op when
  * nothing has changed.
+ *
+ * Finding a release is only half of it. lib/refresh.js APPLIES one, at a
+ * moment where a child loses nothing by it — without that, this file's
+ * checking just means the new build arrives on the launch after next.
  */
 if ('serviceWorker' in navigator) {
   const check = () => navigator.serviceWorker.getRegistration()
