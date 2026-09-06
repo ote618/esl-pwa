@@ -121,10 +121,13 @@ fs.rmSync(tmp, { recursive: true, force: true })
 
 /* A deploy that reports success and serves a 404 is the failure mode that
  * matters. Check the things a child actually loads, not just the root. */
-/* The routed paths are in here on purpose: they are served by the SPA
- * fallback, not by a file on disk, so they are the probes that fail first if
- * the rewrites above ever stop being carried. */
-const probes = ['/', '/juegos', '/juegos/super-sonidos', '/game-testing',
+/* Routed paths are served by the SPA fallback, not by a file on disk, so they
+ * are the probes that fail first if the rewrites stop being carried — but only
+ * on a branch that HAS them. Gate them on the branch's own vercel.json instead
+ * of hardcoding them for everyone: a branch that routes the old way, in
+ * component state, has no such paths and must not be failed for it. */
+const routed = repoCfg.rewrites ? ['/juegos', '/juegos/super-sonidos', '/game-testing'] : []
+const probes = ['/', ...routed,
   '/manifest.webmanifest', '/audio/group1/LTR-A-NAME_sound__A_name.mp3',
   '/audio/group6/LTR-Z-S1_sound__Z_sound_z.mp3', '/img/Group%201%20A-D/apple.webp', '/icons/icon-192.png']
 console.log('\n  verifying (signed out):')
