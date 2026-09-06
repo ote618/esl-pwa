@@ -5,8 +5,12 @@ import { stop } from '../lib/audio.js'
 /**
  * Screen 3 — the week's lesson.
  *
- * The video is real; the homework and the games are still placeholders so
+ * The video and the games are real; the homework is still a placeholder so
  * the route and the shape are honest about what exists.
+ *
+ * The games live HERE, at the end of the week's lesson, and the group whose
+ * lesson this is travels with them — a game is played in the letters the
+ * child has just been taught, never in whichever group happens to be first.
  *
  * The video id is DECLARED on the group (group.media.video.id) by the entry
  * table. Null means the group has no video yet, and the screen says so — it
@@ -16,11 +20,11 @@ import { stop } from '../lib/audio.js'
  * wall of unrelated suggestions.
  */
 const CARDS = [
-  ['tarea', 'Tarea', 'Para practicar en casa'],
-  ['juegos', 'Juegos', 'Juega con las letras']
+  ['tarea', 'Tarea', 'Para practicar en casa', null],
+  ['juegos', 'Juegos', 'Juega con las letras', 'games']
 ]
 
-export default function LessonScreen ({ group, onBack }) {
+export default function LessonScreen ({ group, onBack, onOpenGames }) {
   const vid = group.media?.video?.provider === 'youtube' ? group.media.video.id : null
   return (
     <section className="screen active" id="screen-lesson">
@@ -35,8 +39,13 @@ export default function LessonScreen ({ group, onBack }) {
 
       <div className="lessons">
         <VideoBox vid={vid} />
-        {CARDS.map(([key, title, sub]) => (
-          <button className="lesson" key={key}>
+        {CARDS.map(([key, title, sub, opens]) => (
+          <button
+            className="lesson"
+            key={key}
+            aria-disabled={opens ? undefined : 'true'}
+            onClick={opens === 'games' ? onOpenGames : undefined}
+          >
             <LessonIcon name={key} />
             <span>
               <span className="lt">{title}</span>
@@ -47,7 +56,7 @@ export default function LessonScreen ({ group, onBack }) {
       </div>
 
       <p className="soon">
-        Aquí vivirán el video de la semana, la tarea y los juegos del grupo.
+        La tarea del grupo llega pronto.
       </p>
     </section>
   )

@@ -13,9 +13,11 @@ import './styles/alphabet.css'
  * lands where a child expects. Every screen change stops the audio; a clip
  * still talking over the next screen is the worst bug here.
  *
- * The games shelf hangs off the grid and nothing else. A game owns its own
- * screens, so this file never learns what any of them are — it hands
- * GamesScreen the back button and stays out of the way.
+ * The games hang off the LESSON, not off the grid. A child arrives at a game
+ * having just done that group's week, and the group they were working in is
+ * the group the game is played in — which is why view.group travels from the
+ * lesson into GamesScreen. A game owns its own screens, so this file never
+ * learns what any of them are.
  */
 export default function App () {
   const [view, setView] = useState({ name: 'grid' })
@@ -51,38 +53,24 @@ export default function App () {
   return (
     <div className="app">
       {view.name === 'grid' && (
-        <>
-          {/* The door to the games, above the grid. It sat under it once —
-              1447px down an 812px phone, two screens past the fold, which is
-              the same as not shipping it. A way in you have to hunt for is
-              not a way in. */}
-          <nav style={NAV}>
-            <button className="enter" onClick={() => go({ name: 'games' })}>
-              Juegos →
-            </button>
-          </nav>
-          <GridScreen
-            onOpenLetter={(letter, group) => go({ name: 'letter', letter, group })}
-            onOpenLesson={group => go({ name: 'lesson', group })}
-          />
-        </>
+        <GridScreen
+          onOpenLetter={(letter, group) => go({ name: 'letter', letter, group })}
+          onOpenLesson={group => go({ name: 'lesson', group })}
+        />
       )}
       {view.name === 'letter' && (
         <LetterScreen letter={view.letter} group={view.group} onBack={back} />
       )}
       {view.name === 'lesson' && (
-        <LessonScreen group={view.group} onBack={back} />
+        <LessonScreen
+          group={view.group}
+          onBack={back}
+          onOpenGames={() => go({ name: 'games', group: view.group })}
+        />
       )}
       {view.name === 'games' && (
-        <GamesScreen onBack={back} />
+        <GamesScreen group={view.group} onBack={back} />
       )}
     </div>
   )
-}
-
-/* One rule, one file. Not worth a class in alphabet.css for a single bar. */
-const NAV = {
-  padding: '18px 18px 0',
-  display: 'flex',
-  justifyContent: 'flex-end'
 }

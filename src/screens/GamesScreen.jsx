@@ -10,9 +10,10 @@ import TiroLibre from '../games/TiroLibre.jsx'
  * { group, onBack } and owns everything else about itself — its own screens,
  * its own progress, its own styles. Adding a game is adding a line here.
  *
- * The group is whatever the caller was already looking at. A game that is
- * handed nothing falls back to the first populated group on its own, so this
- * screen never has to know which groups are live.
+ * Reached from the week's lesson, so the group arrives with the child: a
+ * game is played in the letters that lesson just taught. The fallback to the
+ * first populated group is a safety net for a caller that hands over nothing,
+ * not a route anyone takes.
  */
 const GAMES = [
   { id: 'tiro-libre', label: 'Tiro Libre', component: TiroLibre }
@@ -35,7 +36,7 @@ export default function GamesScreen ({ group: groupProp, onBack }) {
       </div>
 
       <div className="pagehead">
-        <p className="eyebrow">English con Fútbol</p>
+        <p className="eyebrow">Grupo {group.number}</p>
         <h1 className="lede">Juegos</h1>
       </div>
 
