@@ -59,9 +59,19 @@ fs.cpSync(dist, path.join(tmp, 'public'), { recursive: true })
 /* Staging is a static upload, so the repo's vercel.json is not read by Vercel
  * here. Carry its headers over — the long Cache-Control on /audio and /img is
  * what stands in for the service-worker media cache, and a staging test that
- * does not exercise it is not a test of what production does. */
+ * does not exercise it is not a test of what production does.
+ *
+ * Carry the REWRITES too. The app routes on the path now (/juegos,
+ * /juegos/super-sonidos, /game-testing), and without the SPA fallback every
+ * one of them 404s here while the root still loads — a staging build that
+ * looks fine and cannot open the thing you came to test. */
 const repoCfg = fs.existsSync(path.join(ROOT, 'vercel.json')) ? JSON.parse(fs.readFileSync(path.join(ROOT, 'vercel.json'), 'utf8')) : {}
-fs.writeFileSync(path.join(tmp, 'vercel.json'), JSON.stringify({ outputDirectory: 'public', framework: null, ...(repoCfg.headers && { headers: repoCfg.headers }) }, null, 2))
+fs.writeFileSync(path.join(tmp, 'vercel.json'), JSON.stringify({
+  outputDirectory: 'public',
+  framework: null,
+  ...(repoCfg.headers && { headers: repoCfg.headers }),
+  ...(repoCfg.rewrites && { rewrites: repoCfg.rewrites })
+}, null, 2))
 fs.mkdirSync(path.join(tmp, '.vercel'))
 fs.writeFileSync(path.join(tmp, '.vercel', 'project.json'), JSON.stringify(STAGING, null, 2))
 
@@ -81,7 +91,11 @@ fs.rmSync(tmp, { recursive: true, force: true })
 
 /* A deploy that reports success and serves a 404 is the failure mode that
  * matters. Check the things a child actually loads, not just the root. */
-const probes = ['/', '/manifest.webmanifest', '/audio/group1/LTR-A-NAME_sound__A_name.mp3',
+/* The routed paths are in here on purpose: they are served by the SPA
+ * fallback, not by a file on disk, so they are the probes that fail first if
+ * the rewrites above ever stop being carried. */
+const probes = ['/', '/juegos', '/juegos/super-sonidos', '/game-testing',
+  '/manifest.webmanifest', '/audio/group1/LTR-A-NAME_sound__A_name.mp3',
   '/audio/group6/LTR-Z-S1_sound__Z_sound_z.mp3', '/img/Group%201%20A-D/apple.webp', '/icons/icon-192.png']
 console.log('\n  verifying (signed out):')
 let bad = 0
