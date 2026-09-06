@@ -17,21 +17,43 @@
  * It is NOT production. Nothing here touches esl-pwa.vercel.app; only a merge
  * to main does that.
  *
- * The project is still named "esl-pwa-mockup" — it used to host the static
- * design mockup. Renaming it would change the URL, and a stable URL is the
- * point, so the name is stale on purpose.
+ * The default project is still named "esl-pwa-mockup" — it used to host the
+ * static design mockup. Renaming it would change the URL, and a stable URL is
+ * the point, so the name is stale on purpose.
+ *
+ * ONE URL PER BRANCH THAT NEEDS ONE
+ *   Set STAGING_PROJECT to deploy a branch somewhere of its own:
+ *
+ *     STAGING_PROJECT=esl-pwa-supersonidos npm run deploy:staging
+ *
+ *   Two chats sharing esl-pwa-mockup overwrite each other — that is not a
+ *   hypothetical, it happened twice in ten minutes on 2026-09-06 while
+ *   Súper Sonidos and Tiro Libre were both being tested.
+ *
+ *   It has to be a separate PROJECT, not a second domain on this one. Only a
+ *   project's assigned domain is public; its per-deployment URLs are behind
+ *   Vercel Authentication and 302 signed out. And a second domain added here
+ *   would not help, because `--prod` claims every production domain a project
+ *   has — the other chat's next deploy would take this branch's URL with it.
+ *
+ *   `vercel link --project <name> --yes` creates the project if it does not
+ *   exist, so the first run of a new name is the only setup there is.
  */
 import { execFileSync } from 'node:child_process'
 import fs from 'node:fs'
 import os from 'node:os'
 import path from 'node:path'
 
-const STAGING = {
+const DEFAULT_STAGING = {
   projectId: 'prj_B8mW8QZvLhTFEKLl6B4SkHbHnF3M',
   orgId: 'team_bM5VghGjv5v0KCneVjD8L1ur',
   projectName: 'esl-pwa-mockup',
   url: 'https://esl-pwa-mockup.vercel.app'
 }
+const OVERRIDE = process.env.STAGING_PROJECT
+const STAGING = OVERRIDE
+  ? { orgId: DEFAULT_STAGING.orgId, projectName: OVERRIDE, url: `https://${OVERRIDE}.vercel.app` }
+  : DEFAULT_STAGING
 
 const ROOT = path.resolve(path.dirname(new URL(import.meta.url).pathname), '..')
 const run = (cmd, args, opts = {}) =>
@@ -42,6 +64,7 @@ const sha = execFileSync('git', ['rev-parse', '--short', 'HEAD'], { cwd: ROOT, e
 const dirty = execFileSync('git', ['status', '--porcelain'], { cwd: ROOT, encoding: 'utf8' }).trim().length > 0
 
 console.log(`\n--- STAGING ---`)
+console.log(`  target ${STAGING.projectName}${OVERRIDE ? '  (STAGING_PROJECT override)' : ''} -> ${STAGING.url}`)
 console.log(`  branch ${branch} @ ${sha}${dirty ? '  (UNCOMMITTED CHANGES — staging will not match any commit)' : ''}`)
 
 console.log('\n  building...')
@@ -59,11 +82,28 @@ fs.cpSync(dist, path.join(tmp, 'public'), { recursive: true })
 /* Staging is a static upload, so the repo's vercel.json is not read by Vercel
  * here. Carry its headers over — the long Cache-Control on /audio and /img is
  * what stands in for the service-worker media cache, and a staging test that
- * does not exercise it is not a test of what production does. */
+ * does not exercise it is not a test of what production does.
+ *
+ * Carry the REWRITES too. The app routes on the path now (/juegos,
+ * /juegos/super-sonidos, /game-testing), and without the SPA fallback every
+ * one of them 404s here while the root still loads — a staging build that
+ * looks fine and cannot open the thing you came to test. */
 const repoCfg = fs.existsSync(path.join(ROOT, 'vercel.json')) ? JSON.parse(fs.readFileSync(path.join(ROOT, 'vercel.json'), 'utf8')) : {}
-fs.writeFileSync(path.join(tmp, 'vercel.json'), JSON.stringify({ outputDirectory: 'public', framework: null, ...(repoCfg.headers && { headers: repoCfg.headers }) }, null, 2))
-fs.mkdirSync(path.join(tmp, '.vercel'))
-fs.writeFileSync(path.join(tmp, '.vercel', 'project.json'), JSON.stringify(STAGING, null, 2))
+fs.writeFileSync(path.join(tmp, 'vercel.json'), JSON.stringify({
+  outputDirectory: 'public',
+  framework: null,
+  ...(repoCfg.headers && { headers: repoCfg.headers }),
+  ...(repoCfg.rewrites && { rewrites: repoCfg.rewrites })
+}, null, 2))
+/* The default target is linked by id, which needs no round trip. A named
+ * override has no id yet — let the CLI resolve it, creating the project on
+ * first use. */
+if (OVERRIDE) {
+  execFileSync('vercel', ['link', '--project', OVERRIDE, '--yes'], { cwd: tmp, stdio: 'pipe' })
+} else {
+  fs.mkdirSync(path.join(tmp, '.vercel'))
+  fs.writeFileSync(path.join(tmp, '.vercel', 'project.json'), JSON.stringify(STAGING, null, 2))
+}
 
 const files = execFileSync('find', [path.join(tmp, 'public'), '-type', 'f'], { encoding: 'utf8' }).trim().split('\n').length
 console.log(`  deploying ${files} files to ${STAGING.projectName}...`)
@@ -81,7 +121,11 @@ fs.rmSync(tmp, { recursive: true, force: true })
 
 /* A deploy that reports success and serves a 404 is the failure mode that
  * matters. Check the things a child actually loads, not just the root. */
-const probes = ['/', '/manifest.webmanifest', '/audio/group1/LTR-A-NAME_sound__A_name.mp3',
+/* The routed paths are in here on purpose: they are served by the SPA
+ * fallback, not by a file on disk, so they are the probes that fail first if
+ * the rewrites above ever stop being carried. */
+const probes = ['/', '/juegos', '/juegos/super-sonidos', '/game-testing',
+  '/manifest.webmanifest', '/audio/group1/LTR-A-NAME_sound__A_name.mp3',
   '/audio/group6/LTR-Z-S1_sound__Z_sound_z.mp3', '/img/Group%201%20A-D/apple.webp', '/icons/icon-192.png']
 console.log('\n  verifying (signed out):')
 let bad = 0
