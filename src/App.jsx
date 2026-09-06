@@ -52,17 +52,19 @@ export default function App () {
     <div className="app">
       {view.name === 'grid' && (
         <>
-          <GridScreen
-            onOpenLetter={(letter, group) => go({ name: 'letter', letter, group })}
-            onOpenLesson={group => go({ name: 'lesson', group })}
-          />
-          {/* The door to the games, at the foot of the grid rather than in
-              it, so the alphabet screens stay exactly as Slice 1 shipped. */}
+          {/* The door to the games, above the grid. It sat under it once —
+              1447px down an 812px phone, two screens past the fold, which is
+              the same as not shipping it. A way in you have to hunt for is
+              not a way in. */}
           <nav style={NAV}>
             <button className="enter" onClick={() => go({ name: 'games' })}>
               Juegos →
             </button>
           </nav>
+          <GridScreen
+            onOpenLetter={(letter, group) => go({ name: 'letter', letter, group })}
+            onOpenLesson={group => go({ name: 'lesson', group })}
+          />
         </>
       )}
       {view.name === 'letter' && (
@@ -80,6 +82,7 @@ export default function App () {
 
 /* One rule, one file. Not worth a class in alphabet.css for a single bar. */
 const NAV = {
-  padding: '0 18px calc(22px + env(safe-area-inset-bottom))',
-  textAlign: 'center'
+  padding: '18px 18px 0',
+  display: 'flex',
+  justifyContent: 'flex-end'
 }
