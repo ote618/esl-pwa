@@ -9,12 +9,20 @@
  *   1. TEST / SHOW_TAIL read `location` in the standalone file. They are props
  *      now, so one build can serve both the child-facing route and the test
  *      route without the URL deciding behaviour behind React's back.
- *   2. Clip URLs. The standalone file guessed `{ENTRY-ID}_{part}.mp3`. The real
- *      files carry a descriptive tail — LTR-A-NAME_sound__A_name.mp3 — so that
- *      guess 404s on every clip and the game falls back to browser speech for
- *      all of Set 1. clipUrl() asks the registry, which knows the filenames,
- *      and keeps the original guess for entries the registry does not carry
- *      (sets 7-12, which have no recordings yet).
+ *   2. Audio goes through src/lib/audio.js — the app's shared element, its
+ *      registry lookup, its iOS unlock. The standalone file did none of that:
+ *      it guessed `{ENTRY-ID}_{part}.mp3` (the real files carry a descriptive
+ *      tail, LTR-A-NAME_sound__A_name.mp3, so every guess missed), and it
+ *      played through an Audio element of its OWN that no gesture ever primed.
+ *
+ *      That second half is the one a desktop browser cannot show you. iOS
+ *      refuses play() on an element no user gesture has started, and this
+ *      game's clips start on a 400ms timer after the tap, not in the handler.
+ *      So on a phone every play() rejected and every round fell through to
+ *      browser speech, while every desktop browser played the recordings
+ *      correctly. Sharing the app's already-unlocked element is the fix; it
+ *      also means a game clip and a lesson clip can no longer talk over each
+ *      other, since there is now one element between them.
  *   3. getElementById -> $, scoped to the mounted root, so nothing reaches
  *      across into the rest of the app.
  *   4. Window and document listeners are tracked, and setTimeout is wrapped,
@@ -24,7 +32,7 @@
  * Nothing else was touched.
  */
 
-import { clip } from '../../lib/audio.js'
+import { hasClip, play as playRegistryClip, stop as stopRegistryAudio, unlock as unlockAudio } from '../../lib/audio.js'
 
 export function startSuperSonidos (root, { testMode = false, showTail = false } = {}) {
   /* ---------- WRAPPER ---------- */
@@ -47,14 +55,6 @@ export function startSuperSonidos (root, { testMode = false, showTail = false } 
     timers.add(id)
     return id
   }
-
-  /**
-   * The URL for one clip, or the standalone file's guess when the registry has
-   * no entry for that id — sets 7-12 are unrecorded, and their rounds are meant
-   * to fall through to speech.
-   */
-  const clipUrl = (id, part, setN) =>
-    clip(id, part) || ('/audio/group' + setN + '/' + id + '_' + part + '.mp3')
 
   /* ---------- THE GAME, AS DELIVERED ---------- */
   /* =====================================================================
@@ -465,11 +465,12 @@ export function startSuperSonidos (root, { testMode = false, showTail = false } 
   let voices=[];if(window.speechSynthesis){const lv=()=>voices=speechSynthesis.getVoices();lv();speechSynthesis.onvoiceschanged=lv;}
   function speak(t,l){if(!window.speechSynthesis)return;try{speechSynthesis.cancel();const u=new SpeechSynthesisUtterance(t);u.lang=l==='en'?'en-US':'es-ES';u.rate=.72;
    const v=voices.find(v=>v.lang&&v.lang.toLowerCase().startsWith(u.lang.slice(0,2)));if(v)u.voice=v;speechSynthesis.speak(u);}catch(e){}}
-  const MEDIA=(window.SS_MEDIA_BASE||'');const AUD=new Audio();
   function playClip(rd){
-   if(!rd.clip){speak(rd.say,rd.lang);return;}
-   const url=MEDIA+clipUrl(rd.clip.id,rd.clip.part,G.set.n);
-   try{if(window.speechSynthesis)speechSynthesis.cancel();AUD.onerror=()=>speak(rd.say,rd.lang);AUD.src=url;AUD.play().catch(()=>speak(rd.say,rd.lang));}catch(e){speak(rd.say,rd.lang);}
+   // No recording for this round — sets 7-12 have none — so speech is the answer,
+   // not a failure. Decided from the registry, never from a request that missed.
+   if(!rd.clip||!hasClip(rd.clip.id,rd.clip.part)){speak(rd.say,rd.lang);return;}
+   if(window.speechSynthesis)speechSynthesis.cancel();
+   playRegistryClip(rd.clip.id,rd.clip.part);
   }
   function sayRound(){if(!G||G.done)return;const rd=G.rounds[G.rd];if(rd)playClip(rd);}
 
@@ -659,7 +660,7 @@ export function startSuperSonidos (root, { testMode = false, showTail = false } 
   const KM={ArrowLeft:'l',ArrowRight:'r',a:'l',d:'r',' ':'j',ArrowUp:'j',w:'j'};
   onWin('keydown',e=>{const k=KM[e.key];if(k){keys[k]=1;e.preventDefault();}});
   onWin('keyup',e=>{const k=KM[e.key];if(k){keys[k]=0;e.preventDefault();}});
-  onDoc('touchstart',function u(){if(window.speechSynthesis){const x=new SpeechSynthesisUtterance(' ');x.volume=0;speechSynthesis.speak(x);}offDoc('touchstart',u);},{once:true});
+  onDoc('touchstart',function u(){unlockAudio();if(window.speechSynthesis){const x=new SpeechSynthesisUtterance(' ');x.volume=0;speechSynthesis.speak(x);}offDoc('touchstart',u);},{once:true});
 
   (function loop(){if(stopped)return;update();draw();raf=requestAnimationFrame(loop);})();
   showMap();
@@ -671,7 +672,7 @@ export function startSuperSonidos (root, { testMode = false, showTail = false } 
     timers.clear()
     for (const [type, fn, opts] of winListeners) window.removeEventListener(type, fn, opts)
     for (const [type, fn, opts] of docListeners) document.removeEventListener(type, fn, opts)
-    try { AUD.pause(); AUD.removeAttribute('src') } catch (e) {}
+    try { stopRegistryAudio() } catch (e) {}
     try { if (window.speechSynthesis) speechSynthesis.cancel() } catch (e) {}
   }
 }

@@ -19,9 +19,11 @@ export default function SuperSonidos ({ testMode = false, showTail = false }) {
   const root = useRef(null)
 
   useEffect(() => {
-    // Shell-only builds proxy media from production, the same way the rest of
-    // the app does. Set before the script starts: it reads this once.
-    window.SS_MEDIA_BASE = import.meta.env.VITE_MEDIA_BASE || ''
+    // No media base is set here. The game's audio runs through src/lib/audio.js
+    // now, which resolves clips from the registry exactly as the rest of the app
+    // does — and the rest of the app has no VITE_MEDIA_BASE indirection at all.
+    // A knob that nothing reads is worse than no knob: it implies a capability
+    // the app does not have.
 
     // The game wants the whole page dark and unscrollable. Scoped to the time
     // it is mounted so the alphabet screens get their own page back.
