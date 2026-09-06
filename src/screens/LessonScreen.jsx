@@ -5,8 +5,8 @@ import { stop } from '../lib/audio.js'
 /**
  * Screen 3 — the week's lesson.
  *
- * The video is real; the homework and the games are still placeholders so
- * the route and the shape are honest about what exists.
+ * The video is real and so are the games; the homework is still a placeholder
+ * so the route and the shape are honest about what exists.
  *
  * The video id is DECLARED on the group (group.media.video.id) by the entry
  * table. Null means the group has no video yet, and the screen says so — it
@@ -16,11 +16,10 @@ import { stop } from '../lib/audio.js'
  * wall of unrelated suggestions.
  */
 const CARDS = [
-  ['tarea', 'Tarea', 'Para practicar en casa'],
-  ['juegos', 'Juegos', 'Juega con las letras']
+  ['tarea', 'Tarea', 'Para practicar en casa']
 ]
 
-export default function LessonScreen ({ group, onBack }) {
+export default function LessonScreen ({ group, onBack, onOpenGames }) {
   const vid = group.media?.video?.provider === 'youtube' ? group.media.video.id : null
   return (
     <section className="screen active" id="screen-lesson">
@@ -44,10 +43,17 @@ export default function LessonScreen ({ group, onBack }) {
             </span>
           </button>
         ))}
+        <button className="lesson" onClick={onOpenGames}>
+          <LessonIcon name="juegos" />
+          <span>
+            <span className="lt">Juegos</span>
+            <span className="ls">Juega con las letras</span>
+          </span>
+        </button>
       </div>
 
       <p className="soon">
-        Aquí vivirán el video de la semana, la tarea y los juegos del grupo.
+        Aquí vivirán el video de la semana y la tarea del grupo.
       </p>
     </section>
   )

@@ -170,3 +170,9 @@ body{margin:0;background:var(--studio);font-family:'Nunito',system-ui,sans-serif
 /* ---- build stamp, so a phone can say which deploy it is looking at ---- */
 .build{margin:26px 0 0;text-align:center;font-size:10.5px;font-weight:800;letter-spacing:.14em;
   text-transform:uppercase;color:rgba(241,250,238,.34)}
+
+/* A games tile for a game that is not in this build yet. Same shape as a live
+   tile so the shelf keeps its rhythm, dimmed and inert so a tap does not
+   promise something the build cannot deliver. */
+.lesson.soon-tile{opacity:.45;box-shadow:none;cursor:default}
+.lesson.soon-tile:active{transform:none;box-shadow:none}

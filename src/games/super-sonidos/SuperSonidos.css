@@ -1,0 +1,68 @@
+/**
+ * SÚPER SONIDOS — the delivered stylesheet, scoped.
+ *
+ * Every selector from the standalone file, unchanged except for the scope it
+ * now sits under. Two rules could not stay as they were:
+ *
+ *   :root  — the game's palette reuses --chalk and --navy with DIFFERENT values
+ *            to the app's (src/index.css). Global, it would repaint the
+ *            alphabet screens. It lives on the game's own elements instead.
+ *   html,body — the game needs a dark, unscrollable, full-height page. That is
+ *            .supersonidos-lock, put on <html> and <body> while the game is
+ *            mounted and taken off again on unmount.
+ *
+ * Class names are NOT hashed and must not be: the game builds its map screen
+ * with innerHTML and literal class names ("set locked", "dot done", "btn alt").
+ * CSS Modules would rename the selectors and leave that markup unstyled, so
+ * this is a plain scoped stylesheet, loaded only on the game routes.
+ */
+
+.supersonidos, .supersonidos-lock{--gold:#FFC93C;--navy:#101a2e;--red:#E5484D;--chalk:#F2F7F3;--pitch:#2E7D4F;}
+.supersonidos, .supersonidos *{box-sizing:border-box;-webkit-tap-highlight-color:transparent;}
+.supersonidos-lock{margin:0;height:100%;background:#0b1424;color:var(--chalk);
+  font-family:"Trebuchet MS",Verdana,system-ui,sans-serif;user-select:none;overflow:hidden;}
+.supersonidos{height:100%;display:flex;flex-direction:column;max-width:560px;margin:0 auto;}
+.supersonidos #hud{display:flex;align-items:center;gap:6px;padding:calc(6px + env(safe-area-inset-top,0px)) 8px 6px;}
+.supersonidos #hud .pill{background:#1a2740;border-radius:9px;padding:7px 9px;font-size:13px;font-weight:800;white-space:nowrap;}
+.supersonidos #prompt{flex:1;background:#1a2740;border-radius:11px;padding:6px 10px;min-height:38px;
+  display:flex;align-items:center;justify-content:center;gap:6px;text-align:center;font-weight:800;font-size:13px;}
+.supersonidos #prompt b{font-family:Verdana,sans-serif;font-size:21px;color:var(--gold);}
+.supersonidos #say,
+.supersonidos #menu{background:var(--gold);color:var(--navy);border:0;border-radius:9px;width:40px;height:38px;font-weight:900;font-size:16px;}
+.supersonidos #menu{background:#1a2740;color:#fff;}
+.supersonidos #stage{position:relative;width:100%;}
+.supersonidos canvas{width:100%;display:block;image-rendering:pixelated;background:#5EC7EC;}
+.supersonidos #pad{display:flex;justify-content:space-between;align-items:center;padding:10px 12px calc(12px + env(safe-area-inset-bottom,0px));gap:10px;}
+.supersonidos .k{border:0;border-radius:50%;width:64px;height:64px;background:#e9eef0;color:var(--navy);font-size:24px;font-weight:900;box-shadow:0 5px 0 #0008;}
+.supersonidos .k:active{transform:translateY(3px);box-shadow:0 2px 0 #0008;}
+.supersonidos #jump{background:var(--gold);width:84px;height:84px;font-size:15px;border-radius:50%;}
+.supersonidos #screen{position:absolute;inset:0;overflow:auto;background:#0b1424;display:none;padding:14px 12px 30px;}
+.supersonidos #screen.on{display:block;}
+.supersonidos h1{margin:6px 0 2px;font-size:30px;color:var(--gold);text-shadow:0 3px 0 #000;line-height:1;}
+.supersonidos h2{margin:0 0 12px;font-size:14px;color:#9fb3cc;font-weight:600;}
+.supersonidos .set{display:flex;align-items:center;gap:10px;background:#16233a;border-radius:12px;padding:10px;margin-bottom:8px;border:2px solid #16233a;}
+.supersonidos .set.locked{opacity:.45;}
+.supersonidos .set.done{border-color:var(--gold);}
+.supersonidos .set .num{width:34px;height:34px;border-radius:50%;background:var(--pitch);display:flex;align-items:center;justify-content:center;font-weight:900;font-size:15px;flex:none;}
+.supersonidos .set .nm{flex:1;}
+.supersonidos .set .nm b{display:block;font-size:15px;}
+.supersonidos .set .nm small{color:#9fb3cc;font-size:11px;}
+.supersonidos .dots{display:flex;gap:5px;}
+.supersonidos .dot{width:26px;height:26px;border-radius:7px;background:#0b1424;display:flex;align-items:center;justify-content:center;font-size:12px;font-weight:800;color:#5b6d87;border:0;}
+.supersonidos .dot.open{background:#e9eef0;color:var(--navy);}
+.supersonidos .dot.done{background:var(--gold);color:var(--navy);}
+.supersonidos .btn{background:var(--gold);color:var(--navy);border:0;border-radius:12px;padding:13px 22px;font:inherit;font-weight:900;font-size:16px;box-shadow:0 5px 0 #b8891f;margin-top:8px;}
+.supersonidos .btn.alt{background:#e9eef0;box-shadow:0 5px 0 #8a949a;}
+.supersonidos #over{position:absolute;inset:0;display:none;align-items:center;justify-content:center;flex-direction:column;gap:10px;background:#0b1424ee;text-align:center;padding:20px;}
+.supersonidos #over.on{display:flex;}
+.supersonidos #over h1{font-size:40px;}
+.supersonidos #over p{margin:0;font-size:15px;}
+.supersonidos .row{display:flex;gap:8px;flex-wrap:wrap;justify-content:center;}
+.supersonidos #note{text-align:center;font-size:9px;color:#ffffff55;padding-bottom:4px;}
+
+/* /game-testing only. Fixed so it cannot scroll away, and the game is pushed
+ * down by the same amount so the banner never sits on top of the HUD. */
+.supersonidos-testbanner{position:fixed;top:0;left:0;right:0;z-index:50;
+  background:#E5484D;color:#fff;font:800 11px/1 "Trebuchet MS",Verdana,system-ui,sans-serif;
+  letter-spacing:.04em;text-align:center;padding:6px 8px;}
+.supersonidos.test{padding-top:23px;}
