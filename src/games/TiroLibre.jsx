@@ -1,0 +1,730 @@
+/**
+ * Tiro Libre — set pieces where the goal is the answer.
+ *
+ * ONE FILE, on purpose: this chat owns src/games/TiroLibre.jsx and nothing
+ * else on the games branch. Engine, level plan, progress and styles all live
+ * here so no other file has to move for this game to exist.
+ *
+ * Two taps per kick. Tap 1 picks a lettered zone — that is the phonics.
+ * Tap 2 stops the meter in the green — that is the football. Pure functions
+ * decide what happened; the component only shows it.
+ *
+ * Content is never hardcoded. A level names a POOL — a shape filter over the
+ * group's registry entries — so Group 2 arrives without touching this file.
+ *
+ * Every timed step runs on setTimeout, never on an audio `ended` event. A
+ * blocked clip must never leave the ball hanging in the air.
+ */
+import { useEffect, useRef, useState } from 'react'
+import { groups } from '../lib/registry.js'
+import { play, playSequence, stop, hasClip } from '../lib/audio.js'
+import { Speaker } from '../components/Icons.jsx'
+
+/* ================================================================== *
+ * ENGINE — pure functions, no DOM, no audio
+ * ================================================================== */
+
+/* Sweep duration per pass of the meter, ms. The player picks one. */
+const SWEEP = { slow: 1500, medium: 1100, fast: 800 }
+
+/**
+ * Where a stop lands relative to the green band.
+ *   p    — meter position, 0..1, band centred at 0.5
+ *   band — band width, 0..1
+ * Returns { quality, drift }.
+ *   centre — middle third of the band: beats a keeper who guessed right
+ *   clean  — inside the band: goes where aimed
+ *   edge   — outer fifth of the band: still in, drifts one zone that way
+ *   scuff  — outside: keeper collects, no zone reached
+ */
+function judgeStop (p, band) {
+  const half = band / 2
+  const d = p - 0.5
+  if (Math.abs(d) > half) return { quality: 'scuff', drift: 0 }
+  if (Math.abs(d) <= half / 3) return { quality: 'centre', drift: 0 }
+  if (Math.abs(d) >= half * 0.8) return { quality: 'edge', drift: d < 0 ? -1 : 1 }
+  return { quality: 'clean', drift: 0 }
+}
+
+/**
+ * Where the keeper goes.
+ *   mode    — 'still' (stays home), 'random' (ignores the aim), 'half' (50 % reads it)
+ *   aim     — the zone the child picked
+ *   zones   — zone count (3 or 6)
+ *   lenient — true after one save on this prompt: he never lands on the aim again
+ *   rng     — 0..1, injected so tests are deterministic
+ * A 3-zone goal's home is the centre. In a 6-zone goal (2 rows x 3), the
+ * keeper covers a column: he goes to the low zone of that column.
+ */
+function keeperDive ({ mode, aim, zones, lenient = false, rng = Math.random }) {
+  const cols = 3
+  const home = zones === 3 ? 1 : 4
+  let zone
+  if (mode === 'still') zone = home
+  else if (mode === 'half' && rng() < 0.5) zone = aim
+  else zone = Math.floor(rng() * zones)
+  if (lenient && zone === aim) zone = (aim + 1) % cols + (zones === 6 && aim >= cols ? cols : 0)
+  return zone
+}
+
+/** Slide a zone one column left or right, staying on its row. Never wraps. */
+function driftZone (zone, drift, zones) {
+  const cols = 3
+  const row = Math.floor(zone / cols)
+  const col = Math.min(cols - 1, Math.max(0, (zone % cols) + drift))
+  return row * cols + col
+}
+
+/**
+ * The verdict.
+ *   'goal'  — right letter, keeper beaten
+ *   'saved' — right letter, keeper got it (or the kick was a scuff)
+ *   'wrong' — the ball went in, but the net says another letter
+ * A wrong zone is information, not a kick to be beaten: the ball always goes
+ * in so the child sees the letter they chose, big, in the net.
+ */
+function resolveKick ({ aim, answer, stop, keeper, zones }) {
+  const { quality, drift } = judgeStop(stop.p, stop.band)
+  if (quality === 'scuff') return { outcome: 'saved', landed: null, quality }
+  const landed = driftZone(aim, drift, zones)
+  if (landed !== answer) return { outcome: 'wrong', landed, quality }
+  if (keeper !== landed) return { outcome: 'goal', landed, quality }
+  return { outcome: quality === 'centre' ? 'goal' : 'saved', landed, quality }
+}
+
+/** Points for one kick. Ball bonus is paid at level end. */
+function pointsFor (outcome, quality) {
+  if (outcome !== 'goal') return 0
+  return 100 + (quality === 'centre' ? 50 : 0)
+}
+
+/* ================================================================== *
+ * LEVEL PLAN — pools, never words
+ * ================================================================== */
+
+const PROGRESS_KEY = 'esl-pwa.tirolibre.v1'
+
+const PLAYERS = [
+  // Nicknames and numbers are PROVISIONAL — T rules them (open decision 1).
+  { id: 'p19', shirt: 19, nick: 'El Rayo', sweep: 'slow', bandBonus: 0, readBonus: 0, unlockedAt: 0 }
+]
+
+const LEVELS_PER_SET = [
+  { n: 1, kind: 'pen', title: 'Los nombres', sub: 'Escucha el nombre. Patea a la letra.', pool: { shape: 'name' }, zones: 3, band: 0.56, keeper: 'still', rounds: 5, balls: 3, built: true },
+  { n: 2, kind: 'pen', title: 'Los sonidos', sub: 'Escucha el sonido. Patea a la letra.', pool: { shape: 'sound' }, zones: 3, band: 0.50, keeper: 'random', rounds: 5, balls: 3, built: true },
+  { n: 3, kind: 'free', title: 'Las sílabas', sub: 'Tiro libre', pool: { shape: 'combination' }, zones: 6, band: 0.46, keeper: 'random', rounds: 5, balls: 3, built: false },
+  { n: 4, kind: 'free', title: 'Las palabras', sub: 'Tiro libre', pool: { shape: 'word' }, zones: 6, band: 0.44, keeper: 'random', rounds: 5, balls: 3, built: false },
+  { n: 5, kind: 'shootout', title: 'Tanda de penales', sub: 'Al mejor de 5', pool: { shape: '*' }, zones: 3, band: 0.42, keeper: 'half', rounds: 3, balls: 5, built: false }
+]
+
+const PITCHES = {
+  1: { name: 'Cancha del barrio', ground: '#7a5a3a', grass: '#8d6b45' }
+}
+
+/** The set for a group: Set N is letter-group N. */
+function setFor (group) {
+  const n = group.number
+  return {
+    id: `S${n}`,
+    number: n,
+    group,
+    pitch: PITCHES[n] ?? PITCHES[1],
+    levels: LEVELS_PER_SET.map(l => ({ ...l, id: `S${n}-L${l.n}` }))
+  }
+}
+
+/**
+ * The entries a level draws from. Only entries with a playable prompt clip —
+ * a level that has nothing to say has nothing to ask.
+ */
+function poolFor (group, level) {
+  const want = level.pool.shape
+  return group.items.filter(it =>
+    (want === '*' || it.shape === want) && hasClip(it.id, 'sound')
+  )
+}
+
+/**
+ * Build one kick: a target entry and the letters on the zones.
+ * Distractors share the pool but not the letter — A-corta and A-larga are
+ * both "A" on the net, and a net with two As is a question with two answers.
+ */
+function makeKick (pool, level, avoidId = null, rng = Math.random) {
+  const candidates = pool.filter(it => it.id !== avoidId)
+  const target = pick(candidates.length ? candidates : pool, rng)
+  const others = shuffle(pool.filter(it => it.letter !== target.letter), rng)
+  const distinct = []
+  for (const it of others) {
+    if (distinct.length >= level.zones - 1) break
+    if (!distinct.some(d => d.letter === it.letter)) distinct.push(it)
+  }
+  const zones = shuffle([target, ...distinct], rng)
+  return { target, zones, answer: zones.indexOf(target) }
+}
+
+function pick (arr, rng) { return arr[Math.floor(rng() * arr.length)] }
+function shuffle (arr, rng) {
+  const a = arr.slice()
+  for (let i = a.length - 1; i > 0; i--) { const j = Math.floor(rng() * (i + 1)); [a[i], a[j]] = [a[j], a[i]] }
+  return a
+}
+
+/* ================================================================== *
+ * PROGRESS — versioned localStorage, no names
+ * ================================================================== */
+
+function read () {
+  try { return JSON.parse(localStorage.getItem(PROGRESS_KEY)) || { levels: {} } } catch { return { levels: {} } }
+}
+function write (p) {
+  try { localStorage.setItem(PROGRESS_KEY, JSON.stringify(p)) } catch { /* private mode: play without saving */ }
+}
+
+function levelState (id) {
+  return read().levels[id] ?? { done: false, best: 0 }
+}
+
+function recordWin (id, score) {
+  const p = read()
+  const prev = p.levels[id] ?? { done: false, best: 0 }
+  p.levels[id] = { done: true, best: Math.max(prev.best, score) }
+  write(p)
+}
+
+/** Level N+1 opens on N. Level 1 is always open. */
+function isOpen (set, level) {
+  if (level.n === 1) return true
+  const prev = set.levels.find(l => l.n === level.n - 1)
+  return prev ? levelState(prev.id).done : false
+}
+
+/* ================================================================== *
+ * SCREENS
+ * ================================================================== */
+
+export default function TiroLibre ({ group: groupProp, onBack }) {
+  // GamesScreen may not pass a group yet. Default to the first populated one.
+  const group = groupProp ?? groups()[0]
+  const set = setFor(group)
+  useStyles()
+  const [level, setLevel] = useState(null)
+
+  if (level) {
+    return (
+      <Level
+        key={level.id}
+        set={set}
+        level={level}
+        player={PLAYERS[0]}
+        onExit={() => { stop(); setLevel(null) }}
+        onNext={() => {
+          stop()
+          const nxt = set.levels.find(l => l.n === level.n + 1)
+          setLevel(nxt && nxt.built ? nxt : null)
+        }}
+      />
+    )
+  }
+
+  return (
+    <section className="screen active tl" id="screen-tirolibre">
+      <div className="topbar">
+        {onBack && <button className="back" onClick={onBack}>← Volver</button>}
+        <span className="chip">Grupo {group.number} · {group.letters.join(' ')}</span>
+      </div>
+      <div className="pagehead">
+        <p className="eyebrow">Tiro libre</p>
+        <h1 className="lede">{set.pitch.name}</h1>
+      </div>
+
+      <ol className="tl-map">
+        {set.levels.map(l => {
+          const st = levelState(l.id)
+          const open = l.built && isOpen(set, l)
+          return (
+            <li key={l.id}>
+              <button
+                className={'tl-lv' + (open ? '' : ' off') + (st.done ? ' done' : '')}
+                aria-disabled={open ? undefined : 'true'}
+                onClick={open ? () => setLevel(l) : undefined}
+              >
+                <span className="tl-lvn">{l.n}</span>
+                <span className="tl-lvt">
+                  <b>{l.title}</b>
+                  <small>{open ? l.sub : l.built ? 'Gana el nivel anterior' : 'Pronto'}</small>
+                </span>
+                {st.done && <span className="tl-lvs">{st.best}</span>}
+              </button>
+            </li>
+          )
+        })}
+      </ol>
+    </section>
+  )
+}
+
+/* ------------------------------------------------------------------ */
+
+const T = { runup: 520, flight: 620, result: 1500, resultWrong: 2100 }
+
+function Level ({ set, level, player, onExit, onNext }) {
+  const pool = poolFor(set.group, level)
+  const band = Math.min(0.9, level.band + player.bandBonus)
+
+  // phase: aim | meter | flight | result | won | lost
+  const [phase, setPhase] = useState('aim')
+  const [kick, setKick] = useState(() => makeKick(pool, level))
+  const [aim, setAim] = useState(null)
+  const [goals, setGoals] = useState(0)
+  const [balls, setBalls] = useState(level.balls)
+  const [score, setScore] = useState(0)
+  const [verdict, setVerdict] = useState(null) // { outcome, landed, quality, keeper }
+  const [savedOnce, setSavedOnce] = useState(false)
+  const timers = useRef([])
+
+  const later = (fn, ms) => { timers.current.push(setTimeout(fn, ms)) }
+  useEffect(() => () => timers.current.forEach(clearTimeout), [])
+
+  // The prompt plays as the kick opens. A tap opened this level, so the
+  // element is unlocked; if it is not, the speaker button is right there.
+  useEffect(() => {
+    if (phase === 'aim') play(kick.target.id, 'sound')
+  }, [kick, phase])
+
+  const hear = () => play(kick.target.id, 'sound')
+
+  const chooseZone = i => {
+    if (phase !== 'aim' && phase !== 'meter') return
+    setAim(i)
+    if (phase === 'aim') { stop(); setPhase('meter') }
+  }
+
+  const strike = p => {
+    if (phase !== 'meter' || aim === null) return
+    const keeper = keeperDive({ mode: level.keeper, aim, zones: level.zones, lenient: savedOnce })
+    const v = resolveKick({ aim, answer: kick.answer, stop: { p, band }, keeper, zones: level.zones })
+    setVerdict({ ...v, keeper })
+    setPhase('flight')
+
+    later(() => {
+      setPhase('result')
+      const pts = pointsFor(v.outcome, v.quality)
+      if (v.outcome === 'goal') {
+        setScore(s => s + pts)
+        // The English voice says what was scored: the sound, then a word if
+        // the entry has one. A name entry has only its name.
+        const steps = [{ id: kick.target.id, role: 'sound' }]
+        if (hasClip(kick.target.id, 'word1')) steps.push({ id: kick.target.id, role: 'word1' })
+        playSequence(steps)
+      }
+      later(() => advance(v), v.outcome === 'wrong' ? T.resultWrong : T.result)
+    }, T.runup + T.flight)
+  }
+
+  const advance = v => {
+    setVerdict(null)
+    setAim(null)
+    if (v.outcome === 'goal') {
+      const g = goals + 1
+      setGoals(g)
+      setSavedOnce(false)
+      if (g >= level.rounds) {
+        const total = score + pointsFor(v.outcome, v.quality) + balls * 200
+        recordWin(level.id, total)
+        setScore(total)
+        setPhase('won')
+        return
+      }
+      setKick(makeKick(pool, level, kick.target.id))
+      setPhase('aim')
+      return
+    }
+    const b = balls - 1
+    setBalls(b)
+    if (b <= 0) { setPhase('lost'); return }
+    // Saved or wrong: the same prompt again. Wrong is information, and a
+    // good letter with a bad kick is not a reason to move on.
+    if (v.outcome === 'saved') setSavedOnce(true)
+    setPhase('aim')
+  }
+
+  const restart = () => {
+    stop()
+    setGoals(0); setBalls(level.balls); setScore(0); setSavedOnce(false)
+    setVerdict(null); setAim(null)
+    setKick(makeKick(pool, level))
+    setPhase('aim')
+  }
+
+  const wrongLabel = verdict?.outcome === 'wrong' ? kick.zones[verdict.landed].label : null
+
+  return (
+    <section className="screen active tl" id="screen-tirolibre-level">
+      <div className="topbar">
+        <button className="back" onClick={onExit}>← Salir</button>
+        <span className="chip">Nivel {level.n} · {level.title}</span>
+      </div>
+
+      <div className="tl-hud">
+        <span className="tl-balls" aria-label={`${balls} balones`}>
+          {Array.from({ length: level.balls }, (_, i) => (
+            <i key={i} className={i < balls ? '' : 'gone'} />
+          ))}
+        </span>
+        <span className="tl-goals">
+          {Array.from({ length: level.rounds }, (_, i) => (
+            <b key={i} className={i < goals ? 'in' : ''} />
+          ))}
+        </span>
+        <span className="tl-score">{score}</span>
+      </div>
+
+      <Pitch
+        pitch={set.pitch}
+        zones={kick.zones}
+        zoneCount={level.zones}
+        aim={aim}
+        phase={phase}
+        verdict={verdict}
+        wrongLabel={wrongLabel}
+        onZone={chooseZone}
+      />
+
+      <div className="tl-under">
+        {phase === 'aim' && (
+          <div className="tl-say">
+            <button className="tl-hear" onClick={hear} aria-label="Escuchar otra vez">
+              <Speaker />
+            </button>
+            <span>{level.pool.shape === 'name' ? '¿Qué letra es?' : '¿De qué letra es este sonido?'}</span>
+          </div>
+        )}
+        {phase === 'meter' && <Meter band={band} sweep={SWEEP[player.sweep]} onStop={strike} />}
+        {phase === 'flight' && <p className="tl-cue">…</p>}
+        {phase === 'result' && <Verdict verdict={verdict} label={wrongLabel} />}
+        {phase === 'won' && (
+          <div className="tl-end">
+            <b>¡Ganaste!</b>
+            <span>{score} puntos · {balls} {balls === 1 ? 'balón' : 'balones'} de sobra</span>
+            <div>
+              <button className="enter" onClick={onNext}>Siguiente nivel</button>
+              <button className="back" onClick={onExit}>Al mapa</button>
+            </div>
+          </div>
+        )}
+        {phase === 'lost' && (
+          <div className="tl-end">
+            <b>Sin balones</b>
+            <span>{goals} de {level.rounds} goles</span>
+            <div>
+              <button className="enter" onClick={restart}>Otra vez</button>
+              <button className="back" onClick={onExit}>Al mapa</button>
+            </div>
+          </div>
+        )}
+      </div>
+
+      <p className="tl-player">#{player.shirt} {player.nick}</p>
+    </section>
+  )
+}
+
+/* ------------------------------------------------------------------ */
+
+function Verdict ({ verdict, label }) {
+  if (!verdict) return null
+  if (verdict.outcome === 'goal') {
+    return <p className="tl-cue goal">¡GOL!{verdict.quality === 'centre' ? ' +150' : ' +100'}</p>
+  }
+  if (verdict.outcome === 'wrong') {
+    return <p className="tl-cue wrong">Esa es la <b>{label}</b></p>
+  }
+  return <p className="tl-cue saved">¡Atajada! Otra vez.</p>
+}
+
+/**
+ * One bar, one tap. The needle sweeps left to right and back; the child
+ * stops it in the green. The band is drawn to scale so the target is the
+ * thing on screen, not a number.
+ */
+function Meter ({ band, sweep, onStop }) {
+  const [p, setP] = useState(0)
+  const raf = useRef(0)
+  const t0 = useRef(performance.now())
+  const pos = useRef(0)
+
+  useEffect(() => {
+    const tick = now => {
+      const x = ((now - t0.current) % (sweep * 2)) / sweep
+      pos.current = x <= 1 ? x : 2 - x
+      setP(pos.current)
+      raf.current = requestAnimationFrame(tick)
+    }
+    raf.current = requestAnimationFrame(tick)
+    return () => cancelAnimationFrame(raf.current)
+  }, [sweep])
+
+  const halt = () => { cancelAnimationFrame(raf.current); onStop(pos.current) }
+
+  return (
+    <button className="tl-meter" onClick={halt} aria-label="Patear">
+      <span className="tl-band" style={{ left: `${(0.5 - band / 2) * 100}%`, width: `${band * 100}%` }}>
+        <i style={{ left: `${100 / 3}%`, width: `${100 / 3}%` }} />
+      </span>
+      <span className="tl-needle" style={{ left: `${p * 100}%` }} />
+      <span className="tl-mlabel">¡Patea!</span>
+    </button>
+  )
+}
+
+/* ------------------------------------------------------------------ */
+
+/* Goal-mouth geometry in SVG units. Zones are HTML buttons laid over it. */
+const G = { w: 360, h: 300, gx: 40, gy: 40, gw: 280, gh: 130 }
+const LINE = 176 // where the keeper's boots sit
+
+function zoneCentre (i, count) {
+  const cols = 3
+  const rows = count / cols
+  const cw = G.gw / cols
+  const rh = G.gh / rows
+  return {
+    x: G.gx + (i % cols) * cw + cw / 2,
+    y: G.gy + Math.floor(i / cols) * rh + rh / 2
+  }
+}
+
+function Pitch ({ pitch, zones, zoneCount, aim, phase, verdict, wrongLabel, onZone }) {
+  const spot = { x: G.w / 2, y: 262 }
+  const home = zoneCentre(zoneCount === 3 ? 1 : 4, zoneCount)
+  const flying = phase === 'flight' || phase === 'result'
+  const showResult = phase === 'result'
+
+  // Ball: penalty spot -> the landed zone, or into the keeper's gloves on a scuff.
+  let ball = spot
+  if (flying && verdict) {
+    ball = verdict.landed === null
+      ? { x: home.x, y: LINE - 26 }
+      : zoneCentre(verdict.landed, zoneCount)
+  }
+  // Keeper: on his line until the flight, then under his dive zone. He
+  // stands on the goal line, never in the net, so no letter is ever hidden.
+  const keeperZone = flying && verdict ? zoneCentre(verdict.keeper, zoneCount) : home
+  const keeper = { x: keeperZone.x, y: LINE }
+  const caught = showResult && verdict?.outcome === 'saved'
+
+  return (
+    <div className="tl-pitch" style={{ '--ground': pitch.ground, '--grass': pitch.grass }}>
+      <svg viewBox={`0 0 ${G.w} ${G.h}`} aria-hidden="true">
+        <rect width={G.w} height={G.h} fill="var(--pitch)" />
+        <rect y="172" width={G.w} height={G.h - 172} fill="var(--ground)" />
+        <rect y="172" width={G.w} height="6" fill="var(--grass)" />
+        {/* net */}
+        <rect x={G.gx} y={G.gy} width={G.gw} height={G.gh} fill="rgba(241,250,238,.06)" />
+        <g stroke="rgba(241,250,238,.28)" strokeWidth="1">
+          {Array.from({ length: 13 }, (_, i) => <line key={'v' + i} x1={G.gx + i * 23.3} y1={G.gy} x2={G.gx + i * 23.3} y2={G.gy + G.gh} />)}
+          {Array.from({ length: 7 }, (_, i) => <line key={'h' + i} x1={G.gx} y1={G.gy + i * 21.6} x2={G.gx + G.gw} y2={G.gy + i * 21.6} />)}
+        </g>
+        {/* posts */}
+        <rect x={G.gx - 6} y={G.gy - 6} width="6" height={G.gh + 8} fill="var(--chalk)" />
+        <rect x={G.gx + G.gw} y={G.gy - 6} width="6" height={G.gh + 8} fill="var(--chalk)" />
+        <rect x={G.gx - 6} y={G.gy - 6} width={G.gw + 12} height="6" fill="var(--chalk)" />
+        {/* six-yard line + spot */}
+        <rect x={G.gx - 20} y="178" width={G.gw + 40} height="3" fill="rgba(241,250,238,.5)" />
+        <circle cx={spot.x} cy={spot.y} r="4" fill="rgba(241,250,238,.55)" />
+
+        {/* the letter the net says, when it is the wrong one */}
+        {showResult && wrongLabel && (
+          <text x={ball.x} y={ball.y - 18} textAnchor="middle" className="tl-netletter">{wrongLabel}</text>
+        )}
+
+        <Keeper x={keeper.x} y={keeper.y} diving={flying && verdict?.keeper !== (zoneCount === 3 ? 1 : 4)} caught={caught} />
+
+        <g className={'tl-ball' + (flying ? ' fly' : '')} style={{ transform: `translate(${ball.x}px, ${ball.y}px)` }}>
+          <circle r="11" fill="var(--chalk)" stroke="var(--navy)" strokeWidth="2" />
+          <path d="M-4-6l4 3 4-3M-8 2h5l3 5M8 2h-5l-3 5" fill="none" stroke="var(--navy)" strokeWidth="2" />
+        </g>
+
+        {showResult && verdict?.outcome === 'goal' && <Coins x={ball.x} y={ball.y} />}
+      </svg>
+
+      <div className={'tl-zones z' + zoneCount} style={{ left: `${G.gx / G.w * 100}%`, top: `${G.gy / G.h * 100}%`, width: `${G.gw / G.w * 100}%`, height: `${G.gh / G.h * 100}%` }}>
+        {zones.map((z, i) => (
+          <button
+            key={z.id}
+            className={'tl-zone' + (aim === i ? ' aim' : '') + (showResult && verdict?.landed === i ? (verdict.outcome === 'goal' ? ' hit' : verdict.outcome === 'wrong' ? ' miss' : '') : '')}
+            disabled={phase !== 'aim' && phase !== 'meter'}
+            onClick={() => onZone(i)}
+            aria-label={`Zona ${z.label}`}
+          >
+            {z.label}
+          </button>
+        ))}
+      </div>
+    </div>
+  )
+}
+
+/* An original keeper: blocky, numbered, nobody's likeness. */
+function Keeper ({ x, y, diving, caught }) {
+  return (
+    <g className={'tl-keeper' + (diving ? ' dive' : '')} style={{ transform: `translate(${x}px, ${y - 8}px)` }}>
+      <rect x="-14" y="-40" width="28" height="30" rx="3" fill="#FF6B35" />
+      <rect x="-9" y="-56" width="18" height="18" rx="4" fill="#E8B48A" />
+      <rect x="-9" y="-58" width="18" height="6" rx="2" fill="#3A2415" />
+      <rect x="-26" y="-38" width="12" height="9" rx="3" fill="#FF6B35" />
+      <rect x="14" y="-38" width="12" height="9" rx="3" fill="#FF6B35" />
+      <rect x="-30" y="-40" width="10" height="10" rx="2" fill="#F1FAEE" />
+      <rect x="20" y="-40" width="10" height="10" rx="2" fill="#F1FAEE" />
+      <rect x="-13" y="-10" width="11" height="18" rx="2" fill="#14213D" />
+      <rect x="2" y="-10" width="11" height="18" rx="2" fill="#14213D" />
+      <text y="-19" textAnchor="middle" fontSize="14" fontWeight="800" fill="#F1FAEE" fontFamily="Nunito,sans-serif">1</text>
+      {caught && <circle cy="-26" r="11" fill="#F1FAEE" stroke="#14213D" strokeWidth="2" />}
+    </g>
+  )
+}
+
+function Coins ({ x, y }) {
+  const n = 8
+  return (
+    <g className="tl-coins">
+      {Array.from({ length: n }, (_, i) => {
+        const a = (i / n) * Math.PI * 2
+        return (
+          <circle
+            key={i}
+            cx={x}
+            cy={y}
+            r="6"
+            fill="var(--yellow)"
+            stroke="#b39100"
+            strokeWidth="1.5"
+            style={{ '--dx': `${Math.cos(a) * 60}px`, '--dy': `${Math.sin(a) * 60 - 30}px` }}
+          />
+        )
+      })}
+    </g>
+  )
+}
+
+/* ================================================================== *
+ * STYLES — injected once; Slice 1 tokens; every class tl- prefixed
+ * ================================================================== */
+const CSS = `
+/* Tiro Libre — on the Slice 1 tokens from alphabet.css. All classes tl-
+ * prefixed so nothing here can restyle the alphabet screens. */
+
+/* ---- map ---- */
+.tl-map{list-style:none;margin:0;padding:0;display:flex;flex-direction:column;gap:12px}
+.tl-lv{
+  width:100%;display:flex;align-items:center;gap:14px;text-align:left;
+  background:var(--chalk);color:var(--navy);border:4px solid var(--navy);border-radius:22px;
+  padding:12px 16px;min-height:72px;box-shadow:0 5px 0 var(--shadow);cursor:pointer;
+  font-family:'Nunito',sans-serif;transition:transform .07s,box-shadow .07s;
+}
+.tl-lv:active{transform:translateY(4px);box-shadow:0 1px 0 var(--shadow)}
+.tl-lv.off{background:transparent;color:var(--dim);border:2px dashed var(--line);box-shadow:none;cursor:default}
+.tl-lv:focus-visible{outline:3px solid var(--chalk);outline-offset:3px}
+.tl-lvn{
+  flex:none;width:44px;height:44px;border-radius:50%;display:grid;place-items:center;
+  background:var(--navy);color:var(--chalk);font-family:'Baloo 2',cursive,sans-serif;font-weight:800;font-size:22px;
+}
+.tl-lv.off .tl-lvn{background:transparent;border:2px dashed var(--line);color:var(--dim)}
+.tl-lv.done .tl-lvn{background:var(--yellow);color:var(--navy)}
+.tl-lvt{display:flex;flex-direction:column;flex:1;min-width:0}
+.tl-lvt b{font-family:'Baloo 2',cursive,sans-serif;font-weight:800;font-size:20px;line-height:1.1}
+.tl-lvt small{font-size:12px;font-weight:700;margin-top:2px}
+.tl-lvs{font-family:'Baloo 2',cursive,sans-serif;font-weight:800;font-size:18px;color:var(--grass)}
+
+/* ---- hud ---- */
+.tl-hud{display:flex;align-items:center;justify-content:space-between;gap:10px;margin-bottom:10px;min-height:28px}
+.tl-balls{display:flex;gap:6px}
+.tl-balls i{width:18px;height:18px;border-radius:50%;background:var(--chalk);border:3px solid var(--navy);display:block}
+.tl-balls i.gone{background:transparent;border:2px dashed var(--line);opacity:.7}
+.tl-goals{display:flex;gap:5px}
+.tl-goals b{width:22px;height:10px;border-radius:5px;background:rgba(241,250,238,.18);display:block}
+.tl-goals b.in{background:var(--yellow)}
+.tl-score{font-family:'Baloo 2',cursive,sans-serif;font-weight:800;font-size:22px;color:var(--yellow);min-width:44px;text-align:right}
+
+/* ---- pitch ---- */
+.tl-pitch{position:relative;width:100%;border-radius:22px;overflow:hidden;border:4px solid var(--navy);
+  box-shadow:0 5px 0 var(--shadow);background:var(--pitch)}
+.tl-pitch svg{display:block;width:100%;height:auto}
+.tl-ball{transition:transform .62s cubic-bezier(.2,.7,.3,1)}
+.tl-ball.fly circle{animation:tl-spin .62s linear}
+@keyframes tl-spin{to{transform:rotate(1turn)}}
+.tl-keeper{transition:transform .38s cubic-bezier(.3,.6,.4,1) .18s}
+.tl-keeper.dive{transform-origin:center}
+.tl-netletter{font-family:'Baloo 2',cursive,sans-serif;font-weight:800;font-size:56px;fill:#FF6B35;
+  paint-order:stroke;stroke:var(--navy);stroke-width:4px}
+.tl-coins circle{animation:tl-burst .9s ease-out forwards}
+@keyframes tl-burst{
+  0%{transform:translate(0,0);opacity:1}
+  100%{transform:translate(var(--dx),var(--dy));opacity:0}
+}
+
+/* zones: HTML buttons over the goal mouth, so they are real touch targets */
+.tl-zones{position:absolute;display:grid;grid-template-columns:repeat(3,1fr);gap:4px;padding:3px}
+.tl-zones.z6{grid-template-rows:repeat(2,1fr)}
+.tl-zone{
+  border:3px solid rgba(241,250,238,.55);border-radius:12px;background:rgba(20,33,61,.35);
+  color:var(--chalk);font-family:'Nunito',sans-serif;font-weight:800;font-size:clamp(30px,10vw,44px);
+  padding:0;cursor:pointer;min-height:44px;transition:background .12s,border-color .12s,transform .12s;
+}
+.tl-zone:disabled{cursor:default}
+.tl-zone.aim{background:var(--yellow);color:var(--navy);border-color:var(--navy);transform:scale(1.04)}
+.tl-zone.hit{background:var(--grass);color:var(--chalk);border-color:var(--chalk)}
+.tl-zone.miss{background:transparent;border-color:#FF6B35;color:transparent}
+.tl-zone:focus-visible{outline:3px solid var(--chalk);outline-offset:2px}
+
+/* ---- under the pitch ---- */
+.tl-under{min-height:92px;display:flex;align-items:center;justify-content:center;margin-top:14px}
+.tl-say{display:flex;align-items:center;gap:14px;font-weight:800;font-size:17px}
+.tl-hear{
+  width:64px;height:64px;border-radius:50%;background:var(--yellow);color:var(--navy);border:none;
+  box-shadow:0 4px 0 #b39100;display:grid;place-items:center;cursor:pointer;flex:none;
+}
+.tl-hear svg{width:32px;height:32px}
+.tl-hear:active{transform:translateY(3px);box-shadow:0 1px 0 #b39100}
+
+.tl-meter{
+  position:relative;width:100%;height:72px;border-radius:18px;border:4px solid var(--navy);
+  background:var(--chalk);overflow:hidden;padding:0;cursor:pointer;box-shadow:0 5px 0 var(--shadow);
+}
+.tl-band{position:absolute;top:0;bottom:0;background:#52B788}
+.tl-band i{position:absolute;top:0;bottom:0;background:#2D6A4F}
+.tl-needle{position:absolute;top:0;bottom:0;width:8px;margin-left:-4px;background:var(--navy);border-radius:4px}
+.tl-mlabel{position:absolute;inset:0;display:grid;place-items:center;font-family:'Baloo 2',cursive,sans-serif;
+  font-weight:800;font-size:24px;color:var(--navy);pointer-events:none;text-shadow:0 0 6px var(--chalk)}
+
+.tl-cue{margin:0;font-family:'Baloo 2',cursive,sans-serif;font-weight:800;font-size:30px;text-align:center;line-height:1.1}
+.tl-cue.goal{color:var(--yellow);animation:tl-pop .3s cubic-bezier(.2,1.6,.4,1)}
+.tl-cue.wrong{color:var(--chalk);font-size:24px}
+.tl-cue.wrong b{color:#FF6B35;font-size:34px}
+.tl-cue.saved{color:var(--dim)}
+@keyframes tl-pop{from{transform:scale(.4)}to{transform:scale(1)}}
+
+.tl-end{display:flex;flex-direction:column;align-items:center;gap:8px;text-align:center}
+.tl-end b{font-family:'Baloo 2',cursive,sans-serif;font-weight:800;font-size:30px;color:var(--yellow)}
+.tl-end span{font-weight:800}
+.tl-end div{display:flex;gap:10px;margin-top:8px}
+
+.tl-player{margin:18px 0 0;text-align:center;font-size:12px;font-weight:800;color:var(--dim)}
+
+@media (prefers-reduced-motion:reduce){
+  .tl-ball,.tl-keeper{transition-duration:.01s}
+  .tl-ball.fly circle,.tl-coins circle,.tl-cue.goal{animation:none}
+}
+`
+
+let styled = false
+function useStyles () {
+  useEffect(() => {
+    if (styled || typeof document === 'undefined') return
+    const el = document.createElement('style')
+    el.id = 'tirolibre-css'
+    el.textContent = CSS
+    document.head.appendChild(el)
+    styled = true
+  }, [])
+}
