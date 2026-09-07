@@ -443,7 +443,7 @@ export function startSuperSonidos (root, { testMode = false, showTail = false } 
     // coins
     for(let k=0;k<4;k++)coinItems.push({x:(b+5+k*2)*T+4,y:(blockRow-3-(k%2))*T,got:0,t:r()*6});
     // the three letter blocks
-    rd.options.forEach((lab,k)=>{const cx=bx0+k*4;setT(cx,blockRow,3);blocks.push({r:i,cx,cy:blockRow,lab,ok:lab===rd.answer,hit:0,bp:0,bd:0});});
+    rd.options.forEach((lab,k)=>{const cx=bx0+k*4;setT(cx,blockRow,3);blocks.push({r:i,cx,cy:blockRow,lab,ok:lab===rd.answer,hit:0,tried:0,bp:0,bd:0});});
     // enemies from the recipe
     const nd=(f.def||[1,2,2,3,4][li])+(si>=8?1:0);
     for(let e=0;e<nd;e++)enemies.push(mk('def',(bx0-3+e*4)*T,defY,(e%2?1:-1)*spd));
@@ -469,9 +469,9 @@ export function startSuperSonidos (root, { testMode = false, showTail = false } 
   function playClip(rd){
    // No recording for this round — sets 7-12 have none — so speech is the answer,
    // not a failure. Decided from the registry, never from a request that missed.
-   if(!rd.clip||!hasClip(rd.clip.id,rd.clip.part)){speak(rd.say,rd.lang);return;}
+   if(!rd.clip||!hasClip(rd.clip.id,rd.clip.part)){speak(rd.say,rd.lang);return Promise.resolve(false);}
    if(window.speechSynthesis)speechSynthesis.cancel();
-   playRegistryClip(rd.clip.id,rd.clip.part);
+   return playRegistryClip(rd.clip.id,rd.clip.part);
   }
   function sayRound(){if(!G||G.done)return;const rd=G.rounds[G.rd];if(rd)playClip(rd);}
 
@@ -501,9 +501,15 @@ export function startSuperSonidos (root, { testMode = false, showTail = false } 
    if(b.ok){b.hit=1;G.score+=100;
     for(let i=0;i<6;i++)G.fx.push({t:'c',x:b.cx*T+8,y:b.cy*T,vx:(Math.random()-.5)*1.6,vy:-2-Math.random()*1.4,l:36});
     G.fx.push({t:'x',x:b.cx*T+8,y:b.cy*T-4,s:'¡SÍ!',l:40});
-    const rd=G.rounds[G.rd];playClip(rd);
-    G.rd++;if(G.rd<G.rounds.length)setTimeout(sayRound,900);hud();
-   }else{b.bd=26;G.p.vy=1.6;G.score=Math.max(0,G.score-20);G.fx.push({t:'x',x:b.cx*T+8,y:b.cy*T-4,s:'✗',l:24,bad:1});setTimeout(sayRound,400);hud();}
+    // Say the letter they just won, and do NOT talk over it. This used to
+    // prompt the next round on a flat 900ms timer, which is shorter than most
+    // clips: the child heard a fragment of the letter they hit and then the
+    // next one, which reads as the wrong letter playing.
+    const rd=G.rounds[G.rd];
+    G.rd++;const mine=G.rd;
+    playClip(rd).then(()=>{if(!G||G.done||G.rd!==mine)return;if(G.rd<G.rounds.length)setTimeout(sayRound,400);});
+    hud();
+   }else{b.bd=26;b.tried=1;G.p.vy=1.6;G.score=Math.max(0,G.score-20);G.fx.push({t:'x',x:b.cx*T+8,y:b.cy*T-4,s:'✗',l:24,bad:1});setTimeout(sayRound,400);hud();}
   }
   function hurt(){const p=G.p;if(p.hu>0||G.power==='star')return;p.hu=70;p.vx=-2.6*p.fc;p.vy=-3.4;G.lives--;hud();
    if(G.lives<=0){G.lost=1;finish(false);}}
@@ -604,11 +610,14 @@ export function startSuperSonidos (root, { testMode = false, showTail = false } 
    for(const m of G.movers){if(m.train){ctx.fillStyle='#8E3F1F';ctx.fillRect(m.x,m.y,m.w,m.h);ctx.fillStyle='#B5562E';ctx.fillRect(m.x,m.y,m.w,2);ctx.fillStyle='#141422';ctx.fillRect(m.x+6,m.y+m.h,6,4);ctx.fillRect(m.x+m.w-12,m.y+m.h,6,4);}
     else{ctx.fillStyle='#8E6BA8';ctx.fillRect(m.x,m.y,m.w,m.h);ctx.fillStyle='#B592CC';ctx.fillRect(m.x,m.y,m.w,2);}}
    for(const b of G.blocks){const px=b.cx*T,py=b.cy*T-Math.round(b.bp*6);b.bp*=.8;if(b.bd>0)b.bd--;
-    ctx.fillStyle=b.hit?'#B0873A':b.bd>0?'#E5484D':'#FFC93C';ctx.fillRect(px,py,T,T);
+    // hit = won, dull gold. tried = wrong and already attempted, grey. The red
+    // is only the 26-frame knock; without the grey a wrong block went straight
+    // back to looking untouched.
+    ctx.fillStyle=b.hit?'#B0873A':b.bd>0?'#E5484D':b.tried?'#6E6E78':'#FFC93C';ctx.fillRect(px,py,T,T);
     ctx.fillStyle='rgba(255,255,255,.45)';ctx.fillRect(px+1,py+1,T-2,2);ctx.fillStyle='rgba(0,0,0,.35)';ctx.fillRect(px,py+T-3,T,3);ctx.fillRect(px+T-3,py,3,T);
     ctx.fillStyle='#7A5A15';ctx.fillRect(px+2,py+2,2,2);ctx.fillRect(px+T-4,py+T-4,2,2);
     const flashOff=G.R.f.flash&&b.r===G.rd&&!b.hit&&((G.t>>4)%3===0);
-    ctx.fillStyle=b.hit?'rgba(0,0,0,.35)':'#141422';ctx.font=(b.lab.length>2?'700 7px':b.lab.length>1?'700 9px':'700 11px')+' Verdana,sans-serif';ctx.textAlign='center';ctx.textBaseline='middle';if(!flashOff)ctx.fillText(b.lab,px+T/2,py+T/2+1);
+    ctx.fillStyle=b.hit?'rgba(0,0,0,.35)':b.tried?'rgba(0,0,0,.45)':'#141422';ctx.font=(b.lab.length>2?'700 7px':b.lab.length>1?'700 9px':'700 11px')+' Verdana,sans-serif';ctx.textAlign='center';ctx.textBaseline='middle';if(!flashOff)ctx.fillText(b.lab,px+T/2,py+T/2+1);
     if(b.r===G.rd&&!b.hit&&(G.t>>3)%2){ctx.strokeStyle='#fff';ctx.lineWidth=1;ctx.strokeRect(px-1.5,py-1.5,T+3,T+3);}}
    for(const c of G.coinItems){if(c.got)continue;const wob=Math.abs(Math.cos(c.t))*6+2;ctx.fillStyle='#FFC93C';ctx.fillRect(c.x+(8-wob)/2,c.y+Math.sin(c.t)*1.5,wob,10);ctx.fillStyle='#E0A017';ctx.fillRect(c.x+(8-wob)/2,c.y+4+Math.sin(c.t)*1.5,wob,2);}
    for(const pw of G.powers){if(pw.got)continue;const yy=pw.y+Math.sin(pw.t)*2;blit(pw.kind==='boot'?BOOT:pw.kind==='whistle'?WHIS:STAR,pw.x,yy,0);}
