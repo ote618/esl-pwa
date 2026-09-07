@@ -5,8 +5,8 @@ import { stop } from '../lib/audio.js'
 /**
  * Screen 3 — the week's lesson.
  *
- * The video and the games are real; the homework is still a placeholder so
- * the route and the shape are honest about what exists.
+ * The video, the homework and the games are all real now. Nothing on this
+ * screen is a placeholder any more.
  *
  * The games live HERE, at the end of the week's lesson, and the group whose
  * lesson this is travels with them — a game is played in the letters the
@@ -20,11 +20,17 @@ import { stop } from '../lib/audio.js'
  * wall of unrelated suggestions.
  */
 const CARDS = [
-  ['tarea', 'Tarea', 'Para practicar en casa', null],
-  ['juegos', 'Juegos', 'Juega con las letras', 'games']
+  ['tarea', 'Tarea', 'Para practicar en casa'],
+  ['juegos', 'Juegos', 'Juega con las letras']
 ]
 
-export default function LessonScreen ({ group, onBack, onOpenGames }) {
+/**
+ * Slice 2 wired `onOpenTarea` onto one card that was already here; the games
+ * wired `onOpenGames` onto the other. Both cards, their copy and their icons
+ * are Slice 1's. With either prop absent that card simply does nothing, which
+ * is how each arrived independently without disturbing the other.
+ */
+export default function LessonScreen ({ group, onBack, onOpenTarea, onOpenGames }) {
   const vid = group.media?.video?.provider === 'youtube' ? group.media.video.id : null
   return (
     <section className="screen active" id="screen-lesson">
@@ -39,12 +45,11 @@ export default function LessonScreen ({ group, onBack, onOpenGames }) {
 
       <div className="lessons">
         <VideoBox vid={vid} />
-        {CARDS.map(([key, title, sub, opens]) => (
+        {CARDS.map(([key, title, sub]) => (
           <button
             className="lesson"
             key={key}
-            aria-disabled={opens ? undefined : 'true'}
-            onClick={opens === 'games' ? onOpenGames : undefined}
+            onClick={key === 'tarea' ? onOpenTarea : key === 'juegos' ? onOpenGames : undefined}
           >
             <LessonIcon name={key} />
             <span>
@@ -55,9 +60,6 @@ export default function LessonScreen ({ group, onBack, onOpenGames }) {
         ))}
       </div>
 
-      <p className="soon">
-        La tarea del grupo llega pronto.
-      </p>
     </section>
   )
 }

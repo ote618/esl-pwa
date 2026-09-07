@@ -11,16 +11,17 @@
  * should never have to be — "open it twice" is not a release mechanism. So
  * the page reloads itself. The only question is when.
  *
- * NEVER MID-GAME. A reload during a penalty kick is worse than a stale build:
- * the child loses the round and nothing on screen explains why. So a pending
- * reload waits for a moment where nothing is lost:
+ * NEVER MID-ACTIVITY. A reload part-way through a lesson video, a night's
+ * homework or a penalty kick is worse than a stale build: the child loses what
+ * they were doing and nothing on screen explains why. So a pending reload
+ * waits for a moment where nothing is lost:
  *
  *   1. the app is sitting on the grid, or
  *   2. the app has just been backgrounded — reload behind their back, and
  *      what they come back to is simply the new version
  *
- * Progress lives in localStorage and survives a reload; only the current
- * screen is lost, which is why "on the grid" counts as free.
+ * Anything a screen has saved lives in localStorage and survives a reload;
+ * only the current screen is lost, which is why "on the grid" counts as free.
  */
 
 /* Was this page already under a worker when it loaded? If not, the first
@@ -58,8 +59,8 @@ if (typeof navigator !== 'undefined' && 'serviceWorker' in navigator) {
   })
 
   // Backgrounded with a release waiting: reload now, unseen. This is the path
-  // that catches a child who is deep in a game and then puts the phone down —
-  // by the time they look again it is the new build, with nothing interrupted.
+  // that catches a child who is deep in something and then puts the phone
+  // down — by the time they look again it is the new build, nothing interrupted.
   document.addEventListener('visibilitychange', () => {
     if (document.visibilityState === 'hidden' && pending && !done) {
       done = true

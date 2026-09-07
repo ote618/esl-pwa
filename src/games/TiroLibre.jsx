@@ -18,6 +18,7 @@
 import { useEffect, useRef, useState } from 'react'
 import { groups } from '../lib/registry.js'
 import { play, playSequence, stop, hasClip } from '../lib/audio.js'
+import { gameLevels, recordGameLevel } from '../lib/progress.js'
 import { Speaker } from '../components/Icons.jsx'
 
 /* ================================================================== *
@@ -102,7 +103,7 @@ function pointsFor (outcome, quality) {
  * LEVEL PLAN — pools, never words
  * ================================================================== */
 
-const PROGRESS_KEY = 'esl-pwa.tirolibre.v1'
+const GAME_ID = 'tirolibre'
 
 const PLAYERS = [
   // Nicknames and numbers are PROVISIONAL — T rules them (open decision 1).
@@ -229,25 +230,20 @@ function shuffle (arr, rng) {
 }
 
 /* ================================================================== *
- * PROGRESS — versioned localStorage, no names
+ * PROGRESS — through lib/progress.js, which is the only writer of storage
+ *
+ * This file used to keep its own jar under its own key. It does not any more:
+ * Slice 2 established that exactly one module touches storage, so that "what
+ * does the app remember about a child?" has one answer in one place, and a
+ * test enforces it. A game is not an exception to that.
  * ================================================================== */
 
-function read () {
-  try { return JSON.parse(localStorage.getItem(PROGRESS_KEY)) || { levels: {} } } catch { return { levels: {} } }
-}
-function write (p) {
-  try { localStorage.setItem(PROGRESS_KEY, JSON.stringify(p)) } catch { /* private mode: play without saving */ }
-}
-
 function levelState (id) {
-  return read().levels[id] ?? { done: false, best: 0 }
+  return gameLevels(GAME_ID)[id] ?? { done: false, best: 0 }
 }
 
 function recordWin (id, score) {
-  const p = read()
-  const prev = p.levels[id] ?? { done: false, best: 0 }
-  p.levels[id] = { done: true, best: Math.max(prev.best, score) }
-  write(p)
+  recordGameLevel(GAME_ID, id, score)
 }
 
 /**

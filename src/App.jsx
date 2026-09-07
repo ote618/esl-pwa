@@ -2,23 +2,26 @@ import { useEffect, useState } from 'react'
 import GridScreen from './screens/GridScreen.jsx'
 import LetterScreen from './screens/LetterScreen.jsx'
 import LessonScreen from './screens/LessonScreen.jsx'
+import TareaScreen from './screens/TareaScreen.jsx'
 import GamesScreen from './screens/GamesScreen.jsx'
 import { stop, unlock } from './lib/audio.js'
 import { setSafe } from './lib/refresh.js'
 import './styles/alphabet.css'
 
 /**
- * Slice 1 — the alphabet, plus the way into the games.
+ * Slice 1 — the alphabet. Slice 2 — the homework. And the games.
  *
- * Screens, one at a time, back through history so the Android back button
- * lands where a child expects. Every screen change stops the audio; a clip
- * still talking over the next screen is the worst bug here.
+ * Five screens now, one at a time, back through history so the Android back
+ * button lands where a child expects. Every screen change stops the audio;
+ * a clip still talking over the next screen is the worst bug here.
  *
- * The games hang off the LESSON, not off the grid. A child arrives at a game
- * having just done that group's week, and the group they were working in is
- * the group the game is played in — which is why view.group travels from the
- * lesson into GamesScreen. A game owns its own screens, so this file never
- * learns what any of them are.
+ * Tarea and the games hang off the same lesson but take opposite things from
+ * it. Tarea carries NO group: tonight's set is built from `gating.current`
+ * inside the screen, not from whichever lesson the tap came through — see the
+ * note at the top of TareaScreen.jsx. A game carries the group, because it is
+ * played in the letters that lesson just taught.
+ *
+ * A game owns its own screens, so this file never learns what any of them are.
  */
 export default function App () {
   const [view, setView] = useState({ name: 'grid' })
@@ -70,12 +73,14 @@ export default function App () {
         <LessonScreen
           group={view.group}
           onBack={back}
+          onOpenTarea={() => go({ name: 'tarea' })}
           onOpenGames={() => go({ name: 'games', group: view.group })}
         />
       )}
       {view.name === 'games' && (
         <GamesScreen group={view.group} onBack={back} />
       )}
+      {view.name === 'tarea' && <TareaScreen onBack={back} />}
     </div>
   )
 }
