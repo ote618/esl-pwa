@@ -443,7 +443,7 @@ export function startSuperSonidos (root, { testMode = false, showTail = false } 
     // coins
     for(let k=0;k<4;k++)coinItems.push({x:(b+5+k*2)*T+4,y:(blockRow-3-(k%2))*T,got:0,t:r()*6});
     // the three letter blocks
-    rd.options.forEach((lab,k)=>{const cx=bx0+k*4;setT(cx,blockRow,3);blocks.push({r:i,cx,cy:blockRow,lab,ok:lab===rd.answer,hit:0,tried:0,bp:0,bd:0});});
+    rd.options.forEach((lab,k)=>{const cx=bx0+k*4;setT(cx,blockRow,3);blocks.push({r:i,cx,cy:blockRow,lab,ok:lab===rd.answer,clip:labelClip(rd,lab),hit:0,tried:0,bp:0,bd:0});});
     // enemies from the recipe
     const nd=(f.def||[1,2,2,3,4][li])+(si>=8?1:0);
     for(let e=0;e<nd;e++)enemies.push(mk('def',(bx0-3+e*4)*T,defY,(e%2?1:-1)*spd));
@@ -474,6 +474,29 @@ export function startSuperSonidos (root, { testMode = false, showTail = false } 
    return playRegistryClip(rd.clip.id,rd.clip.part);
   }
   function sayRound(){if(!G||G.done)return;const rd=G.rounds[G.rd];if(rd)playClip(rd);}
+
+  /**
+   * The clip for a BLOCK's own label, right or wrong.
+   *
+   * Hitting a box and hearing what is written on it is the point of this kind
+   * of game, so a wrong box has to say its own letter — not the answer's, and
+   * not nothing. Shapes follow the round's own id, so a syllable round asks for
+   * a syllable and a letter round asks for a letter, and every candidate is
+   * checked against the registry before it is used.
+   */
+  function labelClip(rd,lab){
+   if(!rd||!rd.clip)return null;
+   const id=rd.clip.id;
+   const tries=id.startsWith('U2-')?[['U2-'+lab,'sound']]
+     :id.endsWith('-NAME')?[['LTR-'+lab+'-NAME','sound'],['LTR-'+lab+'-S1','sound']]
+     :[['LTR-'+lab+'-S1','sound'],['LTR-'+lab+'-NAME','sound']];
+   for(const t of tries)if(hasClip(t[0],t[1]))return {id:t[0],part:t[1]};
+   return null;
+  }
+  function playLabel(b,rd){
+   if(b.clip&&hasClip(b.clip.id,b.clip.part)){if(window.speechSynthesis)speechSynthesis.cancel();return playRegistryClip(b.clip.id,b.clip.part);}
+   speak(b.lab,rd&&rd.lang);return Promise.resolve(false);
+  }
 
   /* progress */
   const PKEY='supersonidos_v1';
@@ -509,7 +532,10 @@ export function startSuperSonidos (root, { testMode = false, showTail = false } 
     G.rd++;const mine=G.rd;
     playClip(rd).then(()=>{if(!G||G.done||G.rd!==mine)return;if(G.rd<G.rounds.length)setTimeout(sayRound,400);});
     hud();
-   }else{b.bd=26;b.tried=1;G.p.vy=1.6;G.score=Math.max(0,G.score-20);G.fx.push({t:'x',x:b.cx*T+8,y:b.cy*T-4,s:'✗',l:24,bad:1});setTimeout(sayRound,400);hud();}
+   }else{b.bd=26;b.tried=1;G.p.vy=1.6;G.score=Math.max(0,G.score-20);G.fx.push({t:'x',x:b.cx*T+8,y:b.cy*T-4,s:'✗',l:24,bad:1});
+    const rd=G.rounds[G.rd],mine=G.rd;
+    playLabel(b,rd).then(()=>{if(!G||G.done||G.rd!==mine)return;setTimeout(sayRound,400);});
+    hud();}
   }
   function hurt(){const p=G.p;if(p.hu>0||G.power==='star')return;p.hu=70;p.vx=-2.6*p.fc;p.vy=-3.4;G.lives--;hud();
    if(G.lives<=0){G.lost=1;finish(false);}}
