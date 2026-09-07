@@ -793,13 +793,21 @@ const CSS = `
  * letters — 44px of type in a 47px box overflows. Size to the net it is in. */
 .tl-zones.z6 .tl-zone{font-size:clamp(17px,5.4vw,26px);border-width:2px;border-radius:9px;
   background:rgba(20,33,61,.6)}
-/* A picture zone: the image IS the answer, so it gets the chalk ground that
- * makes a cut-out readable against the net behind it. */
-.tl-zone.pic{background:rgba(241,250,238,.92);padding:4px}
-.tl-zone.pic img{width:100%;height:100%;object-fit:contain;display:block}
-.tl-zone.pic.aim{background:var(--yellow)}
-.tl-zone.pic.hit{background:var(--grass)}
-.tl-zone.pic.miss{background:rgba(241,250,238,.35)}
+/* A picture zone.
+ *
+ * The image needs an opaque ground to read against the net, but a tile that
+ * is opaque edge to edge hides the keeper standing behind it — and watching
+ * where he goes is half the game. So the TILE stays see-through and only the
+ * picture itself is opaque, sitting in the top of the cell. The keeper shows
+ * below it, exactly as he does behind a letter. */
+.tl-zone.pic{background:rgba(20,33,61,.22);padding:4px;display:flex;align-items:flex-start;justify-content:center}
+.tl-zone.pic img{width:100%;height:64%;object-fit:contain;display:block;
+  background:var(--chalk);border:2px solid var(--navy);border-radius:10px;padding:3px}
+.tl-zone.pic.aim{background:rgba(255,214,10,.55)}
+.tl-zone.pic.aim img{border-color:var(--navy)}
+.tl-zone.pic.hit{background:rgba(45,106,79,.75)}
+.tl-zone.pic.miss{background:transparent}
+.tl-zone.pic.miss img{opacity:.35}
 .tl-zone:disabled{cursor:default}
 .tl-zone.aim{background:var(--yellow);color:var(--navy);border-color:var(--navy);transform:scale(1.04)}
 .tl-zone.hit{background:var(--grass);color:var(--chalk);border-color:var(--chalk)}
