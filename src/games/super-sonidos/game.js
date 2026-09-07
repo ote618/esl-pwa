@@ -287,10 +287,11 @@ export function startSuperSonidos (root, { testMode = false, showTail = false } 
    const allCV=[];consonants.forEach(c=>Object.keys(CV[c]).forEach(k=>allCV.push(k)));
    const allDig=DIGRAPH.map(d=>d.L).filter((v,i,a)=>a.indexOf(v)===i);
 
-   function addName(L){rounds.push({say:NAME[L],prompt:'¿Cuál letra se llama',options:[L,...others(r,ALL,L,2)],answer:L,clip:{id:'LTR-'+L+'-NAME',part:'sound'}});}
+   function addName(L){const pool=(set.L&&set.L.length>2)?set.L:ALL;rounds.push({say:NAME[L],prompt:'¿Cuál letra se llama',options:[L,...others(r,pool,L,2)],answer:L,clip:{id:'LTR-'+L+'-NAME',part:'sound'}});}
    function addSound(L){const si=Math.floor(r()*SOUND[L].length),so=SOUND[L][si];const pool=set.L||ALL;rounds.push({say:so.s,prompt:'¿Qué letra hace',options:[L,...others(r,pool.length>2?pool:ALL,L,2)],answer:L,clip:{id:'LTR-'+L+'-S'+(si+1),part:'sound'}});}
    function addCV(L){const ks=Object.keys(CV[L]||{});if(!ks.length)return addSound(L);const k=pick(r,ks);
-     const pool=allCV.filter(x=>x[0]===k[0]);const dis=pool.length>2?others(r,pool,k,2):others(r,allCV,k,2);
+     const setCV=set.L?allCV.filter(x=>set.L.includes(x[0].toUpperCase())):allCV;
+     const pool=setCV.filter(x=>x[0]===k[0]);const dis=pool.length>2?others(r,pool,k,2):others(r,setCV,k,2);
      rounds.push({say:k,prompt:'Encuentra',options:[k.toUpperCase(),...dis.map(x=>x.toUpperCase())],answer:k.toUpperCase(),clip:{id:'U2-'+k.toUpperCase(),part:'sound'}});}
    function addFirst(L){const si=Math.floor(r()*SOUND[L].length),so=SOUND[L][si];const wi=Math.floor(r()*so.w.length),w=so.w[wi];const pool=(set.L&&set.L.length>2)?set.L:ALL;rounds.push({say:w,lang:'en',prompt:'¿Con qué letra empieza',options:[L,...others(r,pool,L,2)],answer:L,show:w,clip:{id:'LTR-'+L+'-S'+(si+1),part:'word'+(wi+1)}});}
    function addDName(){const d=pick(r,DIGRAPH);rounds.push({say:d.L.split('').join(' '),prompt:'¿Cuál es',options:[d.L,...others(r,allDig,d.L,2)],answer:d.L});}
