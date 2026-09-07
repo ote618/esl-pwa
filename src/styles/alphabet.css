@@ -176,8 +176,3 @@ body{margin:0;background:var(--studio);font-family:'Nunito',system-ui,sans-serif
    promise something the build cannot deliver. */
 .lesson.soon-tile{opacity:.45;box-shadow:none;cursor:default}
 .lesson.soon-tile:active{transform:none;box-shadow:none}
-
-/* The Juegos card on the grid. Sits between the page heading and the groups,
-   so games are one tap from opening the app; the lesson screen keeps its own
-   card as the in-context way in. */
-#screen-grid .lessons{margin:0 0 26px}

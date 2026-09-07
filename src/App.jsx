@@ -143,7 +143,6 @@ function Screens () {
         <GridScreen
           onOpenLetter={(letter, group) => go({ name: 'letter', letter, group })}
           onOpenLesson={group => go({ name: 'lesson', group })}
-          onOpenGames={() => go({ name: 'games' })}
         />
       )}
       {view.name === 'letter' && (
