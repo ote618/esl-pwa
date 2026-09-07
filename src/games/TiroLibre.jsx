@@ -109,12 +109,23 @@ const PLAYERS = [
   { id: 'p19', shirt: 19, nick: 'El Rayo', sweep: 'slow', bandBonus: 0, readBonus: 0, unlockedAt: 0 }
 ]
 
+/**
+ * `zones` is how many letters the net shows, and a level can only be played
+ * in a group whose pool can fill it — see canFill(). Nothing here is flagged
+ * built or unbuilt any more: the DATA decides where a level exists, which is
+ * the same rule the pools already follow.
+ *
+ * Level 4 asks for 3, not 6. Words are scarce — the six groups carry 3, 1, 3,
+ * 2, 0 and 2 of them — so six zones is a net that can never be filled, and
+ * even three only works where there are three. It shows up in G1 and G3 and
+ * says why everywhere else.
+ */
 const LEVELS_PER_SET = [
-  { n: 1, kind: 'pen', title: 'Los nombres', sub: 'Escucha el nombre. Patea a la letra.', pool: { shape: 'name' }, zones: 3, band: 0.56, keeper: 'still', rounds: 5, balls: 3, built: true },
-  { n: 2, kind: 'pen', title: 'Los sonidos', sub: 'Escucha el sonido. Patea a la letra.', pool: { shape: 'sound' }, zones: 3, band: 0.50, keeper: 'random', rounds: 5, balls: 3, built: true },
-  { n: 3, kind: 'free', title: 'Las sílabas', sub: 'Tiro libre', pool: { shape: 'combination' }, zones: 6, band: 0.46, keeper: 'random', rounds: 5, balls: 3, built: false },
-  { n: 4, kind: 'free', title: 'Las palabras', sub: 'Tiro libre', pool: { shape: 'word' }, zones: 6, band: 0.44, keeper: 'random', rounds: 5, balls: 3, built: false },
-  { n: 5, kind: 'shootout', title: 'Tanda de penales', sub: 'Al mejor de 5', pool: { shape: '*' }, zones: 3, band: 0.42, keeper: 'half', rounds: 3, balls: 5, built: false }
+  { n: 1, kind: 'pen', title: 'Los nombres', sub: 'Escucha el nombre. Patea a la letra.', pool: { shape: 'name' }, zones: 3, band: 0.56, keeper: 'still', rounds: 5, balls: 3 },
+  { n: 2, kind: 'pen', title: 'Los sonidos', sub: 'Escucha el sonido. Patea a la letra.', pool: { shape: 'sound' }, zones: 3, band: 0.50, keeper: 'random', rounds: 5, balls: 3 },
+  { n: 3, kind: 'free', title: 'Las sílabas', sub: 'Escucha la sílaba. Patea a la sílaba.', pool: { shape: 'combination' }, zones: 6, band: 0.46, keeper: 'random', rounds: 5, balls: 3 },
+  { n: 4, kind: 'free', title: 'Las palabras', sub: 'Escucha la palabra. Patea a la palabra.', pool: { shape: 'word' }, zones: 3, band: 0.44, keeper: 'random', rounds: 5, balls: 3, needs: 'palabras' },
+  { n: 5, kind: 'shootout', title: 'Tanda de penales', sub: 'Todo junto. Al mejor de 5.', pool: { shape: '*' }, zones: 3, band: 0.42, keeper: 'half', rounds: 3, balls: 5 }
 ]
 
 const PITCHES = {
@@ -145,21 +156,41 @@ function poolFor (group, level) {
 }
 
 /**
- * Build one kick: a target entry and the letters on the zones.
- * Distractors share the pool but not the letter — A-corta and A-larga are
- * both "A" on the net, and a net with two As is a question with two answers.
+ * Build one kick: a target entry and what the zones say.
+ *
+ * Distractors are distinct by LABEL — by what is actually painted on the net.
+ * A-corta and A-larga are both "A" there, and a net with two As is a question
+ * with two answers; the same goes for two nets reading "ba".
+ *
+ * This used to dedupe by LETTER, which is the same rule only for as long as a
+ * zone shows a letter. On the syllables level a zone shows "ba", and "ba" and
+ * "be" are two different answers that happen to share a B — the letter rule
+ * threw one of them away and left a six-zone net with three syllables on it.
+ * Group 1 has fifteen distinct syllables. It was never short of content.
  */
 function makeKick (pool, level, avoidId = null, rng = Math.random) {
   const candidates = pool.filter(it => it.id !== avoidId)
   const target = pick(candidates.length ? candidates : pool, rng)
-  const others = shuffle(pool.filter(it => it.letter !== target.letter), rng)
+  const others = shuffle(pool.filter(it => it.label !== target.label), rng)
   const distinct = []
   for (const it of others) {
     if (distinct.length >= level.zones - 1) break
-    if (!distinct.some(d => d.letter === it.letter)) distinct.push(it)
+    if (!distinct.some(d => d.label === it.label)) distinct.push(it)
   }
   const zones = shuffle([target, ...distinct], rng)
   return { target, zones, answer: zones.indexOf(target) }
+}
+
+/**
+ * Can this group fill this level's net?
+ *
+ * A level is not "built" or "unbuilt" — it exists wherever its pool can put a
+ * distinct label on every zone, and it does not exist where it cannot. Group 5
+ * carries no words at all, so level 4 is not a thing that is coming there; it
+ * is a thing that is not there, and the map says so.
+ */
+function canFill (pool, level) {
+  return new Set(pool.map(it => it.label)).size >= level.zones
 }
 
 function pick (arr, rng) { return arr[Math.floor(rng() * arr.length)] }
@@ -213,6 +244,16 @@ function isOpen (set, level) {
   return prev ? levelState(prev.id).done : false
 }
 
+/** What the map says under a level's name, and whether it can be tapped. */
+function levelStatus (set, level) {
+  const pool = poolFor(set.group, level)
+  if (!canFill(pool, level)) {
+    return { open: false, why: `Este grupo no tiene ${level.needs || 'contenido'} todavía` }
+  }
+  if (!isOpen(set, level)) return { open: false, why: 'Gana el nivel anterior' }
+  return { open: true, why: level.sub }
+}
+
 /* ================================================================== *
  * SCREENS
  * ================================================================== */
@@ -234,8 +275,12 @@ export default function TiroLibre ({ group: groupProp, onBack }) {
         onExit={() => { stop(); setLevel(null) }}
         onNext={() => {
           stop()
-          const nxt = set.levels.find(l => l.n === level.n + 1)
-          setLevel(nxt && nxt.built ? nxt : null)
+          // Walk forward past any level this group has no content for, so a
+          // group with no words goes 3 -> 5 instead of into a dead end.
+          const nxt = set.levels.find(l =>
+            l.n > level.n && canFill(poolFor(set.group, l), l)
+          )
+          setLevel(nxt ?? null)
         }}
       />
     )
@@ -255,7 +300,7 @@ export default function TiroLibre ({ group: groupProp, onBack }) {
       <ol className="tl-map">
         {set.levels.map(l => {
           const st = levelState(l.id)
-          const open = l.built && isOpen(set, l)
+          const { open, why } = levelStatus(set, l)
           return (
             <li key={l.id}>
               <button
@@ -266,7 +311,7 @@ export default function TiroLibre ({ group: groupProp, onBack }) {
                 <span className="tl-lvn">{l.n}</span>
                 <span className="tl-lvt">
                   <b>{l.title}</b>
-                  <small>{open ? l.sub : l.built ? 'Gana el nivel anterior' : 'Pronto'}</small>
+                  <small>{why}</small>
                 </span>
                 {st.done && <span className="tl-lvs">{st.best}</span>}
               </button>
@@ -416,7 +461,7 @@ function Level ({ set, level, player, onExit, onNext }) {
         )}
         {phase === 'meter' && <Meter band={band} sweep={SWEEP[player.sweep]} onStop={strike} />}
         {phase === 'flight' && <p className="tl-cue">…</p>}
-        {phase === 'result' && <Verdict verdict={verdict} label={wrongLabel} />}
+        {phase === 'result' && <Verdict verdict={verdict} label={wrongLabel} target={kick.target} />}
         {phase === 'won' && (
           <div className="tl-end">
             <b>¡Ganaste!</b>
@@ -446,10 +491,24 @@ function Level ({ set, level, player, onExit, onNext }) {
 
 /* ------------------------------------------------------------------ */
 
-function Verdict ({ verdict, label }) {
+function Verdict ({ verdict, label, target }) {
   if (!verdict) return null
   if (verdict.outcome === 'goal') {
-    return <p className="tl-cue goal">¡GOL!{verdict.quality === 'centre' ? ' +150' : ' +100'}</p>
+    // The English voice is already saying the word (playSequence, above). Put
+    // the picture with it: the reward for a goal is the thing being taught,
+    // not just a number. A name entry has no words and simply shows none.
+    const word = target.words?.[0]
+    return (
+      <div className="tl-won">
+        <p className="tl-cue goal">¡GOL!{verdict.quality === 'centre' ? ' +150' : ' +100'}</p>
+        {word && (
+          <span className="tl-goalword">
+            <img src={word.imageSrc} alt="" width={word.imageW} height={word.imageH} />
+            <b>{word.text}</b>
+          </span>
+        )}
+      </div>
+    )
   }
   if (verdict.outcome === 'wrong') {
     return <p className="tl-cue wrong">Esa es la <b>{label}</b></p>
@@ -686,6 +745,9 @@ const CSS = `
   color:var(--chalk);font-family:'Nunito',sans-serif;font-weight:800;font-size:clamp(30px,10vw,44px);
   padding:0;cursor:pointer;min-height:44px;transition:background .12s,border-color .12s,transform .12s;
 }
+/* Six zones halves the cell height and the labels are syllables, not single
+ * letters — 44px of type in a 47px box overflows. Size to the net it is in. */
+.tl-zones.z6 .tl-zone{font-size:clamp(17px,5.4vw,26px);border-width:2px;border-radius:9px}
 .tl-zone:disabled{cursor:default}
 .tl-zone.aim{background:var(--yellow);color:var(--navy);border-color:var(--navy);transform:scale(1.04)}
 .tl-zone.hit{background:var(--grass);color:var(--chalk);border-color:var(--chalk)}
@@ -711,6 +773,12 @@ const CSS = `
 .tl-needle{position:absolute;top:0;bottom:0;width:8px;margin-left:-4px;background:var(--navy);border-radius:4px}
 .tl-mlabel{position:absolute;inset:0;display:grid;place-items:center;font-family:'Baloo 2',cursive,sans-serif;
   font-weight:800;font-size:24px;color:var(--navy);pointer-events:none;text-shadow:0 0 6px var(--chalk)}
+
+.tl-won{display:flex;flex-direction:column;align-items:center;gap:8px}
+.tl-goalword{display:flex;align-items:center;gap:10px;animation:tl-pop .3s cubic-bezier(.2,1.6,.4,1)}
+.tl-goalword img{width:56px;height:56px;object-fit:contain;background:var(--chalk);
+  border:3px solid var(--navy);border-radius:14px;padding:3px}
+.tl-goalword b{font-family:'Baloo 2',cursive,sans-serif;font-weight:800;font-size:26px;color:var(--chalk)}
 
 .tl-cue{margin:0;font-family:'Baloo 2',cursive,sans-serif;font-weight:800;font-size:30px;text-align:center;line-height:1.1}
 .tl-cue.goal{color:var(--yellow);animation:tl-pop .3s cubic-bezier(.2,1.6,.4,1)}
