@@ -443,11 +443,11 @@ export function startSuperSonidos (root, { testMode = false, showTail = false } 
     // coins
     for(let k=0;k<4;k++)coinItems.push({x:(b+5+k*2)*T+4,y:(blockRow-3-(k%2))*T,got:0,t:r()*6});
     // the three letter blocks
-    // ONE box per round, and it is always the answer. There are no wrong boxes:
-  // hitting a box is the reward, not a test a child can fail. The distractors
-  // are still generated in rd.options — they are simply not placed — so this
-  // is one line away from being a three-choice quiz again when that is wanted.
-  {const cx=bx0+4;setT(cx,blockRow,3);blocks.push({r:i,cx,cy:blockRow,lab:rd.answer,ok:1,clip:labelClip(rd,rd.answer),hit:0,bp:0,bd:0});}
+    // Every box is a right answer. The task is to hit them ALL and hear each
+  // letter, so a box is a thing to collect rather than a choice to get wrong.
+  // A round is finished when none of its boxes are left, and the goal will not
+  // accept a child who skipped one.
+  rd.options.forEach((lab,k)=>{const cx=bx0+k*4;setT(cx,blockRow,3);blocks.push({r:i,cx,cy:blockRow,lab,ok:1,clip:labelClip(rd,lab),hit:0,bp:0,bd:0});});
     // enemies from the recipe
     const nd=(f.def||[1,2,2,3,4][li])+(si>=8?1:0);
     for(let e=0;e<nd;e++)enemies.push(mk('def',(bx0-3+e*4)*T,defY,(e%2?1:-1)*spd));
@@ -524,7 +524,7 @@ export function startSuperSonidos (root, { testMode = false, showTail = false } 
   }
   function headbutt(cx,cy){
    const b=G.blocks.find(b=>b.cx===cx&&b.cy===cy&&!b.hit);if(!b)return;b.bp=1;
-   if(b.r!==G.rd){b.bd=18;return;}
+   if(b.r!==G.rd){b.bd=18;G.fx.push({t:'x',x:b.cx*T+8,y:b.cy*T-4,s:'todavía no',l:26});return;}
    {b.hit=1;G.score+=100;
     for(let i=0;i<6;i++)G.fx.push({t:'c',x:b.cx*T+8,y:b.cy*T,vx:(Math.random()-.5)*1.6,vy:-2-Math.random()*1.4,l:36});
     G.fx.push({t:'x',x:b.cx*T+8,y:b.cy*T-4,s:'¡SÍ!',l:40});
@@ -533,8 +533,13 @@ export function startSuperSonidos (root, { testMode = false, showTail = false } 
     // clips: the child heard a fragment of the letter they hit and then the
     // next one, which reads as the wrong letter playing.
     const rd=G.rounds[G.rd];
-    G.rd++;const mine=G.rd;
-    playLabel(b,rd).then(()=>{if(!G||G.done||G.rd!==mine)return;if(G.rd<G.rounds.length)setTimeout(sayRound,400);});
+    if(G.blocks.some(x=>x.r===G.rd&&!x.hit)){
+     // more boxes in this round — say this one and leave the child to the rest
+     playLabel(b,rd);
+    }else{
+     G.rd++;const mine=G.rd;
+     playLabel(b,rd).then(()=>{if(!G||G.done||G.rd!==mine)return;if(G.rd<G.rounds.length)setTimeout(sayRound,400);});
+    }
     hud();
    }
   }
@@ -587,7 +592,9 @@ export function startSuperSonidos (root, { testMode = false, showTail = false } 
    }
    G.fx.forEach(f=>{f.l--;if(f.t==='c'){f.x+=f.vx;f.y+=f.vy;f.vy+=.22;}else f.y-=.55;});G.fx=G.fx.filter(f=>f.l>0);
    if(!G.done&&p.x>G.goalX+8&&G.rd>=G.rounds.length){finish(true);}
-   else if(!G.done&&p.x>G.goalX+8){p.x=G.goalX-4;p.vx=-2;G.fx.push({t:'x',x:p.x,y:p.y-8,s:'¡Falta un bloque!',l:50});}
+   else if(!G.done&&p.x>G.goalX+8){p.x=G.goalX-4;p.vx=-2;
+    const n=G.blocks.filter(x=>!x.hit).length;
+    G.fx.push({t:'x',x:p.x,y:p.y-8,s:n===1?'Falta 1 caja':'Faltan '+n+' cajas',l:60});}
    const want=Math.max(0,Math.min(W*T-VW,p.x-VW*.38));G.cam+=(want-G.cam)*.14;
   }
 
@@ -667,11 +674,11 @@ export function startSuperSonidos (root, { testMode = false, showTail = false } 
    $('lives').textContent='♥'.repeat(Math.max(0,G.lives))+'♡'.repeat(Math.max(0,3-G.lives));
    $('score').textContent=G.score+(G.power?' · '+(G.power==='boot'?'👟':G.power==='whistle'?'❄️':'⭐'):'');
    if(G.rd>=G.rounds.length){P.textContent='¡Corre a la portería!';return;}
-   const rd=G.rounds[G.rd];
-   if(rd.word){const done=G.rounds.slice(0,G.rd).filter(x=>x.word===rd.word).map(x=>x.answer).join('');const shown=(done+'_'.repeat(rd.word.length-done.length)).split('').join(' ');
-    P.innerHTML='Arma <b>'+shown+'</b>';}
-   else if(rd.show){P.innerHTML=rd.prompt+' <b>'+rd.show+'</b>';}
-   else P.innerHTML=rd.prompt+' <b>'+rd.say+'</b>?';
+   // Every box is correct, so the old questions ("¿Cuál letra se llama ei?")
+   // no longer describe the task. Say what the task actually is, and how much
+   // of it is left, so a child who ran past a box knows to go back.
+   const left=G.blocks.filter(x=>!x.hit).length;
+   P.innerHTML='Golpea todas las cajas · faltan <b>'+left+'</b>';
   }
   function showMap(){
    G=null;const sc=$('screen');sc.classList.add('on');$('over').classList.remove('on');
