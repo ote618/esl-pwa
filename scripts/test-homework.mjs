@@ -373,10 +373,40 @@ const srcFiles = []
 // Comments are stripped first: homework.js's header promises it touches no
 // localStorage, and that promise must not read as a violation of itself.
 const stripComments = t => t.replace(/\/\*[\s\S]*?\*\//g, '').replace(/^\s*\/\/.*$/gm, '')
-const writers = srcFiles.filter(p => /localStorage|esl_progress_v1/.test(stripComments(fs.readFileSync(p, 'utf8'))))
+// Modules allowed storage of their own, and the key each one owns. The rule
+// this enforces is that esl_progress_v1 has exactly ONE writer; it is not that
+// nothing else may persist anything. Súper Sonidos is a self-contained game
+// that arrived with its own key and keeps a child's level progress under it,
+// which is no business of the homework's. Anything NOT on this list that
+// reaches for localStorage is the thing worth failing over, so the list is
+// explicit and short on purpose — adding to it should take an argument.
+const OWN_STORAGE = new Map([
+  ['src/lib/progress.js', 'esl_progress_v1'],
+  ['src/games/super-sonidos/game.js', 'supersonidos_v1']
+])
+const rel = p => path.relative(ROOT, p).split(path.sep).join('/')
+const touchers = srcFiles.filter(p => /localStorage|esl_progress_v1/.test(stripComments(fs.readFileSync(p, 'utf8'))))
+
+const strays = touchers.filter(p => !OWN_STORAGE.has(rel(p)))
+ok('only declared modules touch storage',
+  strays.length === 0,
+  strays.map(rel).join(', '))
+
+// Each declared module keeps to its own key.
+for (const [file, key] of OWN_STORAGE) {
+  const full = srcFiles.find(p => rel(p) === file)
+  if (!full) continue
+  const others = [...OWN_STORAGE.values()].filter(k => k !== key)
+  const text = stripComments(fs.readFileSync(full, 'utf8'))
+  ok(`${file} uses only ${key}`,
+    text.includes(key) && !others.some(k => text.includes(k)),
+    file)
+}
+
+const progressWriters = touchers.filter(p => stripComments(fs.readFileSync(p, 'utf8')).includes('esl_progress_v1'))
 ok('esl_progress_v1 is written from exactly one module',
-  writers.length === 1 && writers[0].endsWith('lib/progress.js'),
-  writers.map(p => path.relative(ROOT, p)).join(', '))
+  progressWriters.length === 1 && progressWriters[0].endsWith('lib/progress.js'),
+  progressWriters.map(rel).join(', '))
 
 fs.rmSync(tmp, { recursive: true, force: true })
 console.log(`\n${pass} passed, ${failed} failed`)

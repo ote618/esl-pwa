@@ -1,4 +1,5 @@
 import { groups, structure, group, isUnlocked } from '../lib/registry.js'
+import { LessonIcon } from '../components/Icons.jsx'
 
 /**
  * Screen 1 — the alphabet.
@@ -7,8 +8,14 @@ import { groups, structure, group, isUnlocked } from '../lib/registry.js'
  * nothing else: the registry deliberately does not declare letter membership
  * for G2-G8, and inventing "E F G H" here to fill the grid would be the app
  * asserting curriculum it has not been given.
+ *
+ * The Juegos card sits above the groups, and is the SECOND way in — the first
+ * is the card on a group's lesson screen. It is here because a game nobody can
+ * find is a game nobody plays: reaching it only through Grupo 1 -> Entrar a la
+ * lección -> Juegos is three taps behind a door with no sign on it, and a child
+ * opening this app has no reason to guess that games live inside a lesson.
  */
-export default function GridScreen ({ onOpenLetter, onOpenLesson }) {
+export default function GridScreen ({ onOpenLetter, onOpenLesson, onOpenGames }) {
   const live = new Set(groups().map(g => g.id))
 
   return (
@@ -16,6 +23,16 @@ export default function GridScreen ({ onOpenLetter, onOpenLesson }) {
       <div className="pagehead">
         <p className="eyebrow">English con Fútbol</p>
         <h1 className="lede">El alfabeto</h1>
+      </div>
+
+      <div className="lessons">
+        <button className="lesson" onClick={onOpenGames}>
+          <LessonIcon name="juegos" />
+          <span>
+            <span className="lt">Juegos</span>
+            <span className="ls">Súper Sonidos y más</span>
+          </span>
+        </button>
       </div>
 
       <div id="groups">

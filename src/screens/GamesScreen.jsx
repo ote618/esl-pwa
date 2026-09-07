@@ -1,4 +1,4 @@
-import { useState } from 'react'
+import { lazy, Suspense, useState } from 'react'
 import { groups } from '../lib/registry.js'
 import { stop } from '../lib/audio.js'
 import TiroLibre from '../games/TiroLibre.jsx'
@@ -12,11 +12,20 @@ import TiroLibre from '../games/TiroLibre.jsx'
  *
  * Reached from the week's lesson, so the group arrives with the child: a
  * game is played in the letters that lesson just taught. The fallback to the
- * first populated group is a safety net for a caller that hands over nothing,
- * not a route anyone takes.
+ * first populated group is a safety net for a caller that hands over nothing —
+ * the /juegos URL, which nobody arrives at from a lesson — not a route anyone
+ * takes on purpose.
+ *
+ * Súper Sonidos ignores the group: it carries its own map of sets and lets a
+ * child pick, so the shelf's group is simply not its question. It is also
+ * lazy, because its canvas engine and its stylesheet — which repaints <html>
+ * dark — have no business loading for a child who never opens it.
  */
+const SuperSonidos = lazy(() => import('../games/super-sonidos/SuperSonidos.jsx'))
+
 const GAMES = [
-  { id: 'tiro-libre', label: 'Tiro Libre', component: TiroLibre }
+  { id: 'tiro-libre', label: 'Tiro Libre', sub: 'Tira a puerta y acierta la letra', component: TiroLibre },
+  { id: 'super-sonidos', label: 'Súper Sonidos', sub: 'Corre, salta y golpea las cajas', component: SuperSonidos }
 ]
 
 export default function GamesScreen ({ group: groupProp, onBack }) {
@@ -25,7 +34,11 @@ export default function GamesScreen ({ group: groupProp, onBack }) {
 
   if (open) {
     const Game = open.component
-    return <Game group={group} onBack={() => { stop(); setOpen(null) }} />
+    return (
+      <Suspense fallback={null}>
+        <Game group={group} onBack={() => { stop(); setOpen(null) }} />
+      </Suspense>
+    )
   }
 
   return (
@@ -44,7 +57,9 @@ export default function GamesScreen ({ group: groupProp, onBack }) {
         {GAMES.map(g => (
           <div key={g.id} className="groupsec">
             <div className="grouphead">
-              <span className="gname">{g.label}</span>
+              <span className="gname">
+                {g.label}<small>{g.sub}</small>
+              </span>
               <button className="enter" onClick={() => { stop(); setOpen(g) }}>
                 Jugar →
               </button>
