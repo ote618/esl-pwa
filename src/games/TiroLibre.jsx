@@ -121,11 +121,11 @@ const PLAYERS = [
  * says why everywhere else.
  */
 const LEVELS_PER_SET = [
-  { n: 1, kind: 'pen', title: 'Los nombres', sub: 'Escucha el nombre. Patea a la letra.', pool: { shape: 'name' }, zones: 3, band: 0.56, keeper: 'still', rounds: 5, balls: 3 },
-  { n: 2, kind: 'pen', title: 'Los sonidos', sub: 'Escucha el sonido. Patea a la letra.', pool: { shape: 'sound' }, zones: 3, band: 0.50, keeper: 'random', rounds: 5, balls: 3 },
-  { n: 3, kind: 'free', title: 'Las sílabas', sub: 'Escucha la sílaba. Patea a la sílaba.', pool: { shape: 'combination' }, zones: 6, band: 0.46, keeper: 'random', rounds: 5, balls: 3 },
-  { n: 4, kind: 'free', title: 'Las palabras', sub: 'Escucha la palabra. Patea a la palabra.', pool: { shape: 'word' }, zones: 3, band: 0.44, keeper: 'random', rounds: 5, balls: 3, needs: 'palabras' },
-  { n: 5, kind: 'shootout', title: 'Tanda de penales', sub: 'Todo junto. Al mejor de 5.', pool: { shape: '*' }, zones: 3, band: 0.42, keeper: 'half', rounds: 3, balls: 5 }
+  { n: 1, kind: 'pen', title: 'Los nombres', sub: 'Escucha el nombre. Patea a la letra.', pool: { shape: 'name' }, ask: '¿Qué letra es?', zones: 3, band: 0.56, keeper: 'still', rounds: 5, balls: 3 },
+  { n: 2, kind: 'pen', title: 'Los sonidos', sub: 'Escucha el sonido. Patea a la letra.', pool: { shape: 'sound' }, ask: '¿De qué letra es este sonido?', zones: 3, band: 0.50, keeper: 'random', rounds: 5, balls: 3 },
+  { n: 3, kind: 'free', title: 'Las sílabas', sub: 'Escucha la sílaba. Patea a la sílaba.', pool: { shape: 'combination' }, ask: '¿Qué sílaba escuchaste?', zones: 6, band: 0.46, keeper: 'random', rounds: 5, balls: 3 },
+  { n: 4, kind: 'free', title: 'Las palabras', sub: 'Escucha la palabra. Patea a la palabra.', pool: { shape: 'word' }, ask: '¿Qué palabra escuchaste?', zones: 3, band: 0.44, keeper: 'random', rounds: 5, balls: 3, needs: 'palabras' },
+  { n: 5, kind: 'shootout', title: 'Tanda de penales', sub: 'Todo junto. Al mejor de 5.', pool: { shape: '*' }, ask: '¿Cuál escuchaste?', zones: 3, band: 0.42, keeper: 'half', rounds: 3, balls: 5 }
 ]
 
 const PITCHES = {
@@ -456,7 +456,7 @@ function Level ({ set, level, player, onExit, onNext }) {
             <button className="tl-hear" onClick={hear} aria-label="Escuchar otra vez">
               <Speaker />
             </button>
-            <span>{level.pool.shape === 'name' ? '¿Qué letra es?' : '¿De qué letra es este sonido?'}</span>
+            <span>{level.ask}</span>
           </div>
         )}
         {phase === 'meter' && <Meter band={band} sweep={SWEEP[player.sweep]} onStop={strike} />}
@@ -581,8 +581,11 @@ function Pitch ({ pitch, zones, zoneCount, aim, phase, verdict, wrongLabel, onZo
       ? { x: home.x, y: LINE - 26 }
       : zoneCentre(verdict.landed, zoneCount)
   }
-  // Keeper: on his line until the flight, then under his dive zone. He
-  // stands on the goal line, never in the net, so no letter is ever hidden.
+  // Keeper: on his line until the flight, then under his dive zone. His line
+  // is inside the goal mouth, so he does share space with the lowest row of
+  // zones — the zone tiles sit in front of him and carry a backdrop and a
+  // text shadow so a label on his shirt still reads. Six zones halves the row
+  // height and made that stop being theoretical.
   const keeperZone = flying && verdict ? zoneCentre(verdict.keeper, zoneCount) : home
   const keeper = { x: keeperZone.x, y: LINE }
   const caught = showResult && verdict?.outcome === 'saved'
@@ -744,10 +747,15 @@ const CSS = `
   border:3px solid rgba(241,250,238,.55);border-radius:12px;background:rgba(20,33,61,.35);
   color:var(--chalk);font-family:'Nunito',sans-serif;font-weight:800;font-size:clamp(30px,10vw,44px);
   padding:0;cursor:pointer;min-height:44px;transition:background .12s,border-color .12s,transform .12s;
+  /* The keeper stands ON his line, which is inside the goal mouth — he is
+   * behind these tiles and a label can land on his shirt. The backdrop and
+   * the shadow are what keep it readable when it does. */
+  text-shadow:0 2px 6px rgba(20,33,61,.95);
 }
 /* Six zones halves the cell height and the labels are syllables, not single
  * letters — 44px of type in a 47px box overflows. Size to the net it is in. */
-.tl-zones.z6 .tl-zone{font-size:clamp(17px,5.4vw,26px);border-width:2px;border-radius:9px}
+.tl-zones.z6 .tl-zone{font-size:clamp(17px,5.4vw,26px);border-width:2px;border-radius:9px;
+  background:rgba(20,33,61,.6)}
 .tl-zone:disabled{cursor:default}
 .tl-zone.aim{background:var(--yellow);color:var(--navy);border-color:var(--navy);transform:scale(1.04)}
 .tl-zone.hit{background:var(--grass);color:var(--chalk);border-color:var(--chalk)}
