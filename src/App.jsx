@@ -3,7 +3,9 @@ import GridScreen from './screens/GridScreen.jsx'
 import LetterScreen from './screens/LetterScreen.jsx'
 import LessonScreen from './screens/LessonScreen.jsx'
 import GamesScreen from './screens/GamesScreen.jsx'
+import TareaScreen from './screens/TareaScreen.jsx'
 import { stop, unlock } from './lib/audio.js'
+import { setSafe } from './lib/refresh.js'
 import './styles/alphabet.css'
 
 /**
@@ -20,7 +22,7 @@ const path = () => {
 }
 
 /**
- * The app.
+ * The app. Slice 1 — the alphabet. Slice 2 — the homework. Plus the games.
  *
  * Two layers of navigation, deliberately kept apart:
  *
@@ -28,7 +30,7 @@ const path = () => {
  *   game. Those are real paths, so /juegos/super-sonidos and /game-testing can
  *   be opened cold, shared, and served by the SPA fallback.
  *
- *   WITHIN the alphabet, the three screens are state, not paths, exactly as
+ *   WITHIN the alphabet, the four screens are state, not paths, exactly as
  *   before. They still push a history entry so the Android back button lands
  *   where a child expects.
  *
@@ -36,6 +38,10 @@ const path = () => {
  * router's re-reads the path and is a no-op when only a screen changed.
  * Every navigation stops the audio: a clip still talking over the next screen
  * is the worst bug here.
+ *
+ * Tarea carries no group. Tonight's set is built from `gating.current` inside
+ * the screen, not from whichever lesson the tap came through — see the note at
+ * the top of TareaScreen.jsx.
  */
 export default function App () {
   const [route, setRoute] = useState(path)
@@ -51,6 +57,12 @@ export default function App () {
       removeEventListener('click', go)
     }
   }, [])
+
+  // A release that arrived mid-game is as unwelcome as one that arrived
+  // mid-lesson: a reload drops a child out of the level they are playing. Any
+  // route other than the alphabet is "in the middle of something"; the
+  // alphabet's own answer is finer-grained and lives in Alphabet below.
+  useEffect(() => { if (route !== '/') setSafe(false) }, [route])
 
   useEffect(() => {
     const pop = () => { stop(); setRoute(path()) }
@@ -103,7 +115,7 @@ export default function App () {
   )
 }
 
-/** Slice 1 — the alphabet. Three screens, one at a time. */
+/** The alphabet and its homework. Four screens, one at a time. */
 function Alphabet ({ onOpenGames }) {
   const [view, setView] = useState({ name: 'grid' })
 
@@ -113,6 +125,10 @@ function Alphabet ({ onOpenGames }) {
     history.replaceState({ s: 'grid' }, '')
     return () => removeEventListener('popstate', pop)
   }, [])
+
+  // A release that arrived mid-lesson waits for the grid. Anywhere else is
+  // somewhere a child is in the middle of. See lib/refresh.js.
+  useEffect(() => { setSafe(view.name === 'grid') }, [view.name])
 
   const go = next => {
     stop()
@@ -136,8 +152,14 @@ function Alphabet ({ onOpenGames }) {
         <LetterScreen letter={view.letter} group={view.group} onBack={back} />
       )}
       {view.name === 'lesson' && (
-        <LessonScreen group={view.group} onBack={back} onOpenGames={onOpenGames} />
+        <LessonScreen
+          group={view.group}
+          onBack={back}
+          onOpenGames={onOpenGames}
+          onOpenTarea={() => go({ name: 'tarea' })}
+        />
       )}
+      {view.name === 'tarea' && <TareaScreen onBack={back} />}
     </>
   )
 }

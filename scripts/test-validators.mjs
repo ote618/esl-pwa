@@ -23,6 +23,7 @@ function run (mutate, flags = ['--fixtures']) {
     ['scripts/build-registry.mjs', 'scripts/build-registry.mjs'],
     ['data/group1_entries.json', 'data/group1_entries.json'],
     ['data/fixtures/unit_fixture_per_item.json', 'data/fixtures/unit_fixture_per_item.json'],
+    ['data/gating.json', 'data/gating.json'],
     ['src/data/group1_clips.json', 'src/data/group1_clips.json']
   ]) fs.copyFileSync(path.join(ROOT, from), path.join(tmp, to))
   // V13 reads real files off disk, so the harness needs them present.
@@ -41,6 +42,9 @@ function run (mutate, flags = ['--fixtures']) {
     setClips:    d => fs.writeFileSync(path.join(tmp, 'src/data/group1_clips.json'), JSON.stringify(d, null, 1)),
     setScript:   s => fs.writeFileSync(path.join(tmp, 'scripts/build-registry.mjs'), s),
     setManifest: d => fs.writeFileSync(path.join(tmp, 'data/asset_manifest.json'), JSON.stringify(d, null, 1)),
+    gating:      () => JSON.parse(fs.readFileSync(path.join(tmp, 'data/gating.json'), 'utf8')),
+    setGating:   d => fs.writeFileSync(path.join(tmp, 'data/gating.json'), JSON.stringify(d, null, 1)),
+    rmGating:    () => fs.rmSync(path.join(tmp, 'data/gating.json')),
     rmAudio:     n => fs.rmSync(path.join(tmp, 'public/audio/group1', n)),
     lookup:      () => JSON.parse(fs.readFileSync(path.join(tmp, 'data/images/image_lookup.json'), 'utf8')),
     setLookup:   d => fs.writeFileSync(path.join(tmp, 'data/images/image_lookup.json'), JSON.stringify(d, null, 1)),
@@ -134,6 +138,15 @@ const CASES = [
   ['V14 a lookup path naming a file that is not on disk fails', 'V14', f => {
     f.rmImage('apple.webp')
   }],
+  ['V16 gating.current naming an undeclared container fails', 'V16', f => {
+    const g = f.gating(); g.current = 'G99'; f.setGating(g)
+  }],
+  ['V16 a missing data/gating.json fails (gating is data, not a literal)', 'V16', f => {
+    f.rmGating()
+  }],
+  ['V16 a non-boolean allowPrior fails', 'V16', f => {
+    const g = f.gating(); g.allowPrior = 'yes'; f.setGating(g)
+  }],
   ['SHAPE  a name entry exposing word1 fails', 'SHAPE', f => {
     f.setScript(f.script().replace("name:        { beats: 1, clips: ['sound'] },",
       "name:        { beats: 1, clips: ['sound', 'word1'] },"))
@@ -191,6 +204,18 @@ if (!control.registry) {
     oneBeat.filter(i => 'word1' in i.audio.clips).map(i => i.id).join(', '))
   ok('three-beat entries carry all three clips',
     items.filter(i => i.beats === 3).every(i => i.audio.clips.sound && i.audio.clips.word1 && i.audio.clips.word2))
+
+  // Advancing the class is a data edit. Assert the value actually travelled
+  // from the file into the registry, and that no _note key rode along with it.
+  const g = control.registry.gating
+  const fileGating = JSON.parse(fs.readFileSync(path.join(ROOT, 'data/gating.json'), 'utf8'))
+  ok('gating comes from data/gating.json, not from a literal in the script',
+    g.current === fileGating.current && g.releaseDay === fileGating.releaseDay && g.allowPrior === fileGating.allowPrior,
+    JSON.stringify(g))
+  ok('gating emits only current/releaseDay/allowPrior',
+    Object.keys(g).sort().join(',') === 'allowPrior,current,releaseDay', Object.keys(g).join(','))
+  ok('gating.current names a declared structure row',
+    control.registry.structure.some(r => r.id === g.current), g.current)
 }
 
 console.log(`\n${pass} passed, ${failed} failed`)

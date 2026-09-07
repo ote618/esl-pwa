@@ -19,7 +19,12 @@ const CARDS = [
   ['tarea', 'Tarea', 'Para practicar en casa']
 ]
 
-export default function LessonScreen ({ group, onBack, onOpenGames }) {
+/**
+ * Slice 2 wired `onOpenTarea` onto the Tarea card; the games slice wired
+ * `onOpenGames` onto the Juegos card beside it. Both are props, and with either
+ * absent that card simply does nothing — the copy and the icons are Slice 1's.
+ */
+export default function LessonScreen ({ group, onBack, onOpenGames, onOpenTarea }) {
   const vid = group.media?.video?.provider === 'youtube' ? group.media.video.id : null
   return (
     <section className="screen active" id="screen-lesson">
@@ -35,7 +40,11 @@ export default function LessonScreen ({ group, onBack, onOpenGames }) {
       <div className="lessons">
         <VideoBox vid={vid} />
         {CARDS.map(([key, title, sub]) => (
-          <button className="lesson" key={key}>
+          <button
+            className="lesson"
+            key={key}
+            onClick={key === 'tarea' ? onOpenTarea : undefined}
+          >
             <LessonIcon name={key} />
             <span>
               <span className="lt">{title}</span>

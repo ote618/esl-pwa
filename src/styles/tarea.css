@@ -1,0 +1,119 @@
+/* ESL PWA — Tarea (Slice 2).
+ *
+ * Lifted from Tracy's Slice2_Tarea_mockup.html, and ONLY what alphabet.css does
+ * not already carry. The tokens, .app, .screen, .topbar, .back, .chip, .eyebrow
+ * and .lede all come from Slice 1 and are not repeated here; if a rule below
+ * looks like it is missing, it is because Slice 1 already has it.
+ *
+ * Global class names, deliberately, for the same reason alphabet.css uses them:
+ * the mockup's markup is reproduced as-is so the two cannot drift.
+ */
+
+/* The two verdict colours are the only tokens Slice 2 adds. */
+:root{ --ok:#52B788; --no:#E63946; }
+
+/* Three of the five Tarea screens have no back button — the top row would
+   collapse and the chip would jump up the page. Scoped to Tarea so Slice 1's
+   topbar is untouched. */
+#screen-tarea .topbar,
+#screen-recognise .topbar,
+#screen-write .topbar{min-height:46px}
+
+/* ---- home: tonight's card ---- */
+.nightcard{background:var(--chalk);color:var(--navy);border:4px solid var(--navy);border-radius:24px;
+  box-shadow:0 6px 0 var(--shadow);padding:20px;margin-top:22px}
+.nightcard .dayname{font-family:'Baloo 2',cursive,sans-serif;font-weight:800;font-size:30px;line-height:1;margin:0}
+.nightcard .meta{margin:8px 0 0;font-size:13px;font-weight:800;letter-spacing:.07em;text-transform:uppercase;color:#5a6472}
+.steps{list-style:none;margin:18px 0 0;padding:0;display:flex;flex-direction:column;gap:11px}
+.steps li{display:flex;align-items:flex-start;gap:11px;font-size:14px;font-weight:700;line-height:1.4}
+.steps .n{flex:none;width:26px;height:26px;border-radius:50%;background:var(--navy);color:var(--chalk);
+  display:grid;place-items:center;font-size:13px;font-weight:900}
+.steps .n.two{background:var(--yellow);color:var(--navy)}
+
+/* margin-top:auto pins the button to the bottom of the screen's flex column,
+   which is why every Tarea screen has to be a column that fills the height. */
+.cta{width:100%;margin-top:auto;background:var(--yellow);color:var(--navy);border:none;border-radius:999px;
+  padding:18px;font-family:'Baloo 2',cursive,sans-serif;font-weight:800;font-size:21px;
+  box-shadow:0 5px 0 #b39100;cursor:pointer;transition:transform .07s,box-shadow .07s}
+.cta:active{transform:translateY(3px);box-shadow:0 2px 0 #b39100}
+.cta:focus-visible{outline:3px solid var(--chalk);outline-offset:3px}
+.cta.ghost{background:transparent;border:2px dashed var(--line);color:var(--chalk);box-shadow:none;font-size:17px;padding:14px}
+.cta.ghost:active{transform:none}
+
+/* ---- progress pips: where you are in the night, nothing more ---- */
+.pips{display:flex;gap:5px;flex-wrap:wrap;margin-bottom:18px}
+.pip{height:6px;flex:1;min-width:5px;border-radius:99px;background:rgba(241,250,238,.20)}
+.pip.done{background:var(--yellow)}
+.pip.now{background:var(--chalk)}
+
+/* ---- pass 1: listen and choose ---- */
+.speakerbig{width:100%;background:var(--chalk);border:5px solid var(--navy);border-radius:26px;
+  box-shadow:0 7px 0 var(--shadow);color:var(--navy);padding:26px 16px;display:flex;flex-direction:column;
+  align-items:center;gap:12px;cursor:pointer;font-family:inherit;transition:transform .07s,box-shadow .07s}
+.speakerbig:active{transform:translateY(5px);box-shadow:0 2px 0 var(--shadow)}
+.speakerbig:focus-visible{outline:4px solid var(--yellow);outline-offset:4px}
+.speakerbig .disc{width:96px;height:96px;border-radius:50%;background:var(--yellow);display:grid;place-items:center;
+  box-shadow:0 4px 0 rgba(0,0,0,.30)}
+.speakerbig .disc svg{width:44px;height:44px}
+.speakerbig.playing .disc{box-shadow:0 0 0 8px rgba(255,214,10,.30),0 4px 0 rgba(0,0,0,.30)}
+.speakerbig .cap{font-weight:900;font-size:15px;letter-spacing:.04em}
+
+.choices{display:grid;grid-template-columns:1fr 1fr;gap:12px;margin-top:auto;padding-top:22px}
+.choice{background:var(--grass);color:var(--chalk);border:3px solid rgba(241,250,238,.20);border-radius:20px;
+  min-height:82px;display:grid;place-items:center;font-family:'Baloo 2',cursive,sans-serif;font-weight:800;
+  font-size:30px;cursor:pointer;box-shadow:0 4px 0 var(--shadow);transition:transform .07s,box-shadow .07s;
+  padding:0;overflow:hidden}
+/* The word-picture card. Same chalk ground and contain-fit as Slice 1's .word,
+   with the English word beneath — one picture treatment in the app, not two. */
+.choice.pic{min-height:112px;gap:0;align-content:center;padding:9px 6px 8px}
+.choice.pic img{width:74px;height:74px;object-fit:contain;background:var(--chalk);border-radius:12px;padding:3px;display:block}
+.choice.pic span{font-family:'Nunito',sans-serif;font-weight:800;font-size:12.5px;letter-spacing:.02em;
+  margin-top:6px;max-width:100%;overflow:hidden;text-overflow:ellipsis;white-space:nowrap}
+.choice:active{transform:translateY(3px);box-shadow:0 1px 0 var(--shadow)}
+.choice:focus-visible{outline:4px solid var(--yellow);outline-offset:3px}
+.choice.right{background:var(--ok);border-color:var(--chalk);color:#08301F}
+.choice.wrong{background:var(--no);border-color:rgba(241,250,238,.5)}
+.verdict{margin-top:16px;min-height:30px;text-align:center;font-family:'Baloo 2',cursive,sans-serif;
+  font-weight:800;font-size:20px}
+.verdict.ok{color:var(--ok)}
+.verdict.no{color:#FF97A0}
+
+/* ---- the bridge, the finish, and the Thursday handoff ---- */
+.center{flex:1;display:flex;flex-direction:column;align-items:center;justify-content:center;text-align:center;gap:14px}
+.center .big{font-family:'Baloo 2',cursive,sans-serif;font-weight:800;font-size:34px;line-height:1.08;margin:0;text-wrap:balance}
+.center p{margin:0;font-size:15px;font-weight:700;line-height:1.55;color:rgba(241,250,238,.78);max-width:28ch}
+.emblem{width:118px;height:118px;border-radius:50%;background:var(--yellow);color:var(--navy);display:grid;place-items:center;
+  box-shadow:0 6px 0 rgba(0,0,0,.32)}
+.emblem svg{width:58px;height:58px}
+.emblem.game{background:var(--grass);color:var(--yellow)}
+
+/* ---- pass 2: the bare screen ----
+ *
+ * F-15. There is no word here, no letter, no image, no hint, no reveal and
+ * nothing that records what the child writes. The count and three controls are
+ * the entire screen, and that is not an unfinished state — the paper is the
+ * only record of what a child can produce unaided.
+ *
+ * If you are about to add a "show me" affordance to this block: don't.
+ */
+.bare{flex:1;display:flex;flex-direction:column}
+.barecount{flex:1;display:grid;place-items:center}
+.barecount .num{font-family:'Baloo 2',cursive,sans-serif;font-weight:800;font-size:76px;line-height:1;
+  color:rgba(241,250,238,.30);font-variant-numeric:tabular-nums}
+.barecount .of{display:block;text-align:center;font-size:13px;font-weight:800;letter-spacing:.14em;
+  text-transform:uppercase;color:var(--dim);margin-top:6px}
+.repeat{width:100%;background:var(--chalk);color:var(--navy);border:5px solid var(--navy);border-radius:24px;
+  box-shadow:0 6px 0 var(--shadow);padding:22px;display:flex;align-items:center;justify-content:center;gap:12px;
+  font-family:'Baloo 2',cursive,sans-serif;font-weight:800;font-size:24px;cursor:pointer;
+  transition:transform .07s,box-shadow .07s}
+.repeat svg{width:32px;height:32px}
+.repeat:active{transform:translateY(4px);box-shadow:0 2px 0 var(--shadow)}
+.repeat.playing{box-shadow:0 0 0 6px rgba(255,214,10,.28),0 6px 0 var(--shadow)}
+.navrow{display:grid;grid-template-columns:1fr 1fr;gap:12px;margin-top:14px}
+.nav{background:var(--navy);color:var(--chalk);border:none;border-radius:18px;min-height:60px;
+  font-family:'Baloo 2',cursive,sans-serif;font-weight:800;font-size:19px;box-shadow:0 4px 0 #060c1a;cursor:pointer}
+.nav:active{transform:translateY(3px);box-shadow:0 1px 0 #060c1a}
+.nav[disabled]{opacity:.38;cursor:default;box-shadow:0 4px 0 #060c1a}
+.nav:focus-visible,.repeat:focus-visible{outline:4px solid var(--yellow);outline-offset:3px}
+.barenote{margin:16px 0 0;text-align:center;font-size:12px;font-weight:800;letter-spacing:.08em;
+  text-transform:uppercase;color:rgba(241,250,238,.34)}

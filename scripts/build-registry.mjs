@@ -37,6 +37,7 @@ const P = {
   dataDir:   path.join(ROOT, 'data'),
   srcData:   path.join(ROOT, 'src', 'data'),
   publicDir: path.join(ROOT, 'public'),
+  gating:   path.join(ROOT, 'data', 'gating.json'),
   fixture:  path.join(ROOT, 'data', 'fixtures', 'unit_fixture_per_item.json'),
   manifest: path.join(ROOT, 'data', 'asset_manifest.json'),
   imageLookup: path.join(ROOT, 'data', 'images', 'image_lookup.json'),
@@ -85,6 +86,48 @@ const STRUCTURE = [
   { id: 'U12', number: 12, kind: 'tail-unit' },
   { id: 'U13', number: 13, kind: 'tail-unit' }
 ]
+
+/* ------------------------------------------------------------------ *
+ * GATING — data/gating.json, not a literal in this file.
+ *
+ * Advancing the class is the single edit the contract promises: one field in
+ * one file, once a Friday, thirteen times, and the course is delivered. That
+ * promise is broken the moment the value lives in a build script, so it does
+ * not live here any more.
+ *
+ * It is READ at build time and baked into out/esl_unit_registry.json, which
+ * rides inside the hashed JS bundle. That is deliberate: a file served on its
+ * own could be handed an immutable or cache-first rule by someone tidying up
+ * headers, and the class would freeze on one group forever with nothing
+ * looking broken. Nothing is served, so nothing can be frozen.
+ *
+ * `current` must name a DECLARED structure row. A typo is a build failure,
+ * loudly, and not a silent fall back to Group 1.
+ * ------------------------------------------------------------------ */
+function readGating () {
+  const FALLBACK = { current: null, releaseDay: null, allowPrior: false }
+  if (!fs.existsSync(P.gating)) {
+    fail('V16 data/gating.json does not exist — gating is data, not a literal in this script')
+    return FALLBACK
+  }
+  let raw
+  try { raw = read(P.gating) }
+  catch (e) { fail(`V16 data/gating.json is not valid JSON: ${e.message}`); return FALLBACK }
+
+  const ids = STRUCTURE.map(s => s.id)
+  if (typeof raw.current !== 'string' || !raw.current) {
+    fail('V16 data/gating.json: "current" must be a declared container id')
+  } else if (!ids.includes(raw.current)) {
+    fail(`V16 data/gating.json: "current" is "${raw.current}", which is not a declared container. Declared: ${ids.join(', ')}`)
+  }
+  if (typeof raw.allowPrior !== 'boolean') fail('V16 data/gating.json: "allowPrior" must be true or false')
+  if (typeof raw.releaseDay !== 'string' || !raw.releaseDay) fail('V16 data/gating.json: "releaseDay" must be a day name')
+
+  // Only the three fields the app reads are emitted. The _note/_cache keys in
+  // the file are for whoever edits it on a Friday and do not ship.
+  return { current: raw.current, releaseDay: raw.releaseDay, allowPrior: raw.allowPrior }
+}
+const GATING = readGating()
 
 /* ------------------------------------------------------------------ *
  * ENTRY SHAPES — F-24.
@@ -462,11 +505,9 @@ const out = {
     note: 'IDs are opaque. U2- and U3- are frozen tokens from the stood-down nine-unit structure and do NOT mean Unit 2 or Unit 3. Never parse a prefix. Group and part are fields.',
     patterns: ['LTR-<letter>-NAME', 'LTR-<letter>-S<n>', 'U2-<syllable>', 'U3-<word>']
   },
-  // 2026-09-03: all six letter groups are recorded, cut and joined, so the
-  // gate opens through G6. G7/G8 and the tail units stay "Todavía no" until
-  // they carry entries. Move `current` back to release week by week if the
-  // classroom needs a slower drip.
-  gating: { current: 'G6', releaseDay: 'friday', allowPrior: true },
+  // Read from data/gating.json and validated above. Advancing the class is a
+  // data edit; there is deliberately nothing to change here.
+  gating: GATING,
   structure: STRUCTURE.map(s => ({ ...s, populated: !!production[s.id] })),
   groups: production
 }

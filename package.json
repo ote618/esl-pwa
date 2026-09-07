@@ -10,7 +10,8 @@
     "build:data": "node scripts/build-registry.mjs",
     "build:data:fixtures": "node scripts/build-registry.mjs --fixtures",
     "build:data:strict": "node scripts/build-registry.mjs --fixtures --require-manifest",
-    "test:data": "node scripts/test-validators.mjs",
+    "test:data": "node scripts/test-validators.mjs && node scripts/test-homework.mjs",
+    "test:homework": "node scripts/test-homework.mjs",
     "build:docs": "node scripts/build-docs.mjs",
     "build:board": "node scripts/build-tracker.mjs",
     "deploy:staging": "node scripts/deploy-staging.mjs"

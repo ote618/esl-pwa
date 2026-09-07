@@ -1,0 +1,8 @@
+{
+  "_note": "The one edit per Friday. `current` names the furthest released container by its DECLARED id from the structure in scripts/build-registry.mjs. It is validated at build time: an id that is not a declared row fails the build. `allowPrior` keeps everything before it open, so G6 opens all six.",
+  "_cache": "This file is read at BUILD time and baked into out/esl_unit_registry.json, which rides inside the hashed JS bundle. It is never served as its own asset, so no cache rule can freeze it. If it is ever moved to a runtime fetch it must NOT be given an immutable or cache-first route (see the note in vite.config.js) — the class would freeze on one group forever with nothing looking broken.",
+  "_history": "2026-09-06: briefly set to G2 on the Slice 2 handoff, which cited T on 09-05 and argued G6 was wrong because recorded is not taught. Deploying it locked Groups 3-6 on the live app. The classroom had had all six open since Friday and was using them, so recorded-not-taught was already stale by the time it was written. Restored to G6 the same day. The lesson is about the direction of the mistake, not the value: opening a group a class has not reached costs nothing, and closing one it is using takes work away mid-week.",
+  "current": "G6",
+  "releaseDay": "friday",
+  "allowPrior": true
+}
