@@ -66,3 +66,12 @@
   background:#E5484D;color:#fff;font:800 11px/1 "Trebuchet MS",Verdana,system-ui,sans-serif;
   letter-spacing:.04em;text-align:center;padding:6px 8px;}
 .supersonidos.test{padding-top:23px;}
+
+/* Only when the game is MOUNTED by the games shelf rather than opened at its
+   own URL. On a route the phone's own back gesture is the way out; mounted,
+   nothing changes the URL, so there would be no way out at all. */
+.supersonidos-backbar{position:fixed;top:0;left:0;right:0;z-index:49;
+  background:#16233a;padding:5px 8px;}
+.supersonidos-backbar button{background:#1a2740;color:#F2F7F3;border:0;border-radius:8px;
+  padding:6px 12px;font:800 12px/1 "Trebuchet MS",Verdana,system-ui,sans-serif;}
+.supersonidos.hasback{padding-top:30px;}

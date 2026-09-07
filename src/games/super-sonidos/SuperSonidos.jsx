@@ -14,8 +14,13 @@ import './SuperSonidos.css'
  *
  * Progress lives under `supersonidos_v1` in localStorage, the same key the
  * standalone build used, so a child's progress survives this move.
+ *
+ * `onBack` is for when the game is MOUNTED rather than routed — the games
+ * shelf hands each game { group, onBack } and swaps it in without changing the
+ * URL, so there is no browser back button to lean on. Given the prop, the game
+ * grows a way out; on its own route it does not need one and does not get one.
  */
-export default function SuperSonidos ({ testMode = false, showTail = false }) {
+export default function SuperSonidos ({ testMode = false, showTail = false, onBack }) {
   const root = useRef(null)
 
   useEffect(() => {
@@ -47,7 +52,15 @@ export default function SuperSonidos ({ testMode = false, showTail = false }) {
           MODO PRUEBA — no es la versión para niños
         </div>
       )}
-      <div className={'supersonidos' + (testMode ? ' test' : '')} ref={root}>
+      {onBack && (
+        <div className="supersonidos-backbar">
+          <button type="button" onClick={onBack}>← Volver</button>
+        </div>
+      )}
+      <div
+        className={'supersonidos' + (testMode ? ' test' : '') + (onBack ? ' hasback' : '')}
+        ref={root}
+      >
         <div id="hud">
           <button id="menu">☰</button>
           <div id="prompt">—</div>
