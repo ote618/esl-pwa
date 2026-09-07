@@ -124,7 +124,7 @@ const LEVELS_PER_SET = [
   { n: 1, kind: 'pen', title: 'Los nombres', sub: 'Escucha el nombre. Patea a la letra.', pool: { shape: 'name' }, ask: '¿Qué letra es?', zones: 3, band: 0.56, keeper: 'still', rounds: 5, balls: 3 },
   { n: 2, kind: 'pen', title: 'Los sonidos', sub: 'Escucha el sonido. Patea a la letra.', pool: { shape: 'sound' }, ask: '¿De qué letra es este sonido?', zones: 3, band: 0.50, keeper: 'random', rounds: 5, balls: 3 },
   { n: 3, kind: 'free', title: 'Las sílabas', sub: 'Escucha la sílaba. Patea a la sílaba.', pool: { shape: 'combination' }, ask: '¿Qué sílaba escuchaste?', zones: 6, band: 0.46, keeper: 'random', rounds: 5, balls: 3 },
-  { n: 4, kind: 'free', title: 'Las palabras', sub: 'Escucha la palabra. Patea a la palabra.', pool: { shape: 'word' }, ask: '¿Qué palabra escuchaste?', zones: 3, band: 0.44, keeper: 'random', rounds: 5, balls: 3, needs: 'palabras' },
+  { n: 4, kind: 'free', title: 'Las palabras', sub: 'Escucha la palabra. Patea al dibujo.', pool: { kind: 'words' }, ask: '¿Qué palabra escuchaste?', zones: 3, band: 0.44, keeper: 'random', rounds: 5, balls: 3, needs: 'palabras' },
   { n: 5, kind: 'shootout', title: 'Tanda de penales', sub: 'Todo junto. Al mejor de 5.', pool: { shape: '*' }, ask: '¿Cuál escuchaste?', zones: 3, band: 0.42, keeper: 'half', rounds: 3, balls: 5 }
 ]
 
@@ -145,14 +145,42 @@ function setFor (group) {
 }
 
 /**
- * The entries a level draws from. Only entries with a playable prompt clip —
- * a level that has nothing to say has nothing to ask.
+ * What a level can ask about, normalised into UNITS.
+ *
+ * A unit is one question: a clip to play, a label to put on the net, and
+ * sometimes a picture to put there instead. Levels 1, 2, 3 and 5 ask about
+ * registry entries. Level 4 asks about the words nested INSIDE them.
+ *
+ * That distinction is the whole of level 4. `shape: 'word'` is eleven entries
+ * in the entire course — at, an, am, egg, if, in, it, on, ox, up, us — and
+ * four of the six groups have fewer than three, so a words level built on
+ * them cannot exist in most of the course. But every sound and combination
+ * entry carries words[] with real English words, each with its own recorded
+ * clip and its own image: 225 of them, 34 to 41 per group. The words were
+ * always there. They were just not the thing `shape: 'word'` names.
+ *
+ * Only units with a playable clip — a level that has nothing to say has
+ * nothing to ask.
  */
-function poolFor (group, level) {
+function unitsFor (group, level) {
+  if (level.pool.kind === 'words') {
+    const out = []
+    for (const it of group.items) {
+      (it.words || []).forEach((w, i) => {
+        const role = 'word' + (i + 1)
+        if (hasClip(it.id, role) && w.imageSrc) {
+          out.push({ key: `${it.id}:${role}`, id: it.id, role, label: w.text, image: w })
+        }
+      })
+    }
+    // The same word can be taught under two letters. One net, one apple.
+    const seen = new Set()
+    return out.filter(u => seen.has(u.label) ? false : seen.add(u.label))
+  }
   const want = level.pool.shape
-  return group.items.filter(it =>
-    (want === '*' || it.shape === want) && hasClip(it.id, 'sound')
-  )
+  return group.items
+    .filter(it => (want === '*' || it.shape === want) && hasClip(it.id, 'sound'))
+    .map(it => ({ key: it.id, id: it.id, role: 'sound', label: it.label, entry: it }))
 }
 
 /**
@@ -168,8 +196,8 @@ function poolFor (group, level) {
  * threw one of them away and left a six-zone net with three syllables on it.
  * Group 1 has fifteen distinct syllables. It was never short of content.
  */
-function makeKick (pool, level, avoidId = null, rng = Math.random) {
-  const candidates = pool.filter(it => it.id !== avoidId)
+function makeKick (pool, level, avoidKey = null, rng = Math.random) {
+  const candidates = pool.filter(it => it.key !== avoidKey)
   const target = pick(candidates.length ? candidates : pool, rng)
   const others = shuffle(pool.filter(it => it.label !== target.label), rng)
   const distinct = []
@@ -246,7 +274,7 @@ function isOpen (set, level) {
 
 /** What the map says under a level's name, and whether it can be tapped. */
 function levelStatus (set, level) {
-  const pool = poolFor(set.group, level)
+  const pool = unitsFor(set.group, level)
   if (!canFill(pool, level)) {
     return { open: false, why: `Este grupo no tiene ${level.needs || 'contenido'} todavía` }
   }
@@ -278,7 +306,7 @@ export default function TiroLibre ({ group: groupProp, onBack }) {
           // Walk forward past any level this group has no content for, so a
           // group with no words goes 3 -> 5 instead of into a dead end.
           const nxt = set.levels.find(l =>
-            l.n > level.n && canFill(poolFor(set.group, l), l)
+            l.n > level.n && canFill(unitsFor(set.group, l), l)
           )
           setLevel(nxt ?? null)
         }}
@@ -328,7 +356,7 @@ export default function TiroLibre ({ group: groupProp, onBack }) {
 const T = { runup: 520, flight: 620, result: 1500, resultWrong: 2100 }
 
 function Level ({ set, level, player, onExit, onNext }) {
-  const pool = poolFor(set.group, level)
+  const pool = unitsFor(set.group, level)
   const band = Math.min(0.9, level.band + player.bandBonus)
 
   // phase: aim | meter | flight | result | won | lost
@@ -348,10 +376,10 @@ function Level ({ set, level, player, onExit, onNext }) {
   // The prompt plays as the kick opens. A tap opened this level, so the
   // element is unlocked; if it is not, the speaker button is right there.
   useEffect(() => {
-    if (phase === 'aim') play(kick.target.id, 'sound')
+    if (phase === 'aim') play(kick.target.id, kick.target.role)
   }, [kick, phase])
 
-  const hear = () => play(kick.target.id, 'sound')
+  const hear = () => play(kick.target.id, kick.target.role)
 
   const chooseZone = i => {
     if (phase !== 'aim' && phase !== 'meter') return
@@ -371,10 +399,13 @@ function Level ({ set, level, player, onExit, onNext }) {
       const pts = pointsFor(v.outcome, v.quality)
       if (v.outcome === 'goal') {
         setScore(s => s + pts)
-        // The English voice says what was scored: the sound, then a word if
-        // the entry has one. A name entry has only its name.
-        const steps = [{ id: kick.target.id, role: 'sound' }]
-        if (hasClip(kick.target.id, 'word1')) steps.push({ id: kick.target.id, role: 'word1' })
+        // The English voice says what was scored. An entry says its sound and
+        // then a word, if it has one; a word unit is already the word, and
+        // saying it twice is not a reward.
+        const t = kick.target
+        const steps = t.image
+          ? [{ id: t.id, role: t.role }]
+          : [{ id: t.id, role: 'sound' }, ...(hasClip(t.id, 'word1') ? [{ id: t.id, role: 'word1' }] : [])]
         playSequence(steps)
       }
       later(() => advance(v), v.outcome === 'wrong' ? T.resultWrong : T.result)
@@ -395,7 +426,7 @@ function Level ({ set, level, player, onExit, onNext }) {
         setPhase('won')
         return
       }
-      setKick(makeKick(pool, level, kick.target.id))
+      setKick(makeKick(pool, level, kick.target.key))
       setPhase('aim')
       return
     }
@@ -417,6 +448,10 @@ function Level ({ set, level, player, onExit, onNext }) {
   }
 
   const wrongLabel = verdict?.outcome === 'wrong' ? kick.zones[verdict.landed].label : null
+  // A net of pictures has no big letter to paint in the goal — the word goes
+  // under the pitch instead, where Verdict already says it.
+  const wrongOnNet = verdict?.outcome === 'wrong' && !kick.zones[verdict.landed]?.image
+    ? wrongLabel : null
 
   return (
     <section className="screen active tl" id="screen-tirolibre-level">
@@ -446,7 +481,7 @@ function Level ({ set, level, player, onExit, onNext }) {
         aim={aim}
         phase={phase}
         verdict={verdict}
-        wrongLabel={wrongLabel}
+        wrongLabel={wrongOnNet}
         onZone={chooseZone}
       />
 
@@ -497,7 +532,7 @@ function Verdict ({ verdict, label, target }) {
     // The English voice is already saying the word (playSequence, above). Put
     // the picture with it: the reward for a goal is the thing being taught,
     // not just a number. A name entry has no words and simply shows none.
-    const word = target.words?.[0]
+    const word = target.image ?? target.entry?.words?.[0]
     return (
       <div className="tl-won">
         <p className="tl-cue goal">¡GOL!{verdict.quality === 'centre' ? ' +150' : ' +100'}</p>
@@ -628,13 +663,15 @@ function Pitch ({ pitch, zones, zoneCount, aim, phase, verdict, wrongLabel, onZo
       <div className={'tl-zones z' + zoneCount} style={{ left: `${G.gx / G.w * 100}%`, top: `${G.gy / G.h * 100}%`, width: `${G.gw / G.w * 100}%`, height: `${G.gh / G.h * 100}%` }}>
         {zones.map((z, i) => (
           <button
-            key={z.id}
-            className={'tl-zone' + (aim === i ? ' aim' : '') + (showResult && verdict?.landed === i ? (verdict.outcome === 'goal' ? ' hit' : verdict.outcome === 'wrong' ? ' miss' : '') : '')}
+            key={z.key}
+            className={'tl-zone' + (z.image ? ' pic' : '') + (aim === i ? ' aim' : '') + (showResult && verdict?.landed === i ? (verdict.outcome === 'goal' ? ' hit' : verdict.outcome === 'wrong' ? ' miss' : '') : '')}
             disabled={phase !== 'aim' && phase !== 'meter'}
             onClick={() => onZone(i)}
             aria-label={`Zona ${z.label}`}
           >
-            {z.label}
+            {z.image
+              ? <img src={z.image.imageSrc} alt={z.label} width={z.image.imageW} height={z.image.imageH} />
+              : z.label}
           </button>
         ))}
       </div>
@@ -756,6 +793,13 @@ const CSS = `
  * letters — 44px of type in a 47px box overflows. Size to the net it is in. */
 .tl-zones.z6 .tl-zone{font-size:clamp(17px,5.4vw,26px);border-width:2px;border-radius:9px;
   background:rgba(20,33,61,.6)}
+/* A picture zone: the image IS the answer, so it gets the chalk ground that
+ * makes a cut-out readable against the net behind it. */
+.tl-zone.pic{background:rgba(241,250,238,.92);padding:4px}
+.tl-zone.pic img{width:100%;height:100%;object-fit:contain;display:block}
+.tl-zone.pic.aim{background:var(--yellow)}
+.tl-zone.pic.hit{background:var(--grass)}
+.tl-zone.pic.miss{background:rgba(241,250,238,.35)}
 .tl-zone:disabled{cursor:default}
 .tl-zone.aim{background:var(--yellow);color:var(--navy);border-color:var(--navy);transform:scale(1.04)}
 .tl-zone.hit{background:var(--grass);color:var(--chalk);border-color:var(--chalk)}
