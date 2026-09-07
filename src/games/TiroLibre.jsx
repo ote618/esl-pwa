@@ -191,9 +191,24 @@ function recordWin (id, score) {
   write(p)
 }
 
+/**
+ * A reviewer is not a player. Someone checking whether level 2 is any good
+ * should not have to score five goals first, on a phone, at the difficulty
+ * that is itself the thing under review.
+ *
+ * ?abierto opens every BUILT level. It cannot open an unbuilt one — there is
+ * nothing behind those to look at, and a net drawn with fewer letters than it
+ * has zones would read as a bug rather than as an unfinished level.
+ *
+ * Not a cheat a child finds: it lives in the URL, is never linked, and the
+ * progress it bypasses is still recorded normally.
+ */
+const REVIEW = typeof location !== 'undefined' &&
+  new URLSearchParams(location.search).has('abierto')
+
 /** Level N+1 opens on N. Level 1 is always open. */
 function isOpen (set, level) {
-  if (level.n === 1) return true
+  if (level.n === 1 || REVIEW) return true
   const prev = set.levels.find(l => l.n === level.n - 1)
   return prev ? levelState(prev.id).done : false
 }
