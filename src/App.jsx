@@ -145,7 +145,6 @@ function Alphabet ({ onOpenGames }) {
         <GridScreen
           onOpenLetter={(letter, group) => go({ name: 'letter', letter, group })}
           onOpenLesson={group => go({ name: 'lesson', group })}
-          onOpenGames={onOpenGames}
         />
       )}
       {view.name === 'letter' && (
