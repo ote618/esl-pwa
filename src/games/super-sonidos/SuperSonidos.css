@@ -21,7 +21,7 @@
 .supersonidos, .supersonidos *{box-sizing:border-box;-webkit-tap-highlight-color:transparent;}
 .supersonidos-lock{margin:0;height:100%;background:#0b1424;color:var(--chalk);
   font-family:"Trebuchet MS",Verdana,system-ui,sans-serif;user-select:none;overflow:hidden;}
-.supersonidos{height:100%;display:flex;flex-direction:column;max-width:560px;margin:0 auto;}
+.supersonidos{height:100%;height:100dvh;position:relative;display:flex;flex-direction:column;max-width:560px;margin:0 auto;}
 .supersonidos #hud{display:flex;align-items:center;gap:6px;padding:calc(6px + env(safe-area-inset-top,0px)) 8px 6px;}
 .supersonidos #hud .pill{background:#1a2740;border-radius:9px;padding:7px 9px;font-size:13px;font-weight:800;white-space:nowrap;}
 .supersonidos #prompt{flex:1;background:#1a2740;border-radius:11px;padding:6px 10px;min-height:38px;
@@ -30,9 +30,27 @@
 .supersonidos #say,
 .supersonidos #menu{background:var(--gold);color:var(--navy);border:0;border-radius:9px;width:40px;height:38px;font-weight:900;font-size:16px;}
 .supersonidos #menu{background:#1a2740;color:#fff;}
-.supersonidos #stage{position:relative;width:100%;}
-.supersonidos canvas{width:100%;display:block;image-rendering:pixelated;background:#5EC7EC;}
-.supersonidos #pad{display:flex;justify-content:space-between;align-items:center;padding:10px 12px calc(12px + env(safe-area-inset-bottom,0px));gap:10px;}
+/* The stage takes every pixel the HUD and the note strip do not.
+   min-height:0 is what lets a flex child actually shrink. */
+.supersonidos #stage{position:relative;width:100%;flex:1;min-height:0;}
+/* Taken OUT OF FLOW on purpose. As a flex child the canvas contributed to the
+   height of the box that its own size is measured from, so sizing the buffer
+   changed the measurement that sized the buffer — the fit oscillated and
+   settled wrong on rotation. Absolute, it cannot influence #stage at all, and
+   inset:0 + margin:auto centres it. */
+.supersonidos canvas{position:absolute;inset:0;
+  display:block;image-rendering:pixelated;background:#5EC7EC;
+  width:100%;height:100%;object-fit:contain;}
+/* Overlaid, not stacked. Sitting in the column, the pad took ~110px of height
+   away from the pitch on every device; over it, the canvas gets that back. */
+.supersonidos #pad{position:absolute;left:0;right:0;bottom:0;z-index:6;
+  display:flex;justify-content:space-between;align-items:center;
+  padding:10px 12px calc(12px + env(safe-area-inset-bottom,0px));gap:10px;
+  pointer-events:none;}
+.supersonidos #pad > *{pointer-events:auto;}
+/* Off the map screen and off the end-of-level card there is nothing to drive,
+   and a dead d-pad invites taps that do nothing. */
+.supersonidos.nopad #pad{display:none;}
 .supersonidos .k{border:0;border-radius:50%;width:64px;height:64px;background:#e9eef0;color:var(--navy);font-size:24px;font-weight:900;box-shadow:0 5px 0 #0008;}
 .supersonidos .k:active{transform:translateY(3px);box-shadow:0 2px 0 #0008;}
 .supersonidos #jump{background:var(--gold);width:84px;height:84px;font-size:15px;border-radius:50%;}
@@ -75,3 +93,16 @@
 .supersonidos-backbar button{background:#1a2740;color:#F2F7F3;border:0;border-radius:8px;
   padding:6px 12px;font:800 12px/1 "Trebuchet MS",Verdana,system-ui,sans-serif;}
 .supersonidos.hasback{padding-top:30px;}
+
+/* Turned sideways, this game's 5:3 pitch finally matches the screen — so let
+   it use the whole width instead of the phone-portrait cap. */
+@media (orientation:landscape){
+  .supersonidos{max-width:none;}
+}
+
+/* Controls: run on the left, jump on the right, with ▲/▼ stacked beside SALTA.
+   ▲ is a second jump for a thumb that never reaches across; ▼ is fast fall. */
+.supersonidos #pad .cluster{display:flex;align-items:center;gap:10px;}
+.supersonidos #pad .updown{display:flex;flex-direction:column;gap:6px;}
+.supersonidos .k.sm{width:48px;height:48px;font-size:17px;box-shadow:0 4px 0 #0008;}
+.supersonidos .k.sm:active{transform:translateY(2px);box-shadow:0 2px 0 #0008;}
