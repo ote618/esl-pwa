@@ -200,6 +200,20 @@ export function play (id, role = 'sound') {
 }
 
 /**
+ * Play one file by URL, on the same single element everything else uses.
+ *
+ * For audio that belongs to a feature rather than to the registry — Súper
+ * Sonidos' cut phonemes are the first — where the caller already knows the
+ * exact file. It still goes through the shared element, so it cannot talk over
+ * a lesson clip and it inherits the iOS unlock; it just skips the id lookup.
+ */
+export function playSrc (src) {
+  if (!src) { stop(); return Promise.resolve(false) }
+  gen++
+  return playClip(src, gen)
+}
+
+/**
  * Walk a list of clips in order — the sound, then its two words.
  *
  * `steps` is [{ id, role }]. `onStep` is called with each index as it starts
@@ -236,4 +250,4 @@ export function playSequence (steps, onStep = () => {}) {
   })
 }
 
-export default { clip, roles, hasClip, play, playSequence, stop, unlock, isUnlocked }
+export default { clip, roles, hasClip, play, playSrc, playSequence, stop, unlock, isUnlocked }

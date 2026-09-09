@@ -42,9 +42,9 @@ const path = () => {
  * Every navigation stops the audio: a clip still talking over the next screen
  * is the worst bug here.
  *
- * Tarea carries no group. Tonight's set is built from `gating.current` inside
- * the screen, not from whichever lesson the tap came through — see the note at
- * the top of TareaScreen.jsx.
+ * Tarea carries the group whose lesson it hangs off, exactly as the games do.
+ * Group 1's lesson gives Group 1's homework — see the note at the top of
+ * TareaScreen.jsx for why this replaced the handoff's §3.2.
  */
 export default function App () {
   const [route, setRoute] = useState(path)
@@ -152,14 +152,14 @@ function Screens () {
         <LessonScreen
           group={view.group}
           onBack={back}
-          onOpenTarea={() => go({ name: 'tarea' })}
+          onOpenTarea={() => go({ name: 'tarea', group: view.group })}
           onOpenGames={() => go({ name: 'games', group: view.group })}
         />
       )}
       {view.name === 'games' && (
         <GamesScreen group={view.group} onBack={back} />
       )}
-      {view.name === 'tarea' && <TareaScreen onBack={back} />}
+      {view.name === 'tarea' && <TareaScreen group={view.group} onBack={back} />}
     </>
   )
 }

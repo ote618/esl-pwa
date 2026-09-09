@@ -1,6 +1,6 @@
 import { useEffect, useMemo, useState } from 'react'
-import { nightFor, distractorPool, seedFor, weekIndexOf, DAY_NAMES_ES } from '../lib/homework.js'
-import { recordNight } from '../lib/progress.js'
+import { nightFor, distractorPool, itemsByIds, seedFor, weekIndexOf, DAY_NAMES_ES } from '../lib/homework.js'
+import { recordNight, saveSession, loadSession, clearSession } from '../lib/progress.js'
 import { stop } from '../lib/audio.js'
 import RecognisePass from './RecognisePass.jsx'
 import WritePass from './WritePass.jsx'
@@ -13,34 +13,80 @@ import '../styles/tarea.css'
  * pass 1 recognises in the app, pass 2 writes on paper. Six lesson nights.
  * Thursday hands off to Juegos and is built elsewhere.
  *
- * WHICH GROUP. `gating.current`, always — the set builder reads it and this
- * screen never passes one in. A child who wandered here from Group 1's lesson
- * still gets tonight's homework, because tonight's homework is tonight's
- * homework; the group is not a function of where the tap came from.
+ * WHICH GROUP. The one whose lesson the child opened. Ruled 2026-09-08,
+ * replacing the handoff's §3.2: that rule said the group is always
+ * `gating.current`, which was right when one group was open and wrong the
+ * moment six were — opening Group 1's lesson handed out Group 6's homework,
+ * in letters nobody had taught that week. `gating.current` is still the
+ * fallback for a caller with no group in hand.
  *
  * The night is built ONCE, on mount. Wednesday's set depends on progress, and
  * progress changes as the child answers — rebuilding mid-night would quietly
  * swap the homework out from under them.
  *
+ * AN INTERRUPTED NIGHT RESUMES. A night is twenty-odd items over two passes;
+ * before this, putting the phone down lost all of it and the child started
+ * again at item one. Where they had got to is saved after every step and
+ * offered back on the same day, in the same group. What is saved is a
+ * position — never anything the child wrote. See progress.js.
+ *
  * NO GREETING, NO NAME, NO STREAK, NO SCORE (F-21). Devices are shared. There
  * is nothing on any of these screens that a second child could pick up and read
  * as their own.
  */
-export default function TareaScreen ({ onBack }) {
+export default function TareaScreen ({ group: playing, onBack }) {
+  const today = dateKey()
+  const night = useMemo(() => nightFor(new Date(), playing?.id), [playing])
+  const pool = useMemo(() => distractorPool(night.groupId), [night])
+  const seed = useMemo(() => seedFor(night.groupId, weekIndexOf(), night.weekday), [night])
+
+  // A night already under way, for this group, today. Read once: re-reading it
+  // as state changes would fight the state it is seeding.
+  const saved = useMemo(
+    () => loadSession({ date: today, group: night.groupId }),
+    [today, night.groupId]
+  )
+
+  // The set is the SAVED one when resuming. Rebuilding it would re-run
+  // weakest-third against progress the child has since moved.
+  const items = useMemo(() => {
+    const restored = saved ? itemsByIds(saved.ids) : []
+    return restored.length ? restored : night.items
+  }, [saved, night])
+
   // 'home' | 'p1' | 'bridge' | 'p2' | 'done'
   const [phase, setPhase] = useState('home')
-  const night = useMemo(() => nightFor(), [])
-  const pool = useMemo(() => distractorPool(), [])
-  const seed = useMemo(() => seedFor(night.groupId, weekIndexOf(), night.weekday), [night])
+  const [startAt, setStartAt] = useState(saved?.at ?? 0)
 
   useEffect(() => { stop() }, [phase])
 
-  const go = next => { stop(); setPhase(next); scrollTo(0, 0) }
+  /* Every step writes the resume point. Cheap, and the alternative is losing a
+   * night to a backgrounded tab. */
+  const mark = (nextPhase, at = 0) => saveSession({
+    date: today, group: night.groupId, weekday: night.weekday,
+    ids: items.map(it => it.id), phase: nextPhase, at
+  })
+
+  const go = (next, at = 0) => {
+    stop()
+    setStartAt(at)
+    setPhase(next)
+    scrollTo(0, 0)
+    if (next !== 'done') mark(next, at)
+  }
+
+  /* Pick up where they left off — or start clean if there is nothing saved. */
+  const begin = () => {
+    if (saved && (saved.phase === 'p2' || saved.phase === 'bridge')) return go(saved.phase, saved.phase === 'p2' ? saved.at : 0)
+    return go('p1', saved?.phase === 'p1' ? saved.at : 0)
+  }
 
   const finish = () => {
     // Night completion. Pass 1 accuracy was written item by item as it happened;
-    // nothing from pass 2 is recorded, here or anywhere.
-    recordNight(dateKey())
+    // nothing from pass 2 is recorded, here or anywhere. The resume point goes
+    // too — a finished night must never be offered back as unfinished.
+    recordNight(today)
+    clearSession()
     go('done')
   }
 
@@ -51,11 +97,13 @@ export default function TareaScreen ({ onBack }) {
   if (phase === 'p1') {
     return (
       <RecognisePass
-        items={night.items}
+        items={items}
         pool={pool}
         seed={seed}
+        startAt={startAt}
+        onAdvance={at => mark('p1', at)}
         onDone={() => go('bridge')}
-        onBack={() => go('home')}
+        onBack={() => setPhase('home')}
       />
     )
   }
@@ -64,7 +112,14 @@ export default function TareaScreen ({ onBack }) {
   // images to render — not by policy, but because they were never passed in.
   // See the F-15 note at the top of WritePass.jsx before changing this line.
   if (phase === 'p2') {
-    return <WritePass ids={night.items.map(it => it.id)} onDone={finish} />
+    return (
+      <WritePass
+        ids={items.map(it => it.id)}
+        startAt={startAt}
+        onAdvance={at => mark('p2', at)}
+        onDone={finish}
+      />
+    )
   }
 
   if (phase === 'bridge') {
@@ -76,7 +131,7 @@ export default function TareaScreen ({ onBack }) {
           <p className="big">Ahora tu papel</p>
           <p>Toma tu lápiz. Vas a escuchar los mismos sonidos y escribirlos.</p>
         </div>
-        <button className="cta" onClick={() => go('p2')}>Ya tengo mi papel</button>
+        <button className="cta" onClick={() => go('p2', saved?.phase === 'p2' ? saved.at : 0)}>Ya tengo mi papel</button>
       </section>
     )
   }
@@ -88,7 +143,7 @@ export default function TareaScreen ({ onBack }) {
         <div className="center">
           <span className="emblem"><Check /></span>
           <p className="big">¡Terminaste!</p>
-          <p>Hiciste {night.items.length} {night.items.length === 1 ? 'ejercicio' : 'ejercicios'}. Entrega tu papel el viernes.</p>
+          <p>Hiciste {items.length} {items.length === 1 ? 'ejercicio' : 'ejercicios'}. Entrega tu papel el viernes.</p>
         </div>
         <button className="cta ghost" onClick={onBack}>Volver</button>
       </section>
@@ -120,7 +175,7 @@ export default function TareaScreen ({ onBack }) {
   // the class reaches G7 in about five weeks. This is the degradation, and it
   // is calm on purpose: nothing here reads as a fault, because nothing is at
   // fault. There is simply no homework tonight.
-  if (night.items.length === 0) {
+  if (items.length === 0) {
     return (
       <section className="screen active" id="screen-tarea">
         <div className="topbar">
@@ -148,14 +203,14 @@ export default function TareaScreen ({ onBack }) {
 
       <div className="nightcard">
         <p className="dayname">{DAY_NAMES_ES[night.weekday]}</p>
-        <p className="meta">{night.items.length} ejercicios · 2 partes</p>
+        <p className="meta">{items.length} ejercicios · 2 partes</p>
         <ul className="steps">
           <li><span className="n">1</span><span><b>Escucha y elige.</b> En el teléfono.</span></li>
           <li><span className="n two">2</span><span><b>Escucha y escribe.</b> En tu papel.</span></li>
         </ul>
       </div>
 
-      <button className="cta" onClick={() => go('p1')}>Empezar</button>
+      <button className="cta" onClick={begin}>{saved ? 'Continuar' : 'Empezar'}</button>
     </section>
   )
 }

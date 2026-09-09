@@ -32,7 +32,8 @@
  * Nothing else was touched.
  */
 
-import { hasClip, play as playRegistryClip, stop as stopRegistryAudio, unlock as unlockAudio } from '../../lib/audio.js'
+import { hasClip, play as playRegistryClip, playSrc, stop as stopRegistryAudio, unlock as unlockAudio } from '../../lib/audio.js'
+import PHONEMES from './phonemes.json'
 
 export function startSuperSonidos (root, { testMode = false, showTail = false } = {}) {
   /* ---------- WRAPPER ---------- */
@@ -348,7 +349,45 @@ export function startSuperSonidos (root, { testMode = false, showTail = false } 
 
   /* ---------- 3. ENGINE ---------- */
   const T=16,ROWS=15,VW=400,VH=240,FL=ROWS-2;
+  /* How much of the world fits across the screen. The world is unchanged; this
+   * is the camera's lens. 1.25 draws everything a quarter larger, which costs
+   * five tiles of the twenty-five you could see ahead — the trade is deliberate:
+   * a five-year-old could not read the letters on the boxes at 1.0. */
+  const ZOOM=1.25, VIEWW=Math.round(VW/ZOOM);
   const cv=$('cv'),ctx=cv.getContext('2d');ctx.imageSmoothingEnabled=false;
+
+  /**
+   * Give the canvas a buffer shaped like the space it actually has.
+   *
+   * The world is drawn in a fixed 400x240 and NOTHING reads cv.width or
+   * cv.height — every coordinate in this file is against VW and VH. So the
+   * canvas can be made taller without the game knowing: draw() puts the extra
+   * height ABOVE the world as sky, the floor stays exactly where the level put
+   * it, and the physics, which never sees a canvas, is untouched.
+   *
+   * Width stays 400 on purpose. Widening it would show more of the level ahead
+   * and make every level easier; height only shows more sky.
+   *
+   * Clamped: never shorter than the world (that would crop it), and never more
+   * than 3.4x, which covers the tallest phone aspect in portrait without a
+   * desktop window turning the pitch into a strip at the bottom of a void.
+   */
+  function fit () {
+    const box = cv.parentElement.getBoundingClientRect()
+    if (!box.width || !box.height) return
+    const want = Math.round(VIEWW * box.height / box.width)
+    const h = Math.max(VH, Math.min(want, Math.round(VH * 3.4)))
+    if (cv.width !== VIEWW) { cv.width = VIEWW; ctx.imageSmoothingEnabled = false }
+    if (cv.height !== h) { cv.height = h; ctx.imageSmoothingEnabled = false }
+  }
+  fit()
+  onWin('orientationchange', fit)
+  // A window resize is not the only way this box changes — the first layout
+  // after mount does not fire one at all, and neither does the keyboard or a
+  // rotation inside a standalone PWA. Watch the element.
+  const boxWatch = typeof ResizeObserver !== 'undefined' ? new ResizeObserver(fit) : null
+  if (boxWatch) boxWatch.observe(cv.parentElement)
+  else onWin('resize', fit)
 
   const PAL={'.':0,k:'#141422',s:'#e3a878',d:'#c4885c',h:'#2c1a10',r:'#E5484D',w:'#ffffff',b:'#27385f',y:'#FFC93C',n:'#1b1b1b',
    B:'#2F6FD0',L:'#1B4E9E',G:'#37A05C',E:'#1E7A40',F:'#E9E9F2',o:'#F2872B',p:'#B26BE0'};
@@ -372,7 +411,7 @@ export function startSuperSonidos (root, { testMode = false, showTail = false } 
 
   // tiles: 0 air 1 ground 2 brick 3 letter block 4 pipe 5 platform(one-way top)
   let map=[],W=0,G=null;
-  const keys={l:0,r:0,j:0};let coy=0,buf=0,held=0;
+  const keys={l:0,r:0,j:0,dn:0};let coy=0,buf=0,held=0;
   const GRAV=.42,MAXF=7.5,ACC=.3,FRIC=.8,MAXR=2.5,JUMP=-6.6,HOLD=.2,HOLDF=10;
   const solid=t=>t===1||t===2||t===3||t===4;
   const tileAt=(x,y)=>y<0||y>=ROWS?0:x<0?1:x>=W?0:map[y][x];
@@ -464,18 +503,33 @@ export function startSuperSonidos (root, { testMode = false, showTail = false } 
    return {rounds,blocks,enemies,gates,coinItems,movers,powers,timed,winds,goalX:(W-9)*T,d,R,venue:VENUE[si]};
   }
   const ESZ={def:{w:10,h:16},keep:{w:10,h:16},ball:{w:9,h:9}};
-  function mk(kind,x,y,vx){const S=ESZ[kind];return {kind,x,y:y-S.h,vx,vy:0,w:S.w,h:S.h,g:0,an:0,dead:0,hop:0,home:x};}
+  function mk(kind,x,y,vx){const S=ESZ[kind];return {kind,x,y:y-S.h,vx,vy:0,w:S.w,h:S.h,g:0,an:0,dead:0,gone:0,hop:0,home:x};}
 
   /* audio: registry clips by entry ID from /audio/group{n}/; browser speech only as fallback for entries without a clip */
   let voices=[];if(window.speechSynthesis){const lv=()=>voices=speechSynthesis.getVoices();lv();speechSynthesis.onvoiceschanged=lv;}
   function speak(t,l){if(!window.speechSynthesis)return;try{speechSynthesis.cancel();const u=new SpeechSynthesisUtterance(t);u.lang=l==='en'?'en-US':'es-ES';u.rate=.72;
    const v=voices.find(v=>v.lang&&v.lang.toLowerCase().startsWith(u.lang.slice(0,2)));if(v)u.voice=v;speechSynthesis.speak(u);}catch(e){}}
-  function playClip(rd){
-   // No recording for this round — sets 7-12 have none — so speech is the answer,
-   // not a failure. Decided from the registry, never from a request that missed.
-   if(!rd.clip||!hasClip(rd.clip.id,rd.clip.part)){speak(rd.say,rd.lang);return Promise.resolve(false);}
+  /**
+   * The letter-sound recordings are whole Spanish lines — "sonido de A — corta,
+   * suena «a»" — two and a half to nearly four seconds of lesson. A game wants
+   * the sound. phonemes.json maps those entries to their final utterance, cut
+   * out of the very same recording; the originals are untouched, so the lesson
+   * screens keep the narration they were recorded for.
+   *
+   * Only the 'sound' role has a phoneme. A name is already just the name and a
+   * syllable is already just the syllable — both under a second as recorded.
+   */
+  const canPlay=(id,part)=>(part==='sound'&&!!PHONEMES[id])||hasClip(id,part);
+  function playEntry(id,part){
    if(window.speechSynthesis)speechSynthesis.cancel();
-   return playRegistryClip(rd.clip.id,rd.clip.part);
+   const ph=part==='sound'?PHONEMES[id]:null;
+   return ph?playSrc(ph):playRegistryClip(id,part);
+  }
+  function playClip(rd){
+   // Nothing recorded for this round — sets 7-12 have none — so speech is the
+   // answer, not a failure. Decided from the data, never from a request that missed.
+   if(!rd.clip||!canPlay(rd.clip.id,rd.clip.part)){speak(rd.say,rd.lang);return Promise.resolve(false);}
+   return playEntry(rd.clip.id,rd.clip.part);
   }
   function sayRound(){if(!G||G.done)return;const rd=G.rounds[G.rd];if(rd)playClip(rd);}
 
@@ -494,11 +548,11 @@ export function startSuperSonidos (root, { testMode = false, showTail = false } 
    const tries=id.startsWith('U2-')?[['U2-'+lab,'sound']]
      :id.endsWith('-NAME')?[['LTR-'+lab+'-NAME','sound'],['LTR-'+lab+'-S1','sound']]
      :[['LTR-'+lab+'-S1','sound'],['LTR-'+lab+'-NAME','sound']];
-   for(const t of tries)if(hasClip(t[0],t[1]))return {id:t[0],part:t[1]};
+   for(const t of tries)if(canPlay(t[0],t[1]))return {id:t[0],part:t[1]};
    return null;
   }
   function playLabel(b,rd){
-   if(b.clip&&hasClip(b.clip.id,b.clip.part)){if(window.speechSynthesis)speechSynthesis.cancel();return playRegistryClip(b.clip.id,b.clip.part);}
+   if(b.clip&&canPlay(b.clip.id,b.clip.part))return playEntry(b.clip.id,b.clip.part);
    speak(b.lab,rd&&rd.lang);return Promise.resolve(false);
   }
 
@@ -520,6 +574,8 @@ export function startSuperSonidos (root, { testMode = false, showTail = false } 
    G.fx.push({t:'x',x:80,y:(FL-6)*T,s:set.n+'-'+(li+1)+' '+L.R.nm,l:110});
    $('screen').classList.remove('on');
    $('over').classList.remove('on');
+   root.classList.remove('nopad');   // controls exist only while a level does
+   fit();
    hud();setTimeout(sayRound,400);
   }
   function headbutt(cx,cy){
@@ -557,6 +613,10 @@ export function startSuperSonidos (root, { testMode = false, showTail = false } 
    if(buf>0&&coy>0){p.vy=JUMP*jm;p.g=0;coy=0;buf=0;held=HOLDF;}
    if(held>0&&keys.j&&p.vy<0){p.vy-=HOLD*jm;held--;}else held=0;
    p.vy=Math.min(MAXF,p.vy+GRAV);
+   // Fast fall. Only in the air, and capped at 1.5x the normal terminal speed —
+   // 11.25px a frame, still under one 16px tile, so it cannot fall THROUGH a
+   // floor it should have landed on.
+   if(keys.dn&&!p.g)p.vy=Math.min(MAXF*1.5,p.vy+GRAV*2.2);
    if(p.ride){p.x+=p.ride.vx;p.ride=null;}
    p.g=0;moveAxis(p,p.vx,0,1);moveAxis(p,0,p.vy,1);
    if(p.x<0)p.x=0;if(p.hu>0)p.hu--;if(p.g&&Math.abs(p.vx)>.3)p.an+=Math.abs(p.vx)*.16;
@@ -575,7 +635,10 @@ export function startSuperSonidos (root, { testMode = false, showTail = false } 
 
    const frozen=G.power==='whistle';
    for(const e of G.enemies){
-    if(e.dead){e.dead--;continue;}
+    // `gone` is forever. `dead` is only the countdown that draws the flattened
+    // sprite for a beat. They used to be the same number, so an enemy the child
+    // had already beaten stood back up 110 frames later, in the same place.
+    if(e.gone){if(e.dead)e.dead--;continue;}
     if(!frozen){
      e.vy=Math.min(MAXF,e.vy+GRAV);const want=e.x+e.vx;moveAxis(e,e.vx,0,0);
      const lim=e.kind==='keep'?46:60;
@@ -586,7 +649,7 @@ export function startSuperSonidos (root, { testMode = false, showTail = false } 
      else if(e.g){const ah=Math.floor((e.x+(e.vx>0?e.w+2:-2))/T),bw=Math.floor((e.y+e.h+2)/T);if(!solid(tileAt(ah,bw))&&tileAt(ah,bw)!==5)e.vx*=-1;e.an+=Math.abs(e.vx)*.16;}
     }
     if(p.x+p.w>e.x+1&&p.x<e.x+e.w-1&&p.y+p.h>e.y+2&&p.y<e.y+e.h){
-     if(G.power==='star'||(p.vy>.8&&p.y+p.h<e.y+e.h*.6)){e.dead=110;p.vy=-5.4;G.score+=50;G.fx.push({t:'x',x:e.x+5,y:e.y-4,s:'+50',l:26});hud();}
+     if(G.power==='star'||(p.vy>.8&&p.y+p.h<e.y+e.h*.6)){e.gone=1;e.dead=110;p.vy=-5.4;G.score+=50;G.fx.push({t:'x',x:e.x+5,y:e.y-4,s:'+50',l:26});hud();}
      else hurt();
     }
    }
@@ -595,7 +658,7 @@ export function startSuperSonidos (root, { testMode = false, showTail = false } 
    else if(!G.done&&p.x>G.goalX+8){p.x=G.goalX-4;p.vx=-2;
     const n=G.blocks.filter(x=>!x.hit).length;
     G.fx.push({t:'x',x:p.x,y:p.y-8,s:n===1?'Falta 1 caja':'Faltan '+n+' cajas',l:60});}
-   const want=Math.max(0,Math.min(W*T-VW,p.x-VW*.38));G.cam+=(want-G.cam)*.14;
+   const want=Math.max(0,Math.min(W*T-cv.width,p.x-cv.width*.38));G.cam+=(want-G.cam)*.14;
   }
 
   function finish(win){
@@ -606,7 +669,7 @@ export function startSuperSonidos (root, { testMode = false, showTail = false } 
     h.textContent='¡GOL!';pp.textContent=`Nivel ${G.li+1} de ${G.set.title} · ${G.score} puntos`;speak('¡Gol! ¡Muy bien!');
     $('ovnext').textContent=G.li<4?'Siguiente':'Siguiente set';
    }else{h.textContent='Sin vidas';pp.textContent='Otra vez — ya casi.';$('ovnext').textContent='Reintentar';}
-   o.classList.add('on');
+   o.classList.add('on');root.classList.add('nopad');
   }
 
   /* ---------- draw ---------- */
@@ -626,11 +689,23 @@ export function startSuperSonidos (root, { testMode = false, showTail = false } 
   }
   function draw(){
    const V=G?G.venue:VENUE[0];
-   const sky=ctx.createLinearGradient(0,0,0,VH);sky.addColorStop(0,V.sky[0]);sky.addColorStop(1,V.sky[1]);ctx.fillStyle=sky;ctx.fillRect(0,0,VW,VH);
-   if(!G){ctx.fillStyle='#2E7D4F';ctx.fillRect(0,VH-32,VW,32);return;}
+   // Everything below is written against VW x VH. Any buffer height beyond
+   // that becomes sky above the world, so the floor keeps its distance from
+   // the bottom edge and no level moves.
+   const dy=Math.max(0,cv.height-VH);
+   ctx.setTransform(1,0,0,1,0,0);
+   const sky=ctx.createLinearGradient(0,0,0,cv.height);sky.addColorStop(0,V.sky[0]);sky.addColorStop(1,V.sky[1]);
+   ctx.fillStyle=sky;ctx.fillRect(0,0,cv.width,cv.height);
+   ctx.translate(0,dy);
+   if(!G){ctx.fillStyle='#2E7D4F';ctx.fillRect(0,VH-32,VW,32);ctx.setTransform(1,0,0,1,0,0);return;}
    const cam=G.cam;
    if(V.back==='city'||V.back==='stands'){ctx.fillStyle='rgba(255,255,255,.75)';for(let i=0;i<40;i++){ctx.fillRect(((i*53)-cam*.05)%(VW+20)-10,(i*37)%90+8,1,1);}}
-   else{ctx.fillStyle='rgba(255,255,255,.9)';for(let i=0;i<9;i++){const x=((i*137)-cam*.25)%(VW+140)-70,y=22+(i%3)*20;ctx.beginPath();ctx.arc(x,y,9,0,7);ctx.arc(x+10,y-4,11,0,7);ctx.arc(x+21,y,8,0,7);ctx.fill();}}
+   // Clouds spread across the WHOLE sky, including the extra height above the
+   // world. Left at the world's ceiling they bunched into a band and the top
+   // of a tall screen read as an empty gradient.
+   else{ctx.fillStyle='rgba(255,255,255,.9)';const n=9+Math.round(dy/70);
+    for(let i=0;i<n;i++){const x=((i*137)-cam*.25)%(VW+140)-70,y=22+(i%3)*20-Math.round(dy*((i*7)%11)/11);
+     ctx.beginPath();ctx.arc(x,y,9,0,7);ctx.arc(x+10,y-4,11,0,7);ctx.arc(x+21,y,8,0,7);ctx.fill();}}
    drawBack(V.back,cam);
    ctx.fillStyle=V.hill;for(let i=0;i<8;i++){const x=((i*150)-cam*.45)%(VW+200)-100;ctx.beginPath();ctx.arc(x,VH-20,52,Math.PI,0);ctx.fill();}
    ctx.fillStyle=V.bush;for(let i=0;i<12;i++){const x=((i*88)-cam*.75)%(VW+120)-60;ctx.beginPath();ctx.arc(x,VH-30,13,Math.PI,0);ctx.arc(x+13,VH-30,17,Math.PI,0);ctx.arc(x+27,VH-30,12,Math.PI,0);ctx.fill();}
@@ -656,7 +731,7 @@ export function startSuperSonidos (root, { testMode = false, showTail = false } 
     if(b.r===G.rd&&!b.hit&&(G.t>>3)%2){ctx.strokeStyle='#fff';ctx.lineWidth=1;ctx.strokeRect(px-1.5,py-1.5,T+3,T+3);}}
    for(const c of G.coinItems){if(c.got)continue;const wob=Math.abs(Math.cos(c.t))*6+2;ctx.fillStyle='#FFC93C';ctx.fillRect(c.x+(8-wob)/2,c.y+Math.sin(c.t)*1.5,wob,10);ctx.fillStyle='#E0A017';ctx.fillRect(c.x+(8-wob)/2,c.y+4+Math.sin(c.t)*1.5,wob,2);}
    for(const pw of G.powers){if(pw.got)continue;const yy=pw.y+Math.sin(pw.t)*2;blit(pw.kind==='boot'?BOOT:pw.kind==='whistle'?WHIS:STAR,pw.x,yy,0);}
-   for(const e of G.enemies){if(e.dead){if(e.kind!=='ball'&&e.dead>70)blit(DF,e.x,e.y+12,0);continue;}
+   for(const e of G.enemies){if(e.gone){if(e.kind!=='ball'&&e.dead>70)blit(DF,e.x,e.y+12,0);continue;}
     if(e.kind==='ball')blit(Math.floor(e.an)%2?BA:BB,e.x,e.y,e.vx<0);else if(e.kind==='keep')blit(e.g?KA:KB,e.x-1,e.y,e.vx<0);else blit(Math.floor(e.an)%2?DA:DB,e.x-1,e.y,e.vx>0);}
    const gt=FL*T-70,gx=G.goalX;ctx.strokeStyle='#fff';ctx.lineWidth=3;ctx.strokeRect(gx,gt,56,70);ctx.lineWidth=.6;ctx.strokeStyle='rgba(255,255,255,.6)';
    for(let i=1;i<8;i++){ctx.beginPath();ctx.moveTo(gx+i*7,gt);ctx.lineTo(gx+i*7,gt+70);ctx.stroke();}for(let i=1;i<10;i++){ctx.beginPath();ctx.moveTo(gx,gt+i*7);ctx.lineTo(gx+56,gt+i*7);ctx.stroke();}
@@ -681,7 +756,7 @@ export function startSuperSonidos (root, { testMode = false, showTail = false } 
    P.innerHTML='Golpea todas las cajas · faltan <b>'+left+'</b>';
   }
   function showMap(){
-   G=null;const sc=$('screen');sc.classList.add('on');$('over').classList.remove('on');
+   G=null;const sc=$('screen');sc.classList.add('on');$('over').classList.remove('on');root.classList.add('nopad');
    let h='<h1>SÚPER SONIDOS</h1><h2>'+(TEST?'MODO PRUEBA · todo abierto'+(SHOW_TAIL?' · con sets 7–12':' · añade ?tail=1 para sets 7–12'):'12 sets · 60 niveles · toca un nivel')+'</h2>';
    SETS.forEach((s,si)=>{ if(s.tail&&!SHOW_TAIL)return;const open=setOpen(si),all=[0,1,2,3,4].every(l=>isDone(si,l));
     h+=`<div class="set ${open?'':'locked'} ${all?'done':''}"><div class="num">${s.n}</div><div class="nm"><b>${s.title}</b><small>${s.sub}</small></div><div class="dots">`;
@@ -701,8 +776,10 @@ export function startSuperSonidos (root, { testMode = false, showTail = false } 
   function bind(id,k){const e=$(id);const on=ev=>{ev.preventDefault();keys[k]=1;},off=ev=>{ev.preventDefault();keys[k]=0;};
    e.addEventListener('touchstart',on,{passive:false});e.addEventListener('touchend',off,{passive:false});e.addEventListener('touchcancel',off,{passive:false});
    e.addEventListener('mousedown',on);onWin('mouseup',off);}
-  bind('left','l');bind('right','r');bind('jump','j');
-  const KM={ArrowLeft:'l',ArrowRight:'r',a:'l',d:'r',' ':'j',ArrowUp:'j',w:'j'};
+  // 'up' is a second jump under the left thumb — same key, same handler, so a
+  // child who never finds SALTA on the far side of the screen can still jump.
+  bind('left','l');bind('right','r');bind('jump','j');bind('up','j');bind('down','dn');
+  const KM={ArrowLeft:'l',ArrowRight:'r',a:'l',d:'r',' ':'j',ArrowUp:'j',w:'j',ArrowDown:'dn',s:'dn'};
   onWin('keydown',e=>{const k=KM[e.key];if(k){keys[k]=1;e.preventDefault();}});
   onWin('keyup',e=>{const k=KM[e.key];if(k){keys[k]=0;e.preventDefault();}});
   onDoc('touchstart',function u(){unlockAudio();if(window.speechSynthesis){const x=new SpeechSynthesisUtterance(' ');x.volume=0;speechSynthesis.speak(x);}offDoc('touchstart',u);},{once:true});
@@ -717,6 +794,7 @@ export function startSuperSonidos (root, { testMode = false, showTail = false } 
     timers.clear()
     for (const [type, fn, opts] of winListeners) window.removeEventListener(type, fn, opts)
     for (const [type, fn, opts] of docListeners) document.removeEventListener(type, fn, opts)
+    try { if (boxWatch) boxWatch.disconnect() } catch (e) {}
     try { stopRegistryAudio() } catch (e) {}
     try { if (window.speechSynthesis) speechSynthesis.cancel() } catch (e) {}
   }

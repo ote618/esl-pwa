@@ -81,11 +81,17 @@ export default function SuperSonidos ({ testMode = false, showTail = false, onBa
           <div id="screen"></div>
         </div>
         <div id="pad">
-          <div style={{ display: 'flex', gap: 12 }}>
+          <div className="cluster">
             <button className="k" id="left">◀</button>
             <button className="k" id="right">▶</button>
           </div>
-          <button className="k" id="jump">SALTA</button>
+          <div className="cluster">
+            <div className="updown">
+              <button className="k sm" id="up">▲</button>
+              <button className="k sm" id="down">▼</button>
+            </div>
+            <button className="k" id="jump">SALTA</button>
+          </div>
         </div>
         <div id="note">POC · voz del navegador — el audio real del registro se conecta por ID de entrada</div>
       </div>
