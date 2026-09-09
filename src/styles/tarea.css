@@ -73,6 +73,14 @@
 .choice:focus-visible{outline:4px solid var(--yellow);outline-offset:3px}
 .choice.right{background:var(--ok);border-color:var(--chalk);color:#08301F}
 .choice.wrong{background:var(--no);border-color:rgba(241,250,238,.5)}
+/* Tried and wrong. It stays on screen — a card that vanished would move the
+   other three under a finger already on its way down — but it is visibly out
+   of play and no longer answers a tap. Greyed, not hidden, and never marked
+   with what the right answer was. */
+.choice.spent{background:rgba(241,250,238,.06);border-color:rgba(241,250,238,.10);
+  color:rgba(241,250,238,.34);box-shadow:none;cursor:default;transform:none}
+.choice.spent img{filter:grayscale(1);opacity:.38}
+.choice.spent:active{transform:none;box-shadow:none}
 .verdict{margin-top:16px;min-height:30px;text-align:center;font-family:'Baloo 2',cursive,sans-serif;
   font-weight:800;font-size:20px}
 .verdict.ok{color:var(--ok)}

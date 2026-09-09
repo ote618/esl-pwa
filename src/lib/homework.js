@@ -285,7 +285,7 @@ export function buildNight ({ weekday, nights, current, rows, groupOf, accuracy 
 export function choicesFor (item, { pool, seed = 0, count = 4 } = {}) {
   const others = pool.filter(x => x.id !== item.id)
   const mySeed = (seed ^ hash(item.id)) >>> 0
-  const mine = (item.words || []).filter(w => w.imageSrc)
+  const mine = ownWords(item)
 
   if (mine.length > 0) {
     const right = shuffle(mine, mySeed)[0]
@@ -299,7 +299,7 @@ export function choicesFor (item, { pool, seed = 0, count = 4 } = {}) {
       if (distractors.length === count - 1) break
     }
     const options = shuffle([right, ...distractors], (mySeed * 7 + 3) >>> 0)
-      .map(w => ({ key: w.text, text: w.text, imageSrc: w.imageSrc }))
+      .map(w => ({ key: w.text, text: w.text, imageSrc: w.imageSrc, audio: w.audio }))
     return { kind: 'picture', options, correct: right.text }
   }
 
@@ -313,7 +313,7 @@ export function choicesFor (item, { pool, seed = 0, count = 4 } = {}) {
     for (const x of list) {
       if (seen.has(x.label)) continue
       seen.add(x.label)
-      picks.push(x.label)
+      picks.push({ text: x.label, audio: { id: x.id, role: 'sound' } })
       if (picks.length === count - 1) return true
     }
     return picks.length === count - 1
@@ -321,9 +321,32 @@ export function choicesFor (item, { pool, seed = 0, count = 4 } = {}) {
   take(shuffle(others.filter(x => x.part === item.part), (mySeed * 3 + 11) >>> 0)) ||
     take(shuffle(others.filter(x => x.part !== item.part), (mySeed * 5 + 17) >>> 0))
 
-  const options = shuffle([label, ...picks], (mySeed * 7 + 3) >>> 0)
-    .map(t => ({ key: t, text: t }))
+  const options = shuffle([{ text: label, audio: { id: item.id, role: 'sound' } }, ...picks], (mySeed * 7 + 3) >>> 0)
+    .map(o => ({ key: o.text, text: o.text, audio: o.audio }))
   return { kind: 'text', options, correct: label }
+}
+
+/* ------------------------------------------------------------------ *
+ * EVERY CHOICE CARRIES ITS OWN CLIP.
+ *
+ * Tapping a card plays the word ON THE CARD, not the question again. A child
+ * who picks `goat` when the sound was /g/ hears "goat" — which is how the
+ * picture and the word become the same thing in their head. It is the only
+ * feedback pass 1 gives beyond right-or-wrong, and it is worth more on a wrong
+ * answer than on a right one.
+ *
+ * The role is the word's POSITION on its own entry: words[0] is word1,
+ * words[1] is word2. That mapping is the generator's (V15 checks the clip's
+ * descriptor names the same word as the image), so nothing here guesses which
+ * file says what.
+ * ------------------------------------------------------------------ */
+const WORD_ROLES = ['word1', 'word2']
+
+/** This entry's own words, each tagged with the clip that says it. */
+function ownWords (item) {
+  return (item.words || [])
+    .map((w, i) => ({ ...w, audio: { id: item.id, role: WORD_ROLES[i] } }))
+    .filter(w => w.imageSrc && w.audio.role)
 }
 
 /** Every word with a resolved image across a list of entries, deduped by text. */
@@ -331,8 +354,8 @@ function dedupeWords (items) {
   const seen = new Set()
   const out = []
   for (const it of items) {
-    for (const w of it.words || []) {
-      if (!w.imageSrc || seen.has(w.text)) continue
+    for (const w of ownWords(it)) {
+      if (seen.has(w.text)) continue
       seen.add(w.text)
       out.push(w)
     }
