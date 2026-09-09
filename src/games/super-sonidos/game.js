@@ -353,7 +353,7 @@ export function startSuperSonidos (root, { testMode = false, showTail = false } 
    * is the camera's lens. 1.25 draws everything a quarter larger, which costs
    * five tiles of the twenty-five you could see ahead — the trade is deliberate:
    * a five-year-old could not read the letters on the boxes at 1.0. */
-  const ZOOM=1.25, VIEWW=Math.round(VW/ZOOM);
+  const ZOOM=2.5, VIEWW=Math.round(VW/ZOOM), MINH=160;
   const cv=$('cv'),ctx=cv.getContext('2d');ctx.imageSmoothingEnabled=false;
 
   /**
@@ -368,15 +368,18 @@ export function startSuperSonidos (root, { testMode = false, showTail = false } 
    * Width stays 400 on purpose. Widening it would show more of the level ahead
    * and make every level easier; height only shows more sky.
    *
-   * Clamped: never shorter than the world (that would crop it), and never more
-   * than 3.4x, which covers the tallest phone aspect in portrait without a
-   * desktop window turning the pitch into a strip at the bottom of a void.
+   * Clamped between MINH and 3.4x. MINH is 10 tiles, and it is a GAMEPLAY
+   * number, not a cosmetic one: the floor takes two rows, blocks sit four rows
+   * up and a jump peaks around three and a half, so ten rows clears everything
+   * a child has to reach. Anything above that is sky, and cropping sky is what
+   * buys the sprite size — held at the full fifteen rows the pitch had to
+   * shrink to fit the height, which is the opposite of what was asked for.
    */
   function fit () {
     const box = cv.parentElement.getBoundingClientRect()
     if (!box.width || !box.height) return
     const want = Math.round(VIEWW * box.height / box.width)
-    const h = Math.max(VH, Math.min(want, Math.round(VH * 3.4)))
+    const h = Math.max(MINH, Math.min(want, Math.round(VH * 3.4)))
     if (cv.width !== VIEWW) { cv.width = VIEWW; ctx.imageSmoothingEnabled = false }
     if (cv.height !== h) { cv.height = h; ctx.imageSmoothingEnabled = false }
   }
@@ -689,10 +692,14 @@ export function startSuperSonidos (root, { testMode = false, showTail = false } 
   }
   function draw(){
    const V=G?G.venue:VENUE[0];
-   // Everything below is written against VW x VH. Any buffer height beyond
-   // that becomes sky above the world, so the floor keeps its distance from
-   // the bottom edge and no level moves.
-   const dy=Math.max(0,cv.height-VH);
+   // Everything below is written against VW x VH, and this offset is what keeps
+   // the FLOOR on the bottom edge whatever height the buffer has. Positive, the
+   // spare height becomes sky above the world. NEGATIVE — a buffer shorter than
+   // the world, which is how the zoom is paid for — it lifts the world so the
+   // ground still lands at the bottom and the crop comes off the empty top.
+   // Clamped at zero it did the opposite: drew from the world's ceiling down
+   // and pushed the ground off the screen entirely.
+   const dy=cv.height-VH;
    ctx.setTransform(1,0,0,1,0,0);
    const sky=ctx.createLinearGradient(0,0,0,cv.height);sky.addColorStop(0,V.sky[0]);sky.addColorStop(1,V.sky[1]);
    ctx.fillStyle=sky;ctx.fillRect(0,0,cv.width,cv.height);
@@ -731,8 +738,14 @@ export function startSuperSonidos (root, { testMode = false, showTail = false } 
     if(b.r===G.rd&&!b.hit&&(G.t>>3)%2){ctx.strokeStyle='#fff';ctx.lineWidth=1;ctx.strokeRect(px-1.5,py-1.5,T+3,T+3);}}
    for(const c of G.coinItems){if(c.got)continue;const wob=Math.abs(Math.cos(c.t))*6+2;ctx.fillStyle='#FFC93C';ctx.fillRect(c.x+(8-wob)/2,c.y+Math.sin(c.t)*1.5,wob,10);ctx.fillStyle='#E0A017';ctx.fillRect(c.x+(8-wob)/2,c.y+4+Math.sin(c.t)*1.5,wob,2);}
    for(const pw of G.powers){if(pw.got)continue;const yy=pw.y+Math.sin(pw.t)*2;blit(pw.kind==='boot'?BOOT:pw.kind==='whistle'?WHIS:STAR,pw.x,yy,0);}
-   for(const e of G.enemies){if(e.gone){if(e.kind!=='ball'&&e.dead>70)blit(DF,e.x,e.y+12,0);continue;}
-    if(e.kind==='ball')blit(Math.floor(e.an)%2?BA:BB,e.x,e.y,e.vx<0);else if(e.kind==='keep')blit(e.g?KA:KB,e.x-1,e.y,e.vx<0);else blit(Math.floor(e.an)%2?DA:DB,e.x-1,e.y,e.vx>0);}
+   // Stomped is gone — no flattened sprite left lying on the pitch.
+   for(const e of G.enemies){if(e.gone)continue;
+    if(e.kind==='ball')blit(Math.floor(e.an)%2?BA:BB,e.x,e.y,e.vx<0);else if(e.kind==='keep')blit(e.g?KA:KB,e.x-1,e.y,e.vx<0);else blit(Math.floor(e.an)%2?DA:DB,e.x-1,e.y,e.vx>0);
+    // "Jump on this." Only in the first two sets — after that a child who needed
+    // telling has been told, and an arrow over every enemy is just clutter.
+    if(G.si<=1&&e.kind!=='ball'){const ay=e.y-9+Math.round(Math.sin(G.t*.12)*1.5);
+     ctx.fillStyle='rgba(255,255,255,.92)';ctx.beginPath();
+     ctx.moveTo(e.x+1,ay);ctx.lineTo(e.x+9,ay);ctx.lineTo(e.x+5,ay+5);ctx.closePath();ctx.fill();}}
    const gt=FL*T-70,gx=G.goalX;ctx.strokeStyle='#fff';ctx.lineWidth=3;ctx.strokeRect(gx,gt,56,70);ctx.lineWidth=.6;ctx.strokeStyle='rgba(255,255,255,.6)';
    for(let i=1;i<8;i++){ctx.beginPath();ctx.moveTo(gx+i*7,gt);ctx.lineTo(gx+i*7,gt+70);ctx.stroke();}for(let i=1;i<10;i++){ctx.beginPath();ctx.moveTo(gx,gt+i*7);ctx.lineTo(gx+56,gt+i*7);ctx.stroke();}
    const p=G.p;if(!(p.hu>0&&(G.t>>2)%2)){if(G.power==='star'&&(G.t>>2)%2){ctx.fillStyle='rgba(255,201,60,.35)';ctx.fillRect(p.x-3,p.y-3,16,22);}
@@ -778,7 +791,7 @@ export function startSuperSonidos (root, { testMode = false, showTail = false } 
    e.addEventListener('mousedown',on);onWin('mouseup',off);}
   // 'up' is a second jump under the left thumb — same key, same handler, so a
   // child who never finds SALTA on the far side of the screen can still jump.
-  bind('left','l');bind('right','r');bind('jump','j');bind('up','j');bind('down','dn');
+  bind('left','l');bind('right','r');bind('up','j');bind('down','dn');
   const KM={ArrowLeft:'l',ArrowRight:'r',a:'l',d:'r',' ':'j',ArrowUp:'j',w:'j',ArrowDown:'dn',s:'dn'};
   onWin('keydown',e=>{const k=KM[e.key];if(k){keys[k]=1;e.preventDefault();}});
   onWin('keyup',e=>{const k=KM[e.key];if(k){keys[k]=0;e.preventDefault();}});

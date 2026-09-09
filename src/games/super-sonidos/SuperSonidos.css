@@ -32,7 +32,7 @@
 .supersonidos #menu{background:#1a2740;color:#fff;}
 /* The stage takes every pixel the HUD and the note strip do not.
    min-height:0 is what lets a flex child actually shrink. */
-.supersonidos #stage{position:relative;width:100%;flex:1;min-height:0;}
+.supersonidos #stage{position:relative;width:100%;flex:2 1 0;min-height:0;}
 /* Taken OUT OF FLOW on purpose. As a flex child the canvas contributed to the
    height of the box that its own size is measured from, so sizing the buffer
    changed the measurement that sized the buffer — the fit oscillated and
@@ -41,19 +41,19 @@
 .supersonidos canvas{position:absolute;inset:0;
   display:block;image-rendering:pixelated;background:#5EC7EC;
   width:100%;height:100%;object-fit:contain;}
-/* Overlaid, not stacked. Sitting in the column, the pad took ~110px of height
-   away from the pitch on every device; over it, the canvas gets that back. */
-.supersonidos #pad{position:absolute;left:0;right:0;bottom:0;z-index:6;
-  display:flex;justify-content:space-between;align-items:center;
-  padding:10px 12px calc(12px + env(safe-area-inset-bottom,0px));gap:10px;
-  pointer-events:none;}
-.supersonidos #pad > *{pointer-events:auto;}
+/* A handheld, not an overlay: the pitch is the top two thirds and the controls
+   are a solid block under it. Overlaid, the buttons sat ON the pitch and hid
+   the very things a child is aiming at. 2fr / 1fr of the space the HUD leaves. */
+.supersonidos #pad{flex:1 1 0;min-height:0;
+  display:flex;justify-content:space-around;align-items:center;
+  padding:8px 14px calc(8px + env(safe-area-inset-bottom,0px));gap:12px;
+  background:#0b1424;border-top:3px solid #16233a;}
 /* Off the map screen and off the end-of-level card there is nothing to drive,
    and a dead d-pad invites taps that do nothing. */
 .supersonidos.nopad #pad{display:none;}
-.supersonidos .k{border:0;border-radius:50%;width:64px;height:64px;background:#e9eef0;color:var(--navy);font-size:24px;font-weight:900;box-shadow:0 5px 0 #0008;}
+.supersonidos .k{border:0;border-radius:50%;width:clamp(64px,21vw,96px);height:clamp(64px,21vw,96px);
+  background:#e9eef0;color:var(--navy);font-size:clamp(24px,7vw,34px);font-weight:900;box-shadow:0 6px 0 #0008;}
 .supersonidos .k:active{transform:translateY(3px);box-shadow:0 2px 0 #0008;}
-.supersonidos #jump{background:var(--gold);width:84px;height:84px;font-size:15px;border-radius:50%;}
 .supersonidos #screen{position:absolute;inset:0;overflow:auto;background:#0b1424;display:none;padding:14px 12px 30px;}
 .supersonidos #screen.on{display:block;}
 .supersonidos h1{margin:6px 0 2px;font-size:30px;color:var(--gold);text-shadow:0 3px 0 #000;line-height:1;}
@@ -100,9 +100,7 @@
   .supersonidos{max-width:none;}
 }
 
-/* Controls: run on the left, jump on the right, with ▲/▼ stacked beside SALTA.
-   ▲ is a second jump for a thumb that never reaches across; ▼ is fast fall. */
-.supersonidos #pad .cluster{display:flex;align-items:center;gap:10px;}
-.supersonidos #pad .updown{display:flex;flex-direction:column;gap:6px;}
-.supersonidos .k.sm{width:48px;height:48px;font-size:17px;box-shadow:0 4px 0 #0008;}
-.supersonidos .k.sm:active{transform:translateY(2px);box-shadow:0 2px 0 #0008;}
+/* Run on the left thumb, jump and drop on the right. SALTA is gone: ▲ is the
+   jump now, and one button doing one thing beats two doing the same thing. */
+.supersonidos #pad .cluster{display:flex;align-items:center;gap:clamp(10px,4vw,18px);}
+.supersonidos #pad .updown{display:flex;flex-direction:column;gap:clamp(10px,3vh,18px);}
