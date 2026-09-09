@@ -28,7 +28,7 @@
  *     night. That is the whole handling.
  */
 
-import registry, { gating, structure, group } from './registry.js'
+import registry, { gating, structure, group, item } from './registry.js'
 import config from '../../data/homework.json'
 import { accuracyOf } from './progress.js'
 
@@ -347,15 +347,26 @@ function dedupeWords (items) {
 /**
  * Tonight's set, from the device clock and the shipped data.
  *
- * The group is `gating.current`, always. A child who wandered in from Group 1's
- * lesson still gets tonight's homework, because tonight's homework is tonight's
- * homework — the group is not a function of where the tap came from.
+ * WHICH GROUP. `groupId` is the group the child is actually working in — the
+ * one whose lesson they opened. It defaults to `gating.current` for a caller
+ * that has no group in hand.
+ *
+ * This overrides the handoff's §3.2 ("this week's group = gating.current,
+ * never inferred"). That rule made sense when the class had one open group:
+ * tonight's homework was tonight's homework wherever you tapped. With all six
+ * groups open it stopped making sense — opening Group 1's lesson handed the
+ * child Group 6's homework, in letters they had not been taught that week.
+ * Ruled 2026-09-08: the homework belongs to the lesson it hangs off.
+ *
+ * The cumulative pools still resolve by DECLARED number relative to the group
+ * being played, so Group 1 has no last week and Group 3 reaches back to
+ * Group 1 — the waterfall works from wherever the child stands in it.
  */
-export function nightFor (date = new Date()) {
+export function nightFor (date = new Date(), groupId = gating.current) {
   return buildNight({
     weekday: weekdayOf(date),
     nights: config.nights,
-    current: gating.current,
+    current: groupId || gating.current,
     rows: structure(),
     groupOf: group,
     accuracy: accuracyOf,
@@ -364,15 +375,39 @@ export function nightFor (date = new Date()) {
 }
 
 /**
- * The entries pass 1 may draw distractors from: everything the class has been
- * released, whichever group tonight happens to be. Built once.
+ * The entries pass 1 may draw distractors from.
+ *
+ * Everything up to AND INCLUDING the group being played, and nothing beyond
+ * it. A Group 1 night must not show `xylophone` as a wrong answer: the child
+ * has never met the letter, the picture teaches them nothing, and it makes the
+ * app look like it has lost track of where they are.
+ *
+ * Reaching BACK is fine and deliberate — a Group 3 night drawing a Group 1
+ * word is a wrong answer about something already taught, which is the kind of
+ * wrong answer worth having.
+ *
+ * Distractors still cross PART boundaries inside those groups: a Friday sounds
+ * item can show a syllable word from later in the same group. Left as-is
+ * deliberately — flagged, not a bug.
  */
-export function distractorPool () {
-  const current = structure().find(r => r.id === gating.current)
-  if (!current) return []
-  return structure()
-    .filter(r => r.populated && (r.number <= current.number))
+export function distractorPool (groupId = gating.current) {
+  const rows = structure()
+  const here = rows.find(r => r.id === groupId) ?? rows.find(r => r.id === gating.current)
+  if (!here) return []
+  return rows
+    .filter(r => r.populated && r.number <= here.number)
     .flatMap(r => registry.groups[r.id]?.items ?? [])
+}
+
+/**
+ * Entries for a list of ids, in the order given, dropping any the registry
+ * does not know. Used to restore an interrupted night from what was saved
+ * rather than rebuilding it: `weakest-third` reads progress, and progress
+ * moves as the child answers, so a rebuild half way through a night could
+ * hand back a different set.
+ */
+export function itemsByIds (ids) {
+  return (ids || []).map(id => item(id)).filter(Boolean)
 }
 
 export { config as homeworkConfig }

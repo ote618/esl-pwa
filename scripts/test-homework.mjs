@@ -314,6 +314,72 @@ ok('a starved pool yields fewer choices rather than throwing',
   })())
 
 /* ================================================================== *
+ * THE NIGHT BELONGS TO THE GROUP THE CHILD IS PLAYING
+ *
+ * Ruled 2026-09-08, replacing handoff §3.2. Opening Group 1's lesson must give
+ * Group 1's homework, in Group 1's letters — not gating.current's.
+ * ================================================================== */
+console.log('\n--- GROUP SCOPING: a group\'s night is that group\'s ---\n')
+
+for (const id of POPULATED) {
+  const row = rows.find(r => r.id === id)
+  const back2 = [row.number, row.number - 1, row.number - 2]
+  let bad = ''
+  for (const day of NIGHTS) {
+    const night = build(id, day)
+    if (night.mode === 'game') continue
+    // Nothing from a group the child has not reached.
+    const ahead = night.items.filter(it => {
+      const r = rows.find(x => x.id === it.group)
+      return !r || r.number > row.number
+    })
+    if (ahead.length) { bad = `${day} drew ${ahead.length} item(s) from ahead of ${id}: ${[...new Set(ahead.map(i => i.group))]}`; break }
+    // And nothing from further back than the config reaches.
+    const tooFar = night.items.filter(it => !back2.includes(rows.find(x => x.id === it.group)?.number))
+    if (tooFar.length) { bad = `${day} drew from outside this/last/two-weeks-back: ${[...new Set(tooFar.map(i => i.group))]}`; break }
+  }
+  ok(`${id}: every night draws only from ${id} and the weeks behind it`, !bad, bad)
+}
+
+/* The distractor pool is the other half of the same rule: a Group 1 night must
+ * not offer xylophone as a wrong answer. */
+console.log('')
+for (const id of POPULATED) {
+  const row = rows.find(r => r.id === id)
+  const scoped = rows.filter(r => r.populated && r.number <= row.number).flatMap(r => groupOf(r.id).items)
+  const night = build(id, 'friday')
+  let bad = ''
+  for (const item of night.items) {
+    const c = HW.choicesFor(item, { pool: scoped, seed: 99 })
+    const words = new Set(scoped.flatMap(x => (x.words || []).map(w => w.text)))
+    const labels = new Set(scoped.map(x => x.label))
+    for (const o of c.options) {
+      const known = c.kind === 'picture' ? words.has(o.key) : labels.has(o.key)
+      if (!known) { bad = `${item.id} offered "${o.key}", which is not in ${id} or earlier`; break }
+    }
+    if (bad) break
+  }
+  ok(`${id}: no choice comes from a group the child has not reached`, !bad, bad)
+}
+
+ok('a Group 1 night can never show a Group 6 word',
+  (() => {
+    const g1pool = rows.filter(r => r.populated && r.number <= 1).flatMap(r => groupOf(r.id).items)
+    const g6words = new Set(groupOf('G6').items.flatMap(i => (i.words || []).map(w => w.text)))
+    const g6labels = new Set(groupOf('G6').items.map(i => i.label))
+    for (const day of NIGHTS) {
+      for (const item of build('G1', day).items) {
+        const c = HW.choicesFor(item, { pool: g1pool, seed: 5 })
+        for (const o of c.options) {
+          // A label like "A" can legitimately coincide; only flag words, which are unique.
+          if (c.kind === 'picture' && g6words.has(o.key) && !g1pool.some(x => (x.words || []).some(w => w.text === o.key))) return false
+        }
+      }
+    }
+    return true
+  })())
+
+/* ================================================================== *
  * F-15 — THE PASS 2 GUARANTEE, CHECKED IN THE SOURCE
  *
  * "The app does not capture, check, store, mark or display anything the child
@@ -350,6 +416,35 @@ if (!files) {
   ok('WritePass.jsx does not touch storage directly',
     !/localStorage|sessionStorage|indexedDB/.test(body))
 }
+
+/* ================================================================== *
+ * RESUME — a night survives the app closing
+ * ================================================================== */
+console.log('\n--- RESUME: an interrupted night comes back ---\n')
+
+const prog = src('src/lib/progress.js')
+const tarea = src('src/screens/TareaScreen.jsx')
+for (const fn of ['saveSession', 'loadSession', 'clearSession']) {
+  ok(`progress.js exports ${fn}`, new RegExp(`export function ${fn}\\b`).test(prog))
+}
+ok('a resume point is scoped to BOTH the date and the group',
+  /if \(date && s\.date !== date\) return null/.test(prog) && /if \(group && s\.group !== group\) return null/.test(prog))
+ok('finishing a night clears the resume point',
+  /clearSession\(\)/.test(tarea) && /recordNight\([\s\S]{0,20}\)\s*\n\s*clearSession\(\)/.test(tarea))
+ok('the resume point stores a position and a set, never written work',
+  !/answer|written|wrote|response|input/i.test(prog.slice(prog.indexOf('export function saveSession'), prog.indexOf('export function loadSession'))))
+ok('load() preserves keys it does not know about (several chats share this file)',
+  /\.\.\.parsed,/.test(prog))
+ok('TareaScreen restores the SAVED set rather than rebuilding it',
+  /itemsByIds\(saved\.ids\)/.test(tarea))
+ok('both passes accept a startAt and report onAdvance',
+  /startAt = 0, onAdvance/.test(src('src/screens/RecognisePass.jsx')) &&
+  /startAt = 0, onAdvance/.test(src('src/screens/WritePass.jsx')))
+ok('TareaScreen offers "Continuar" when a night is under way',
+  /saved \? 'Continuar' : 'Empezar'/.test(tarea))
+ok('nightFor and distractorPool both take the group being played',
+  /export function nightFor \(date = new Date\(\), groupId = gating\.current\)/.test(src('src/lib/homework.js')) &&
+  /export function distractorPool \(groupId = gating\.current\)/.test(src('src/lib/homework.js')))
 
 // The strongest form of the F-15 guarantee is structural: WritePass is handed
 // ids, so there is nothing in scope for it to leak. Assert the call site.
