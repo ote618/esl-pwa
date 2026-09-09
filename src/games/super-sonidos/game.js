@@ -32,7 +32,8 @@
  * Nothing else was touched.
  */
 
-import { hasClip, play as playRegistryClip, stop as stopRegistryAudio, unlock as unlockAudio } from '../../lib/audio.js'
+import { hasClip, play as playRegistryClip, playSrc, stop as stopRegistryAudio, unlock as unlockAudio } from '../../lib/audio.js'
+import PHONEMES from './phonemes.json'
 
 export function startSuperSonidos (root, { testMode = false, showTail = false } = {}) {
   /* ---------- WRAPPER ---------- */
@@ -508,12 +509,27 @@ export function startSuperSonidos (root, { testMode = false, showTail = false } 
   let voices=[];if(window.speechSynthesis){const lv=()=>voices=speechSynthesis.getVoices();lv();speechSynthesis.onvoiceschanged=lv;}
   function speak(t,l){if(!window.speechSynthesis)return;try{speechSynthesis.cancel();const u=new SpeechSynthesisUtterance(t);u.lang=l==='en'?'en-US':'es-ES';u.rate=.72;
    const v=voices.find(v=>v.lang&&v.lang.toLowerCase().startsWith(u.lang.slice(0,2)));if(v)u.voice=v;speechSynthesis.speak(u);}catch(e){}}
-  function playClip(rd){
-   // No recording for this round — sets 7-12 have none — so speech is the answer,
-   // not a failure. Decided from the registry, never from a request that missed.
-   if(!rd.clip||!hasClip(rd.clip.id,rd.clip.part)){speak(rd.say,rd.lang);return Promise.resolve(false);}
+  /**
+   * The letter-sound recordings are whole Spanish lines — "sonido de A — corta,
+   * suena «a»" — two and a half to nearly four seconds of lesson. A game wants
+   * the sound. phonemes.json maps those entries to their final utterance, cut
+   * out of the very same recording; the originals are untouched, so the lesson
+   * screens keep the narration they were recorded for.
+   *
+   * Only the 'sound' role has a phoneme. A name is already just the name and a
+   * syllable is already just the syllable — both under a second as recorded.
+   */
+  const canPlay=(id,part)=>(part==='sound'&&!!PHONEMES[id])||hasClip(id,part);
+  function playEntry(id,part){
    if(window.speechSynthesis)speechSynthesis.cancel();
-   return playRegistryClip(rd.clip.id,rd.clip.part);
+   const ph=part==='sound'?PHONEMES[id]:null;
+   return ph?playSrc(ph):playRegistryClip(id,part);
+  }
+  function playClip(rd){
+   // Nothing recorded for this round — sets 7-12 have none — so speech is the
+   // answer, not a failure. Decided from the data, never from a request that missed.
+   if(!rd.clip||!canPlay(rd.clip.id,rd.clip.part)){speak(rd.say,rd.lang);return Promise.resolve(false);}
+   return playEntry(rd.clip.id,rd.clip.part);
   }
   function sayRound(){if(!G||G.done)return;const rd=G.rounds[G.rd];if(rd)playClip(rd);}
 
@@ -532,11 +548,11 @@ export function startSuperSonidos (root, { testMode = false, showTail = false } 
    const tries=id.startsWith('U2-')?[['U2-'+lab,'sound']]
      :id.endsWith('-NAME')?[['LTR-'+lab+'-NAME','sound'],['LTR-'+lab+'-S1','sound']]
      :[['LTR-'+lab+'-S1','sound'],['LTR-'+lab+'-NAME','sound']];
-   for(const t of tries)if(hasClip(t[0],t[1]))return {id:t[0],part:t[1]};
+   for(const t of tries)if(canPlay(t[0],t[1]))return {id:t[0],part:t[1]};
    return null;
   }
   function playLabel(b,rd){
-   if(b.clip&&hasClip(b.clip.id,b.clip.part)){if(window.speechSynthesis)speechSynthesis.cancel();return playRegistryClip(b.clip.id,b.clip.part);}
+   if(b.clip&&canPlay(b.clip.id,b.clip.part))return playEntry(b.clip.id,b.clip.part);
    speak(b.lab,rd&&rd.lang);return Promise.resolve(false);
   }
 
