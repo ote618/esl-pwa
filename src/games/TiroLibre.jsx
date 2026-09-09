@@ -668,11 +668,16 @@ function Pitch ({ pitch, zones, zoneCount, aim, phase, verdict, wrongLabel, onZo
   const caught = showResult && verdict?.outcome === 'blocked'
 
   return (
-    <div className="tl-pitch" style={{ '--ground': pitch.ground, '--grass': pitch.grass }}>
+    // NOT --ground/--grass. A pitch's colours are set on this element, so any
+    // name used here shadows the same name on every descendant — and --grass is
+    // a Slice 1 design token. Naming them that turned .tl-zone.hit, which is
+    // meant to flash the token green when a goal goes in, the colour of the
+    // pitch's dirt. Prefixed so a pitch can never repaint a token again.
+    <div className="tl-pitch" style={{ '--tl-ground': pitch.ground, '--tl-grass': pitch.grass }}>
       <svg viewBox={`0 0 ${G.w} ${G.h}`} aria-hidden="true">
         <rect width={G.w} height={G.h} fill="var(--pitch)" />
-        <rect y="172" width={G.w} height={G.h - 172} fill="var(--ground)" />
-        <rect y="172" width={G.w} height="6" fill="var(--grass)" />
+        <rect y="172" width={G.w} height={G.h - 172} fill="var(--tl-ground)" />
+        <rect y="172" width={G.w} height="6" fill="var(--tl-grass)" />
         {/* net */}
         <rect x={G.gx} y={G.gy} width={G.gw} height={G.gh} fill="rgba(241,250,238,.06)" />
         <g stroke="rgba(241,250,238,.28)" strokeWidth="1">
