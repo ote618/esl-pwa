@@ -9,10 +9,17 @@ import { recordAnswer } from '../lib/progress.js'
  * The sound plays. Four choices. Right or wrong, immediately. The speaker
  * replays as often as the child wants.
  *
- * A WRONG ANSWER DOES NOT END THE ROUND AND DOES NOT ADVANCE. The card flashes
- * red, the verdict says "otra vez", and the same item is still there. A child
- * leaves every item having got it right; what the teacher needs to know about
- * the ones that took three goes is in progress, not on the screen.
+ * A WRONG ANSWER DOES NOT END THE ROUND AND DOES NOT ADVANCE. The card greys
+ * out and stays out, the verdict says "otra vez", and the same item is still
+ * there with one fewer thing to try. A child leaves every item having got it
+ * right; what the teacher needs to know about the ones that took three goes is
+ * in progress, not on the screen.
+ *
+ * TAPPING A CARD PLAYS THE CARD. Whatever the child picks is spoken back to
+ * them — the word on the picture, or the letter on the text choice — before
+ * the verdict settles. Pick `goat` when the sound was /g/ and you hear "goat",
+ * which is how the picture and the word become one thing. It is worth more on
+ * a wrong answer than on a right one, so it happens on both.
  *
  * Choices are word pictures wherever the entry has words — ruled 2026-09-06 for
  * all six groups — and text otherwise. Which is which is decided by asking the
@@ -24,6 +31,7 @@ export default function RecognisePass ({ items, pool, seed, startAt = 0, onAdvan
   const [playing, setPlaying] = useState(false)
   const [verdict, setVerdict] = useState(null)   // null | 'ok' | 'no'
   const [chosen, setChosen] = useState(null)     // the key of the card just tapped
+  const [spent, setSpent] = useState([])         // keys already tried and wrong, this item
   const [settled, setSettled] = useState(false)  // the item is answered; ignore further taps
 
   // First attempts only reach progress. An item retried until it is right would
@@ -45,7 +53,7 @@ export default function RecognisePass ({ items, pool, seed, startAt = 0, onAdvan
 
   // The clip plays itself when the item comes up, then on demand for ever.
   useEffect(() => {
-    setVerdict(null); setChosen(null); setSettled(false)
+    setVerdict(null); setChosen(null); setSpent([]); setSettled(false)
     const t = setTimeout(say, 280)
     timers.current.push(t)
     return () => { clearTimeout(t); stop() }
@@ -54,28 +62,34 @@ export default function RecognisePass ({ items, pool, seed, startAt = 0, onAdvan
 
   useEffect(() => () => { timers.current.forEach(clearTimeout); stop() }, [])
 
-  const pick = key => {
-    if (settled || !choices) return
-    const right = key === choices.correct
+  const pick = opt => {
+    if (settled || !choices || spent.includes(opt.key)) return
+    const right = opt.key === choices.correct
     const first = !tried.current.has(item.id)
     tried.current.add(item.id)
     recordAnswer(item.id, right, first)
 
-    setChosen(key)
-    if (!right) {
-      setVerdict('no')
-      const t = setTimeout(() => setChosen(null), 600)
-      timers.current.push(t)
-      return
-    }
+    setChosen(opt.key)
+    if (right) setSettled(true)          // lock immediately; the clip takes a moment
+    setVerdict(right ? 'ok' : 'no')
 
-    setSettled(true)
-    setVerdict('ok')
-    const t = setTimeout(() => {
-      if (at < items.length - 1) { const next = at + 1; onAdvance(next); setAt(next) }
-      else onDone()
-    }, 720)
-    timers.current.push(t)
+    // Say what they picked, then move on. `play` never rejects — a missing clip
+    // resolves false — so the round advances whether or not audio worked.
+    const say = opt.audio ? play(opt.audio.id, opt.audio.role) : Promise.resolve(false)
+    say.then(() => {
+      if (!right) {
+        // Greyed out and out of play. The child tries again with one fewer
+        // wrong card in front of them; nothing tells them WHICH one was right.
+        setSpent(prev => (prev.includes(opt.key) ? prev : [...prev, opt.key]))
+        setChosen(null)
+        return
+      }
+      const t = setTimeout(() => {
+        if (at < items.length - 1) { const next = at + 1; onAdvance(next); setAt(next) }
+        else onDone()
+      }, 320)
+      timers.current.push(t)
+    })
   }
 
   if (!item || !choices) return null
@@ -109,9 +123,11 @@ export default function RecognisePass ({ items, pool, seed, startAt = 0, onAdvan
             className={
               'choice' +
               (choices.kind === 'picture' ? ' pic' : '') +
+              (spent.includes(opt.key) ? ' spent' : '') +
               (chosen === opt.key ? (opt.key === choices.correct ? ' right' : ' wrong') : '')
             }
-            onClick={() => pick(opt.key)}
+            aria-disabled={spent.includes(opt.key) ? 'true' : undefined}
+            onClick={() => pick(opt)}
           >
             {/* imageSrc is resolved and percent-encoded by the generator.
                 Nothing here builds a path. No width/height attributes — they

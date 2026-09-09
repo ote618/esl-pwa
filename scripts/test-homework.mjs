@@ -22,6 +22,16 @@ import { fileURLToPath } from 'node:url'
 const HERE = path.dirname(fileURLToPath(import.meta.url))
 const ROOT = path.resolve(HERE, '..')
 
+/* out/ is generated and gitignored, so a fresh clone or a new worktree has no
+ * registry at all. Build one before esbuild tries to bundle registry.js, which
+ * imports it: a test run that dies on a missing-file stack trace cannot tell
+ * anyone what is actually wrong. */
+const REGISTRY = path.join(ROOT, 'out/esl_unit_registry.json')
+if (!fs.existsSync(REGISTRY)) {
+  console.log('  (no registry yet — running build:data first)\n')
+  execFileSync('node', [path.join(ROOT, 'scripts/build-registry.mjs')], { cwd: ROOT, stdio: 'pipe' })
+}
+
 const tmp = fs.mkdtempSync(path.join(os.tmpdir(), 'eslhw-'))
 const bundle = path.join(tmp, 'homework.mjs')
 execFileSync(path.join(ROOT, 'node_modules/.bin/esbuild'), [
@@ -31,7 +41,7 @@ execFileSync(path.join(ROOT, 'node_modules/.bin/esbuild'), [
 ])
 const HW = await import('file://' + bundle)
 
-const registry = JSON.parse(fs.readFileSync(path.join(ROOT, 'out/esl_unit_registry.json'), 'utf8'))
+const registry = JSON.parse(fs.readFileSync(REGISTRY, 'utf8'))
 const config = JSON.parse(fs.readFileSync(path.join(ROOT, 'data/homework.json'), 'utf8'))
 const gatingFile = JSON.parse(fs.readFileSync(path.join(ROOT, 'data/gating.json'), 'utf8'))
 const rows = registry.structure
@@ -416,6 +426,57 @@ if (!files) {
   ok('WritePass.jsx does not touch storage directly',
     !/localStorage|sessionStorage|indexedDB/.test(body))
 }
+
+/* ================================================================== *
+ * EVERY CHOICE PLAYS ITSELF BACK
+ * ================================================================== */
+console.log('\n--- CHOICE AUDIO: tapping a card says the card ---\n')
+
+let audBad = ''
+for (const item of pool) {
+  const c = HW.choicesFor(item, { pool, seed: 4242 })
+  for (const o of c.options) {
+    if (!o.audio || !o.audio.id || !o.audio.role) { audBad = `${item.id}: choice "${o.key}" carries no clip`; break }
+    const owner = pool.find(x => x.id === o.audio.id)
+    if (!owner) { audBad = `${item.id}: choice "${o.key}" names unknown entry ${o.audio.id}`; break }
+    if (c.kind === 'picture') {
+      // The role must be the word's own position on its own entry, or the card
+      // would show one picture and say a different word.
+      const idx = (owner.words || []).findIndex(w => w.text === o.key)
+      const want = ['word1', 'word2'][idx]
+      if (idx < 0) { audBad = `${item.id}: "${o.key}" is not a word of ${owner.id}`; break }
+      if (o.audio.role !== want) { audBad = `${item.id}: "${o.key}" is ${owner.id}.${want} but the choice says ${o.audio.role}`; break }
+      if (!owner.audio?.clips?.[want]) { audBad = `${item.id}: ${owner.id}.${want} has no clip on disk`; break }
+    } else {
+      if (o.audio.role !== 'sound') { audBad = `${item.id}: text choice "${o.key}" should play sound, not ${o.audio.role}`; break }
+      if (owner.label !== o.key) { audBad = `${item.id}: text choice "${o.key}" points at ${owner.id} whose label is "${owner.label}"`; break }
+    }
+  }
+  if (audBad) break
+}
+ok(`all ${pool.length} entries give every choice a clip that says that choice`, !audBad, audBad)
+
+ok('the correct card plays one of THIS entry\'s own word clips',
+  (() => {
+    for (const item of withWords) {
+      const c = HW.choicesFor(item, { pool, seed: 4242 })
+      const right = c.options.find(o => o.key === c.correct)
+      if (!right || right.audio.id !== item.id) return false
+    }
+    return true
+  })())
+
+const rp = fs.readFileSync(path.join(ROOT, 'src/screens/RecognisePass.jsx'), 'utf8')
+ok('RecognisePass plays the chosen option, not the question',
+  /play\(opt\.audio\.id, opt\.audio\.role\)/.test(rp))
+ok('a wrong choice is greyed out and stays out for that item',
+  /setSpent/.test(rp) && /spent\.includes\(opt\.key\)/.test(rp) && /\.spent\b/.test(fs.readFileSync(path.join(ROOT, 'src/styles/tarea.css'), 'utf8')))
+ok('a spent card refuses further taps',
+  /if \(settled \|\| !choices \|\| spent\.includes\(opt\.key\)\) return/.test(rp))
+ok('the spent set resets on every new item',
+  /setSpent\(\[\]\)/.test(rp))
+ok('nothing reveals which card was right after a wrong pick',
+  !/correct[\s\S]{0,80}(reveal|show|hint)/i.test(rp))
 
 /* ================================================================== *
  * RESUME — a night survives the app closing
