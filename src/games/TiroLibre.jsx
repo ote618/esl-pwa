@@ -396,7 +396,16 @@ function Level ({ set, level, player, onExit, onNext }) {
   const chooseZone = i => {
     if (phase !== 'aim' && phase !== 'meter') return
     setAim(i)
-    if (phase === 'aim') { stop(); setPhase('meter') }
+    // The committing tap plays back what the child just chose, so the answer
+    // they submitted is something they HEAR, not only something they see. It
+    // fires on the 'aim' tap only: re-aiming while the meter sweeps moves the
+    // ball silently, so the net cannot be auditioned option by option until
+    // the right one gives itself away.
+    if (phase === 'aim') {
+      const z = kick.zones[i]
+      play(z.id, z.role)
+      setPhase('meter')
+    }
   }
 
   const strike = p => {
@@ -802,7 +811,7 @@ const CSS = `
 @keyframes tl-spin{to{transform:rotate(1turn)}}
 .tl-keeper{transition:transform .38s cubic-bezier(.3,.6,.4,1) .18s}
 .tl-keeper.dive{transform-origin:center}
-.tl-netletter{font-family:'Baloo 2',cursive,sans-serif;font-weight:800;font-size:56px;fill:#FF6B35;
+.tl-netletter{font-family:'Baloo 2',cursive,sans-serif;font-weight:800;font-size:56px;fill:#7d8f89;
   paint-order:stroke;stroke:var(--navy);stroke-width:4px}
 .tl-coins circle{animation:tl-burst .9s ease-out forwards}
 @keyframes tl-burst{
@@ -839,12 +848,16 @@ const CSS = `
 .tl-zone.pic.aim{background:rgba(255,214,10,.55)}
 .tl-zone.pic.aim img{border-color:var(--navy)}
 .tl-zone.pic.hit{background:rgba(45,106,79,.75)}
-.tl-zone.pic.miss{background:transparent}
-.tl-zone.pic.miss img{opacity:.35}
+.tl-zone.pic.miss{background:rgba(20,33,61,.55);border-style:dashed;border-color:var(--line)}
+.tl-zone.pic.miss img{opacity:.4;filter:grayscale(1)}
 .tl-zone:disabled{cursor:default}
 .tl-zone.aim{background:var(--yellow);color:var(--navy);border-color:var(--navy);transform:scale(1.04)}
 .tl-zone.hit{background:var(--grass);color:var(--chalk);border-color:var(--chalk)}
-.tl-zone.miss{background:transparent;border-color:#FF6B35;color:transparent}
+/* A wrong choice is greyed out, not lit up. Orange read as an alarm; grey
+ * reads as "not this one", which is what actually happened. The tile keeps
+ * its text transparent so the big letter behind it shows through — that
+ * letter is greyed too, see .tl-netletter. */
+.tl-zone.miss{background:rgba(20,33,61,.55);border-color:var(--line);border-style:dashed;color:transparent;opacity:.75}
 .tl-zone:focus-visible{outline:3px solid var(--chalk);outline-offset:2px}
 
 /* ---- under the pitch ---- */
