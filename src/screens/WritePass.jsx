@@ -25,9 +25,13 @@ import { play, stop } from '../lib/audio.js'
  * WHICH IS WHY THIS COMPONENT IS HANDED `ids`, NOT ITEMS.
  * It has no labels, no words and no images to render — not by policy, but
  * because they were never passed in. There is nothing here to leak.
+ *
+ * `startAt` and `onAdvance` carry the resume point. They move a COUNTER — the
+ * caller saves which number the child had reached, never anything the child
+ * put on the paper, because no such thing exists on this screen to save.
  */
-export default function WritePass ({ ids, onDone }) {
-  const [at, setAt] = useState(0)
+export default function WritePass ({ ids, startAt = 0, onAdvance = () => {}, onDone }) {
+  const [at, setAt] = useState(Math.min(startAt, Math.max(0, ids.length - 1)))
   const [playing, setPlaying] = useState(false)
 
   const total = ids.length
@@ -76,12 +80,12 @@ export default function WritePass ({ ids, onDone }) {
         </button>
 
         <div className="navrow">
-          <button className="nav" disabled={at === 0} onClick={() => { stop(); setAt(a => Math.max(0, a - 1)) }}>
+          <button className="nav" disabled={at === 0} onClick={() => { stop(); const n = Math.max(0, at - 1); onAdvance(n); setAt(n) }}>
             atrás
           </button>
           <button
             className="nav"
-            onClick={() => { stop(); last ? onDone() : setAt(a => a + 1) }}
+            onClick={() => { stop(); if (last) return onDone(); const n = at + 1; onAdvance(n); setAt(n) }}
           >
             {last ? 'terminar' : 'siguiente'}
           </button>

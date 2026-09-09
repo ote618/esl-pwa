@@ -19,8 +19,8 @@ import { recordAnswer } from '../lib/progress.js'
  * data (does this entry have words?), never by the shape's name. The build is
  * what guarantees every one of those words has an image on disk; see V14.
  */
-export default function RecognisePass ({ items, pool, seed, onDone, onBack }) {
-  const [at, setAt] = useState(0)
+export default function RecognisePass ({ items, pool, seed, startAt = 0, onAdvance = () => {}, onDone, onBack }) {
+  const [at, setAt] = useState(Math.min(startAt, Math.max(0, items.length - 1)))
   const [playing, setPlaying] = useState(false)
   const [verdict, setVerdict] = useState(null)   // null | 'ok' | 'no'
   const [chosen, setChosen] = useState(null)     // the key of the card just tapped
@@ -72,7 +72,7 @@ export default function RecognisePass ({ items, pool, seed, onDone, onBack }) {
     setSettled(true)
     setVerdict('ok')
     const t = setTimeout(() => {
-      if (at < items.length - 1) setAt(a => a + 1)
+      if (at < items.length - 1) { const next = at + 1; onAdvance(next); setAt(next) }
       else onDone()
     }, 720)
     timers.current.push(t)

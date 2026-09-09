@@ -30,7 +30,7 @@
 const KEY = 'esl_progress_v1'
 const VERSION = 1
 
-const EMPTY = { v: VERSION, items: {}, nights: {} }
+const EMPTY = { v: VERSION, items: {}, nights: {}, session: null }
 
 function load () {
   try {
@@ -38,10 +38,15 @@ function load () {
     if (!raw) return { ...EMPTY, items: {}, nights: {} }
     const parsed = JSON.parse(raw)
     if (!parsed || parsed.v !== VERSION) return { ...EMPTY, items: {}, nights: {} }
+    // Spread first, THEN normalise. More than one chat writes this app now, and
+    // a reader that rebuilds the object from the keys it happens to know about
+    // deletes every key it does not — silently, on the next unrelated write.
     return {
+      ...parsed,
       v: VERSION,
       items: parsed.items && typeof parsed.items === 'object' ? parsed.items : {},
-      nights: parsed.nights && typeof parsed.nights === 'object' ? parsed.nights : {}
+      nights: parsed.nights && typeof parsed.nights === 'object' ? parsed.nights : {},
+      session: parsed.session && typeof parsed.session === 'object' ? parsed.session : null
     }
   } catch {
     return { ...EMPTY, items: {}, nights: {} }
@@ -144,6 +149,64 @@ export function recordGameLevel (gameId, levelId, score = 0) {
   game[levelId] = { done: true, best: Math.max(prev.best || 0, score) }
   all[gameId] = game
   try { localStorage.setItem(GAMES_KEY, JSON.stringify(all)) } catch { /* forgetting is survivable */ }
+}
+
+/* ------------------------------------------------------------------ *
+ * THE RESUME POINT
+ *
+ * A night is twenty-odd items over two passes. A child puts the phone down,
+ * a parent takes it, the tab is evicted — and before this, all of it was gone
+ * and the night started again from item one. Nobody finishes a night twice.
+ *
+ * So where they had got to is saved. WHAT IS SAVED IS A POSITION, NOT WORK:
+ * the night's date, the group, the weekday, the ids of the set, which pass,
+ * and how far in. Nothing the child wrote, drew, or was marked on — there is
+ * nothing of the kind to save, and F-15 is why (see WritePass.jsx).
+ *
+ * Saving the ids rather than rebuilding the set matters: `weakest-third` reads
+ * pass 1 accuracy, and accuracy moves as the child answers, so rebuilding half
+ * way through a night could quietly hand back a different night.
+ *
+ * One session at a time. Starting a different group, or the same group on a
+ * different day, replaces it — a stale resume point offering to continue
+ * Saturday's homework on Monday is worse than no resume point at all.
+ * ------------------------------------------------------------------ */
+
+/** Save where the child has got to. Called by TareaScreen and nowhere else. */
+export function saveSession (session) {
+  if (!session || !session.date || !session.group) return
+  const state = load()
+  state.session = {
+    date: session.date,
+    group: session.group,
+    weekday: session.weekday ?? null,
+    ids: Array.isArray(session.ids) ? session.ids : [],
+    phase: session.phase ?? 'p1',
+    at: Number.isInteger(session.at) ? session.at : 0
+  }
+  save(state)
+}
+
+/**
+ * The resume point, but only if it is still the right one.
+ *
+ * A saved night is only offered back when the date AND the group match. A
+ * child who opens Group 3 tonight is not offered Group 1's unfinished night,
+ * and yesterday's is never offered at all.
+ */
+export function loadSession ({ date, group } = {}) {
+  const s = load().session
+  if (!s || !s.ids?.length) return null
+  if (date && s.date !== date) return null
+  if (group && s.group !== group) return null
+  return s
+}
+
+/** The night is finished, or abandoned deliberately. Drop the resume point. */
+export function clearSession () {
+  const state = load()
+  state.session = null
+  save(state)
 }
 
 /** Used by nothing in the UI. Here so a device can be handed on clean. */
