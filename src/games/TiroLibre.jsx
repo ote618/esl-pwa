@@ -396,6 +396,9 @@ function Level ({ set, level, player, onExit, onNext }) {
   const chooseZone = i => {
     if (phase !== 'aim' && phase !== 'meter') return
     setAim(i)
+    // Choosing is SILENT. The playback of what they picked belongs after the
+    // kick, not on the tap — a net that speaks as it is touched can be
+    // auditioned option by option until the right one gives itself away.
     if (phase === 'aim') { stop(); setPhase('meter') }
   }
 
@@ -409,6 +412,10 @@ function Level ({ set, level, player, onExit, onNext }) {
     later(() => {
       setPhase('result')
       const pts = pointsFor(v.outcome, v.quality)
+      // Now the ball has been struck, say what they picked. After the kick,
+      // never before it: this is a read-back of the answer they committed to,
+      // not a preview they could have shopped around for.
+      const chosen = kick.zones[aim]
       if (v.outcome === 'goal') {
         setScore(s => s + pts)
         // The English voice says what was scored. An entry says its sound and
@@ -419,6 +426,11 @@ function Level ({ set, level, player, onExit, onNext }) {
           ? [{ id: t.id, role: t.role }]
           : [{ id: t.id, role: 'sound' }, ...(hasClip(t.id, 'word1') ? [{ id: t.id, role: 'word1' }] : [])]
         playSequence(steps)
+      } else {
+        // Not a goal: play the chosen option on its own. On a wrong answer
+        // that is the child hearing the letter they actually picked, while
+        // the net greys it out — the same fact told twice, once per sense.
+        play(chosen.id, chosen.role)
       }
       later(() => advance(v), v.outcome === 'wrong' ? T.resultWrong : T.result)
     }, T.runup + T.flight)
@@ -659,11 +671,16 @@ function Pitch ({ pitch, zones, zoneCount, aim, phase, verdict, wrongLabel, onZo
   const caught = showResult && verdict?.outcome === 'blocked'
 
   return (
-    <div className="tl-pitch" style={{ '--ground': pitch.ground, '--grass': pitch.grass }}>
+    // NOT --ground/--grass. A pitch's colours are set on this element, so any
+    // name used here shadows the same name on every descendant — and --grass is
+    // a Slice 1 design token. Naming them that turned .tl-zone.hit, which is
+    // meant to flash the token green when a goal goes in, the colour of the
+    // pitch's dirt. Prefixed so a pitch can never repaint a token again.
+    <div className="tl-pitch" style={{ '--tl-ground': pitch.ground, '--tl-grass': pitch.grass }}>
       <svg viewBox={`0 0 ${G.w} ${G.h}`} aria-hidden="true">
         <rect width={G.w} height={G.h} fill="var(--pitch)" />
-        <rect y="172" width={G.w} height={G.h - 172} fill="var(--ground)" />
-        <rect y="172" width={G.w} height="6" fill="var(--grass)" />
+        <rect y="172" width={G.w} height={G.h - 172} fill="var(--tl-ground)" />
+        <rect y="172" width={G.w} height="6" fill="var(--tl-grass)" />
         {/* net */}
         <rect x={G.gx} y={G.gy} width={G.gw} height={G.gh} fill="rgba(241,250,238,.06)" />
         <g stroke="rgba(241,250,238,.28)" strokeWidth="1">
@@ -802,7 +819,7 @@ const CSS = `
 @keyframes tl-spin{to{transform:rotate(1turn)}}
 .tl-keeper{transition:transform .38s cubic-bezier(.3,.6,.4,1) .18s}
 .tl-keeper.dive{transform-origin:center}
-.tl-netletter{font-family:'Baloo 2',cursive,sans-serif;font-weight:800;font-size:56px;fill:#FF6B35;
+.tl-netletter{font-family:'Baloo 2',cursive,sans-serif;font-weight:800;font-size:56px;fill:#7d8f89;
   paint-order:stroke;stroke:var(--navy);stroke-width:4px}
 .tl-coins circle{animation:tl-burst .9s ease-out forwards}
 @keyframes tl-burst{
@@ -839,12 +856,16 @@ const CSS = `
 .tl-zone.pic.aim{background:rgba(255,214,10,.55)}
 .tl-zone.pic.aim img{border-color:var(--navy)}
 .tl-zone.pic.hit{background:rgba(45,106,79,.75)}
-.tl-zone.pic.miss{background:transparent}
-.tl-zone.pic.miss img{opacity:.35}
+.tl-zone.pic.miss{background:rgba(20,33,61,.55);border-style:dashed;border-color:var(--line)}
+.tl-zone.pic.miss img{opacity:.4;filter:grayscale(1)}
 .tl-zone:disabled{cursor:default}
 .tl-zone.aim{background:var(--yellow);color:var(--navy);border-color:var(--navy);transform:scale(1.04)}
 .tl-zone.hit{background:var(--grass);color:var(--chalk);border-color:var(--chalk)}
-.tl-zone.miss{background:transparent;border-color:#FF6B35;color:transparent}
+/* A wrong choice is greyed out, not lit up. Orange read as an alarm; grey
+ * reads as "not this one", which is what actually happened. The tile keeps
+ * its text transparent so the big letter behind it shows through — that
+ * letter is greyed too, see .tl-netletter. */
+.tl-zone.miss{background:rgba(20,33,61,.55);border-color:var(--line);border-style:dashed;color:transparent;opacity:.75}
 .tl-zone:focus-visible{outline:3px solid var(--chalk);outline-offset:2px}
 
 /* ---- under the pitch ---- */
