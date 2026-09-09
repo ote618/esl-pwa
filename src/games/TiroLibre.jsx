@@ -78,19 +78,35 @@ function driftZone (zone, drift, zones) {
 
 /**
  * The verdict.
- *   'goal'  — right letter, keeper beaten
- *   'saved' — right letter, keeper got it (or the kick was a scuff)
- *   'wrong' — the ball went in, but the net says another letter
- * A wrong zone is information, not a kick to be beaten: the ball always goes
- * in so the child sees the letter they chose, big, in the net.
+ *   'goal'    — right letter, keeper beaten
+ *   'blocked' — right letter, keeper got it            costs no ball
+ *   'missed'  — right letter, the kick went wide       costs no ball
+ *   'wrong'   — wrong letter                           costs a ball
+ *
+ * A wrong zone is information, not a kick to be beaten: the ball goes into the
+ * zone the child CHOSE — never a drifted one — so the letter they are shown is
+ * the letter they picked, big, in the net.
  */
 function resolveKick ({ aim, answer, stop, keeper, zones }) {
   const { quality, drift } = judgeStop(stop.p, stop.band)
-  if (quality === 'scuff') return { outcome: 'saved', landed: null, quality }
+
+  // THE LETTER DECIDES THE LIFE. THE KICK ONLY DECIDES THE GOAL.
+  //
+  // This used to be the other way round, and it punished the child for the
+  // half of the game that is not the lesson. Three ways a right answer cost a
+  // ball: a scuffed meter never even looked at the letter; a keeper who
+  // guessed right took one; and — worst — an edge kick that DRIFTED one zone
+  // came back as 'wrong', so a child who read the net correctly was told
+  // "Esa es la B" about a letter they had not chosen. The phonics is the
+  // question. The football is the reward for answering it, not a second
+  // question they can fail.
+  if (aim !== answer) return { outcome: 'wrong', landed: aim, quality }
+
+  if (quality === 'scuff') return { outcome: 'missed', landed: null, quality }
   const landed = driftZone(aim, drift, zones)
-  if (landed !== answer) return { outcome: 'wrong', landed, quality }
+  if (landed !== answer) return { outcome: 'missed', landed, quality }
   if (keeper !== landed) return { outcome: 'goal', landed, quality }
-  return { outcome: quality === 'centre' ? 'goal' : 'saved', landed, quality }
+  return { outcome: quality === 'centre' ? 'goal' : 'blocked', landed, quality }
 }
 
 /** Points for one kick. Ball bonus is paid at level end. */
@@ -426,12 +442,17 @@ function Level ({ set, level, player, onExit, onNext }) {
       setPhase('aim')
       return
     }
+    // Missed or blocked: the letter was RIGHT, so the ball is not taken. Same
+    // prompt again — a good letter with a bad kick is not a reason to move on,
+    // and it is not a reason to be punished either. Only a wrong letter costs.
+    if (v.outcome !== 'wrong') {
+      if (v.outcome === 'blocked') setSavedOnce(true)
+      setPhase('aim')
+      return
+    }
     const b = balls - 1
     setBalls(b)
     if (b <= 0) { setPhase('lost'); return }
-    // Saved or wrong: the same prompt again. Wrong is information, and a
-    // good letter with a bad kick is not a reason to move on.
-    if (v.outcome === 'saved') setSavedOnce(true)
     setPhase('aim')
   }
 
@@ -544,7 +565,19 @@ function Verdict ({ verdict, label, target }) {
   if (verdict.outcome === 'wrong') {
     return <p className="tl-cue wrong">Esa es la <b>{label}</b></p>
   }
-  return <p className="tl-cue saved">¡Atajada! Otra vez.</p>
+  // Right letter, no goal. Lead with the letter being right, because that is
+  // the part the child is being taught and the part they got. Then say what
+  // the ball did, so "why no goal?" has an answer on screen.
+  return (
+    <p className="tl-cue saved">
+      <b>¡Letra correcta!</b>
+      <span>
+        {verdict.outcome === 'blocked'
+          ? 'La atajó el portero. Inténtalo otra vez.'
+          : 'El tiro se fue fuera. Inténtalo otra vez.'}
+      </span>
+    </p>
+  )
 }
 
 /**
@@ -606,10 +639,14 @@ function Pitch ({ pitch, zones, zoneCount, aim, phase, verdict, wrongLabel, onZo
   const showResult = phase === 'result'
 
   // Ball: penalty spot -> the landed zone, or into the keeper's gloves on a scuff.
+  // Ball: penalty spot -> the zone it reached. A scuff reaches no zone at all,
+  // and it is a MISS, not a save — so it sails wide of the post and over, not
+  // into the keeper's gloves. The picture has to agree with the words: a child
+  // told "el tiro se fue fuera" must not watch the keeper catch it.
   let ball = spot
   if (flying && verdict) {
     ball = verdict.landed === null
-      ? { x: home.x, y: LINE - 26 }
+      ? { x: G.gx + G.gw + 26, y: G.gy - 18 }
       : zoneCentre(verdict.landed, zoneCount)
   }
   // Keeper: on his line until the flight, then under his dive zone. His line
@@ -619,7 +656,7 @@ function Pitch ({ pitch, zones, zoneCount, aim, phase, verdict, wrongLabel, onZo
   // height and made that stop being theoretical.
   const keeperZone = flying && verdict ? zoneCentre(verdict.keeper, zoneCount) : home
   const keeper = { x: keeperZone.x, y: LINE }
-  const caught = showResult && verdict?.outcome === 'saved'
+  const caught = showResult && verdict?.outcome === 'blocked'
 
   return (
     <div className="tl-pitch" style={{ '--ground': pitch.ground, '--grass': pitch.grass }}>
@@ -840,7 +877,9 @@ const CSS = `
 .tl-cue.goal{color:var(--yellow);animation:tl-pop .3s cubic-bezier(.2,1.6,.4,1)}
 .tl-cue.wrong{color:var(--chalk);font-size:24px}
 .tl-cue.wrong b{color:#FF6B35;font-size:34px}
-.tl-cue.saved{color:var(--dim)}
+.tl-cue.saved{color:var(--chalk);display:flex;flex-direction:column;align-items:center;gap:4px}
+.tl-cue.saved b{color:var(--yellow);font-size:26px}
+.tl-cue.saved span{font-family:'Nunito',sans-serif;font-weight:800;font-size:15px;color:var(--dim);line-height:1.25}
 @keyframes tl-pop{from{transform:scale(.4)}to{transform:scale(1)}}
 
 .tl-end{display:flex;flex-direction:column;align-items:center;gap:8px;text-align:center}
