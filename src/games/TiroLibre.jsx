@@ -396,16 +396,10 @@ function Level ({ set, level, player, onExit, onNext }) {
   const chooseZone = i => {
     if (phase !== 'aim' && phase !== 'meter') return
     setAim(i)
-    // The committing tap plays back what the child just chose, so the answer
-    // they submitted is something they HEAR, not only something they see. It
-    // fires on the 'aim' tap only: re-aiming while the meter sweeps moves the
-    // ball silently, so the net cannot be auditioned option by option until
-    // the right one gives itself away.
-    if (phase === 'aim') {
-      const z = kick.zones[i]
-      play(z.id, z.role)
-      setPhase('meter')
-    }
+    // Choosing is SILENT. The playback of what they picked belongs after the
+    // kick, not on the tap — a net that speaks as it is touched can be
+    // auditioned option by option until the right one gives itself away.
+    if (phase === 'aim') { stop(); setPhase('meter') }
   }
 
   const strike = p => {
@@ -418,6 +412,10 @@ function Level ({ set, level, player, onExit, onNext }) {
     later(() => {
       setPhase('result')
       const pts = pointsFor(v.outcome, v.quality)
+      // Now the ball has been struck, say what they picked. After the kick,
+      // never before it: this is a read-back of the answer they committed to,
+      // not a preview they could have shopped around for.
+      const chosen = kick.zones[aim]
       if (v.outcome === 'goal') {
         setScore(s => s + pts)
         // The English voice says what was scored. An entry says its sound and
@@ -428,6 +426,11 @@ function Level ({ set, level, player, onExit, onNext }) {
           ? [{ id: t.id, role: t.role }]
           : [{ id: t.id, role: 'sound' }, ...(hasClip(t.id, 'word1') ? [{ id: t.id, role: 'word1' }] : [])]
         playSequence(steps)
+      } else {
+        // Not a goal: play the chosen option on its own. On a wrong answer
+        // that is the child hearing the letter they actually picked, while
+        // the net greys it out — the same fact told twice, once per sense.
+        play(chosen.id, chosen.role)
       }
       later(() => advance(v), v.outcome === 'wrong' ? T.resultWrong : T.result)
     }, T.runup + T.flight)
