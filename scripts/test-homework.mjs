@@ -22,6 +22,16 @@ import { fileURLToPath } from 'node:url'
 const HERE = path.dirname(fileURLToPath(import.meta.url))
 const ROOT = path.resolve(HERE, '..')
 
+/* out/ is generated and gitignored, so a fresh clone or a new worktree has no
+ * registry at all. Build one before esbuild tries to bundle registry.js, which
+ * imports it: a test run that dies on a missing-file stack trace cannot tell
+ * anyone what is actually wrong. */
+const REGISTRY = path.join(ROOT, 'out/esl_unit_registry.json')
+if (!fs.existsSync(REGISTRY)) {
+  console.log('  (no registry yet — running build:data first)\n')
+  execFileSync('node', [path.join(ROOT, 'scripts/build-registry.mjs')], { cwd: ROOT, stdio: 'pipe' })
+}
+
 const tmp = fs.mkdtempSync(path.join(os.tmpdir(), 'eslhw-'))
 const bundle = path.join(tmp, 'homework.mjs')
 execFileSync(path.join(ROOT, 'node_modules/.bin/esbuild'), [
@@ -31,7 +41,7 @@ execFileSync(path.join(ROOT, 'node_modules/.bin/esbuild'), [
 ])
 const HW = await import('file://' + bundle)
 
-const registry = JSON.parse(fs.readFileSync(path.join(ROOT, 'out/esl_unit_registry.json'), 'utf8'))
+const registry = JSON.parse(fs.readFileSync(REGISTRY, 'utf8'))
 const config = JSON.parse(fs.readFileSync(path.join(ROOT, 'data/homework.json'), 'utf8'))
 const gatingFile = JSON.parse(fs.readFileSync(path.join(ROOT, 'data/gating.json'), 'utf8'))
 const rows = registry.structure
